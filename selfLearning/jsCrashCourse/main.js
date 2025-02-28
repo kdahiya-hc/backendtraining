@@ -29,7 +29,7 @@
 // 	console.log(item);
 // }); // items is NodeList which is Array or List
 
-const ul = document.querySelector('.items'); // First Occurance
+// const ul = document.querySelector('.items'); // First Occurance
 // console.log(ul);
 // ul.remove();
 
