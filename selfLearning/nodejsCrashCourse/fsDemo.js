@@ -43,7 +43,6 @@ const readFile = async () => {
 // };
 
 // Append
-
 const appendFile = async () => {
 	try {
 		await fsp.appendFile('./test.txt', 'Appended without overwriting!');
