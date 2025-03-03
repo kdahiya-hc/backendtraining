@@ -7,7 +7,7 @@ const filePath = '/root/subDir1/File.txt';
 console.log(`1. extname(): ${path.extname(filePath)}`);
 
 // basename() returns current filePath: File.txt
-console.log(`2. basename(): ${path.basename(filePath)}}`);
+console.log(`2. basename(): ${path.basename(filePath)}`);
 
 // dirname returns up to current filePath: /root/subDir1
 console.log(`3. dirname(): ${path.dirname(filePath)}`);
