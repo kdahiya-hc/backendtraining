@@ -10,4 +10,4 @@ var logger = require('./logger.js');
 // When run node app.js the line window.console.log("Hey") wont work
 // console.log("Hey")
 
-logger.log("Hey")
+logger("Hey");
