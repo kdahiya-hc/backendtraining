@@ -21,7 +21,7 @@ myEmitter.on('error', (err) => {
 	console.log('An error occurred', err);
 });
 
-// Emmit event
+// Simulating an event
 myEmitter.emit('greet', 'john');
 myEmitter.emit('goodbye', 'john');
 myEmitter.emit('error', new Error('Something is wrong'));
