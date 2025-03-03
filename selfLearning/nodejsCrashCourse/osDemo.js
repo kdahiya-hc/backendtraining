@@ -9,5 +9,5 @@ console.log(totalmem());
 // freemem() in bytes
 console.log(freemem());
 
-// cpus() shows all cpu processing cores 
+// cpus() shows all cpu processing cores
 console.log(os.cpus());
