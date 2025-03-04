@@ -16,14 +16,14 @@ const PORT = process.env.PORT || 5005;
 
 // Static object which shall be for genres
 const genres = [
-	{'name':'action'},
-	{'name':'horror'},
-	{'name':'comedy'},
-	{'name':'romance'},
-	{'name':'drama'},
-	{'name':'thriller'},
-	{'name':'western'},
-	{'name':'sci-fi'},
+	{ id:1, 'name':'action'},
+	{ id:2, 'name':'horror'},
+	{ id:3, 'name':'comedy'},
+	{ id:4, 'name':'romance'},
+	{ id:5, 'name':'drama'},
+	{ id:6, 'name':'thriller'},
+	{ id:7, 'name':'western'},
+	{ id:8, 'name':'sci-fi'},
 ];
 
 // Function to validate genre name
