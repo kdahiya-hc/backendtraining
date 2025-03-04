@@ -42,7 +42,7 @@ app.get('/', (req, res) => {
 });
 
 // GET all genre
-app.get('./api/genres', (req, res) => {
+app.get('/api/genres', (req, res) => {
 	res.status(200).send(genres);
 })
 
