@@ -4,24 +4,21 @@ const PORT = process.env.PORT || 5005;
 
 const app = express();
 
-app.get('/', (req, res) => {
-	res.send('Hello');
-});
+const courses = [
+	{id: 1, name: "Java"},
+	{id: 2, name: "Node"},
+	{id: 3, name: "Express"},
+	{id: 4, name: "Python"},
+];
 
 app.get('/api/courses', (req, res) => {
-	res.send(["Java", "Express", "Node", "Python"]);
-});
-
-app.get('/api/courses', (req, res) => {
-	res.send(`req.query: ${JSON.stringify(req.query)}`);
+	res.send(courses);
 });
 
 app.get('/api/courses/:id', (req, res) => {
-	res.send(`req.params.id: ${req.params.id}`);
-});
-
-app.get('/api/courses/:year/:month', (req, res) => {
-	res.send(`req.params: ${req.params}`);
+	const course = courses.find(c => c.id === parseInt(req.params.id));
+	if (!course){res.status(404).send('The course with the given ID is not found!!!')};
+	res.send(course);
 });
 
 app.listen(PORT, () => {
