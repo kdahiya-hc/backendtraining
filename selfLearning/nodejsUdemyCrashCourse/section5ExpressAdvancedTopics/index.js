@@ -1,10 +1,15 @@
 const config = require('config');
+require('dotenv').config()
 const express = require('express');
 const logger = require('./logger.js');
 const Joi = require('joi');
 const authenticator = require('./authenticator.js');
 const helmet = require('helmet');
 const morgan = require('morgan');
+
+// Debugging functions
+const startupDebugger = require('debug')('app:startup');
+const dbDebugger = require('debug')('app:db');
 
 // PORT
 const PORT = process.env.PORT || 5005;
@@ -33,7 +38,18 @@ app.use(authenticator);
 
 // Third-party middleware
 app.use(helmet());
-if ( app.get('NODE_ENV') === 'development' ){ app.use(morgan('dev')); console.log('Morgan is enabled');	 }
+
+// Log
+// ( Shows database logs when you set an enviornment variable DEBUG=app:startup)
+if ( process.env.NODE_ENV === 'development' ){
+	app.use(morgan('dev'));
+	console.log('Hi');
+	startupDebugger('--------Morgan is enabled');
+}
+
+// Log for db work
+// ( Shows database logs when you set an enviornment variable DEBUG=app:db)
+dbDebugger('Started logging db');
 
 // Static course
 const courses = [
