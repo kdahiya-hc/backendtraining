@@ -11,8 +11,11 @@ const PORT = process.env.PORT || 5005;
 // Express application
 const app = express();
 
-// Middleware in request processing handler
+// Nodejs environment variable via standard variable and app
+console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
+console.log(`app: ${app.get('env')}`);
 
+// Middleware in request processing handler
 // Built-in middlewares
 app.use(express.json()); // parses to json to the req.body
 app.use(express.urlencoded({extended: true})); // parses incoming key1=value1&key2=value2
@@ -24,8 +27,9 @@ app.use(authenticator);
 
 // Third-party middleware
 app.use(helmet());
-app.use(morgan('dev'))
+if ( app.get('env') === 'development' ){ app.use(morgan('dev')); console.log('Morgan is enabled');	 }
 
+// Static course
 const courses = [
 	{ id:1, name:'MCA' },
 	{ id:2, name:'BCA' },
