@@ -1,3 +1,4 @@
+const config = require('config');
 const express = require('express');
 const logger = require('./logger.js');
 const Joi = require('joi');
@@ -15,6 +16,11 @@ const app = express();
 console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
 console.log(`app: ${app.get('env')}`);
 
+// Configuration
+console.log(`Application Name: ${config.get('name')}`);
+console.log(`Mail Server: ${config.get('mail.host')}`);
+console.log(`Mail Password: ${config.get('mail.password')}`);
+
 // Middleware in request processing handler
 // Built-in middlewares
 app.use(express.json()); // parses to json to the req.body
@@ -27,7 +33,7 @@ app.use(authenticator);
 
 // Third-party middleware
 app.use(helmet());
-if ( app.get('env') === 'development' ){ app.use(morgan('dev')); console.log('Morgan is enabled');	 }
+if ( app.get('NODE_ENV') === 'development' ){ app.use(morgan('dev')); console.log('Morgan is enabled');	 }
 
 // Static course
 const courses = [
