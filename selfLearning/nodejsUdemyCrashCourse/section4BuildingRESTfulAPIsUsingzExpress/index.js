@@ -25,7 +25,7 @@ function validateCourse(req, res){
 }
 
 app.get('/api/courses', (req, res) => {
-	res.send(courses);
+	res.status(200).send(courses);
 });
 
 app.get('/api/courses/:id', (req, res) => {
