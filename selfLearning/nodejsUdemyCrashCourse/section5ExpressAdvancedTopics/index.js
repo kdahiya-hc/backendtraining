@@ -17,6 +17,11 @@ const PORT = process.env.PORT || 5005;
 // Express application
 const app = express();
 
+// Set view or templating engine. Express loads internally
+app.set('view engine', 'pug');
+// Only to override templates of the engine above/ optional
+app.set('views', './views') // default and all templates should be there
+
 // Nodejs environment variable via standard variable and app
 console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
 console.log(`app: ${app.get('env')}`);
@@ -43,7 +48,6 @@ app.use(helmet());
 // ( Shows database logs when you set an enviornment variable DEBUG=app:startup)
 if ( process.env.NODE_ENV === 'development' ){
 	app.use(morgan('dev'));
-	console.log('Hi');
 	startupDebugger('--------Morgan is enabled');
 }
 
@@ -57,7 +61,12 @@ const courses = [
 	{ id:2, name:'BCA' },
 ]
 app.get('/', (req, res) => {
-	res.status(200).send('Hi');
+	res.status(200)
+	.render(
+		'index',{
+		title:'My Express Example',
+		message: "Hi",
+	});
 });
 
 app.get('/api/courses', (req, res) => {
