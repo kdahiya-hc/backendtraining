@@ -2,6 +2,8 @@ const express = require('express');
 const logger = require('./logger.js');
 const Joi = require('joi');
 const authenticator = require('./authenticator.js');
+const helmet = require('helmet');
+const morgan = require('morgan');
 
 // PORT
 const PORT = process.env.PORT || 5005;
@@ -19,6 +21,10 @@ app.use(express.static('public'));
 // Custom Middleware function with next()
 app.use(logger);
 app.use(authenticator);
+
+// Third-party middleware
+app.use(helmet());
+app.use(morgan('dev'))
 
 const courses = [
 	{ id:1, name:'MCA' },
