@@ -1,11 +1,11 @@
 const config = require('config');
-require('dotenv').config()
 const express = require('express');
-const logger = require('./logger.js');
+const logger = require('./middleware/logger.js');
 const Joi = require('joi');
 const authenticator = require('./authenticator.js');
 const helmet = require('helmet');
 const morgan = require('morgan');
+
 // Loaded the routes holding files
 const courses = require('./routes/courses');
 const home = require('./routes/home');
@@ -50,7 +50,7 @@ app.use(authenticator);
 // Third-party middleware
 app.use(helmet());
 
-// Log
+// Logs 
 // ( Shows database logs when you set an enviornment variable DEBUG=app:startup)
 if ( process.env.NODE_ENV === 'development' ){
 	app.use(morgan('dev'));
@@ -61,6 +61,7 @@ if ( process.env.NODE_ENV === 'development' ){
 // ( Shows database logs when you set an enviornment variable DEBUG=app:db)
 dbDebugger('Started logging db');
 
+// Listen on a port
 app.listen(PORT, () => {
 	console.log(`Listening on http://localhost:${PORT}`);
 });
