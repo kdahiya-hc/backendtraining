@@ -6,10 +6,9 @@ const Joi = require('joi');
 const authenticator = require('./authenticator.js');
 const helmet = require('helmet');
 const morgan = require('morgan');
-
-// Debugging functions
-const startupDebugger = require('debug')('app:startup');
-const dbDebugger = require('debug')('app:db');
+// Loaded the routes holding files
+const courses = require('./routes/courses');
+const home = require('./routes/home');
 
 // PORT
 const PORT = process.env.PORT || 5005;
@@ -17,10 +16,17 @@ const PORT = process.env.PORT || 5005;
 // Express application
 const app = express();
 
-// Set view or templating engine. Express loads internally
+// We tell express for any routes with below path, use that router
+app.use('/api/courses', courses);
+app.use('/', home);
+
+// Setting templating engine
 app.set('view engine', 'pug');
-// Only to override templates of the engine above/ optional
-app.set('views', './views') // default and all templates should be there
+app.set('views', './views') // default templates here
+
+// Debugging functions
+const startupDebugger = require('debug')('app:startup');
+const dbDebugger = require('debug')('app:db');
 
 // Nodejs environment variable via standard variable and app
 console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
@@ -54,39 +60,6 @@ if ( process.env.NODE_ENV === 'development' ){
 // Log for db work
 // ( Shows database logs when you set an enviornment variable DEBUG=app:db)
 dbDebugger('Started logging db');
-
-// Static course
-const courses = [
-	{ id:1, name:'MCA' },
-	{ id:2, name:'BCA' },
-]
-app.get('/', (req, res) => {
-	res.status(200)
-	.render(
-		'index',{
-		title:'My Express Example',
-		message: "Hi",
-	});
-});
-
-app.get('/api/courses', (req, res) => {
-	res.status(200).send(courses);
-});
-
-app.post('/api/courses', (req, res) => {
-	const schema = Joi.object({
-		name: Joi.string().min(3).required(),
-	});
-	const {error, value} = schema.validate(req.body);
-	if (error) { return res.status(400).send(error.details[0].message); }
-	const newCourse = {
-		id: courses.length+1,
-		name: value.name,
-	}
-
-	courses.push(newCourse);
-	res.status(201).json(newCourse);
-});
 
 app.listen(PORT, () => {
 	console.log(`Listening on http://localhost:${PORT}`);
