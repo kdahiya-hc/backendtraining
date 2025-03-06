@@ -2,6 +2,9 @@ getUser(1, (user) => {
 	console.log(user);
 	getRepos(user.username, (repositories) => {
 		console.log(repositories);
+		getCommits(repositories[0], (commits) => {
+			console.log(commits);
+		});
 	});
 });
 
@@ -22,17 +25,12 @@ function getRepos(username, getReposCallback){
 	},2000);
 }
 
-// // callbacks
-// getUsers((users) => {
-// 	console.log(users);
-// });
-
-// function getUsers(callback){
-// 	setTimeout(() => {
-// 		console.log('Logging');
-// 		callback([
-// 			{ id: 1, username: 'Kishan' },
-// 			{ id: 2, username: 'Jayshah'},
-// 		])
-// 	}, 1000);
-// }
+function getCommits(repository, getCommitsCallback){
+	setTimeout(() => {
+		console.log('Getting commits')
+		getCommitsCallback([
+			{ commitID: '1d923r'},
+			{ commitID: '91sbu3'},
+		]);
+	},2000);
+}
