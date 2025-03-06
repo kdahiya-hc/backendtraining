@@ -16,14 +16,18 @@ const commits = [
 ];
 
 async function fetchData() {
-	const user = await getUser(1);
-	console.log("User data:", user);
+	try {
+        const user = await getUser(1);
+        console.log("User data:", user);
 
-	const repos = await getRepo(user.gitHubUsername);
-	console.log("Repositories:", repos);
+        const repos = await getRepo(user.gitHubUsername);
+        console.log("Repositories:", repos);
 
-	const commitsData = await getCommit(repos[0].repoName);
-	console.log("Commits:", commitsData);
+        const commitsData = await getCommit(repos[0].repoName);
+        console.log("Commits:", commitsData);
+    } catch (error) {
+        console.error("Error:", error.message);
+    }
 }
 
 fetchData();
@@ -50,7 +54,8 @@ function getCommit(repoName) {
     return new Promise((resolve, reject) => {
         setTimeout(() => {
             console.log('Getting commits');
-            resolve(commits.filter(commit => commit.repoName === repoName));
+            // resolve(commits.filter(commit => commit.repoName === repoName));
+			reject(new Error('I rejected'));
         }, 2000);
     });
 }
