@@ -15,7 +15,10 @@ function getUser(id, getUserCallback){
 function getRepos(username, getReposCallback){
 	setTimeout(() => {
 		console.log('Getting repository')
-		getReposCallback(['repo1', 'repo2']);
+		getReposCallback([
+			{ name: 'repo1'},
+			{ name: 'repo2'},
+		]);
 	},2000);
 }
 
