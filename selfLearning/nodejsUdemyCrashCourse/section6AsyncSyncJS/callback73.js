@@ -1,4 +1,4 @@
-const param = 'Something';
+const param = 1;
 
 console.log('Started',param );
 
