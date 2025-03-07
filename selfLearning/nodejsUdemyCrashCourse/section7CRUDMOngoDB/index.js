@@ -44,21 +44,54 @@ async function getCourse() {
 	console.log(courses);
 }
 
-async function updateCourse(id) {
+// Query First
+async function updateAuthorQF(id) {
 	const course = await Course.findById(id)
 	if (!course) {
 		console.log('Course not found');
 		return;
 	}
 
-	course.isPublished = true;
-	course.author = 'KJay';
-
+	course.set({
+		author:'Jayshah'
+	})
 	const result = await course.save();
 	console.log(result);
 }
 
-updateCourse('67caac43c30a39af7c08b7f6');
+// Update First
+async function updateAuthorUF(id) {
+	const result = await Course.updateOne({ _id : id},{
+		$set : {
+			author: 'Mosh',
+			isPublished: false
+		}
+	});
+
+	console.log(result);
+}
+
+async function removeAuthor(id) {
+	const course = await Course.findById(id);
+	if (!course) {
+	  console.log('Course not found');
+	  return;
+	}
+
+	// Removing the 'name' field using $unset
+	const result = await Course.updateOne(
+	  { _id: id }, // Find the document by _id
+	  { $unset: { name: "" } } // Remove the 'name' field
+	);
+
+	console.log(result);
+  }
+
+updateAuthorQF('67caac43c30a39af7c08b7f6');
+
+updateAuthorUF('67caac43c30a39af7c08b7f6');
+
+// removeAuthor();
 
 // createCourse();
 
