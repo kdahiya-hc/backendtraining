@@ -89,11 +89,26 @@ async function removeAuthor(id) {
 	console.log(result);
   }
 
+async function removeCourse(id) {
+const course = await Course.findById(id);
+if (!course) {
+	console.log('Course not found');
+	return;
+}
+
+// Removing the 'name' field using $unset
+const result = await Course.deleteOne(
+	{ _id: id }
+);
+
+console.log(result);
+}
+
 // updateAuthorQF('67caac43c30a39af7c08b7f6');
 
-updateAuthorUF('67caac43c30a39af7c08b7f6');
+// updateAuthorUF('67caac43c30a39af7c08b7f6');
 
-// removeAuthor();
+removeCourse('67caac43c30a39af7c08b7f6');
 
 // createCourse();
 
