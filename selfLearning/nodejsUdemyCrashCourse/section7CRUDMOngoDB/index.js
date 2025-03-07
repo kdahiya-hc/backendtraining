@@ -63,7 +63,7 @@ async function getCourse() {
 	.find({ author: /.*dahiya.*/i})
 	.limit(10)
 	.sort({ name: 1})
-	.select({name: 1, price: 1})
+	.countDocuments()
 	console.log(courses);
 }
 
