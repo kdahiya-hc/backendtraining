@@ -1,7 +1,6 @@
 require('dotenv').config(); // ✅ Load environment variables at the top
 const config = require('config');
 const mongoose = require('mongoose');
-
 const dbUri = `mongodb://${config.get('db.user')}:${config.get('db.password')}@${config.get('db.host')}:${config.get('db.port')}/${config.get('db.database')}?authSource=admin`;
 
 mongoose.connect(dbUri)
@@ -18,8 +17,6 @@ const courseSchema = new mongoose.Schema({
 	isPublished: Boolean,
 });
 
-// Model create , populate with documents
-// Class as first letter Caps Pascal case
 const Course = mongoose.model('Course', courseSchema);
 
 async function createCourse() {
@@ -32,44 +29,43 @@ async function createCourse() {
 		isPublished: true,
 	});
 
-	// document is ready next save to collection
 	const result = await course.save();
 	console.log(result);
 }
 
-async function getCourse() {
-	// Comparision operators
-	// gt = greater than
-	// gte = greater than or equal to
-	// eq = equal
-	// ne = not equal
-	// lt = less than
-	// lte = less than or equal to
-	// in = in
-	// nin = not in
-
-	// Logical Operators
-	// or = and
-	// and = and
-
-	// Regular expression
-	// /<pattern>/ = holds pattern
-	// /^<pattern>/ = starts with pattern
-	// /<pattern>$/ = ends with pattern
-	// /<pattern>/i = case insensitive
-	// /.*<pattern>.*/ = Containts 0 or more characters before and after pattern
-
-	const pageNumber = 2;
-	const pageSize = 2;
-	// /api/course?pageNumber=2&pageSize=10
+async function getCourse(id) {
+	const pageNumber = 1;
+	const pageSize = 1;
 	const courses = await Course
-	.find({ author: /.*dahiya.*/i})
-	.skip((pageNumber -1) * pageSize)
-	.limit(pageSize)
-	.sort({ name: 1})
+	.findById()
+	// .skip((pageNumber -1) * pageSize)
+	// .limit(pageSize)
+	// .sort({ name: 1})
 	console.log(courses);
 }
 
+async function updateCourse(id) {
+	let courseID = new mongoose.Types.ObjectId(id);
+	const course = await Course.findById(courseID);
+	if (!course) {
+		console.log('Course not found');
+		return;
+	}
+
+	// course.isPublished = true;
+	// course.author = 'KJay';
+
+	course.set({
+		isPublished: true,
+		author: 'Jay Shah'
+	});
+
+	const result = await course.save();
+	console.log(result);
+}
+
+// updateCourse("5a68fdc3615eda645bc6bdec");
+
 // createCourse();
 
-getCourse();
+getCourse('5a68fdc3615eda645bc6bdec');
