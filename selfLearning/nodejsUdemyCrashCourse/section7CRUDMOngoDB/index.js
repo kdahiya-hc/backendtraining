@@ -48,8 +48,13 @@ async function getCourse() {
 	// in = in
 	// nin = not in
 
+	// Logical Operators
+	// or = and
+	// and = and
+
 	const courses = await Course
 	.find({ author: 'kdahiya-hc', price:{ $gt: 500, $lte: 1000}})
+	.and([{author:'kdahiya-hc'}, {price: 1000 }])
 	.limit(10)
 	.sort({ name: 1})
 	.select({name: 1, price: 1})
