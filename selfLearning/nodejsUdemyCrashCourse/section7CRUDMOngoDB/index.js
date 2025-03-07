@@ -18,7 +18,7 @@ const courseSchema = new mongoose.Schema({
 	isPublished: Boolean,
 });
 
-const Course = mongoose.model('Course', courseSchema);
+const Course = mongoose.model('courses', courseSchema);
 
 async function createCourse() {
 	const course = new Course({
@@ -58,7 +58,7 @@ async function updateCourse(id) {
 	console.log(result);
 }
 
-updateCourse('5a68fdc3615eda645bc6bdec');
+updateCourse('67caac43c30a39af7c08b7f6');
 
 // createCourse();
 
