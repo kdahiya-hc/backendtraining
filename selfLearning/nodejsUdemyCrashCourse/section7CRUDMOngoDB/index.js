@@ -52,9 +52,15 @@ async function getCourse() {
 	// or = and
 	// and = and
 
+	// Regular expression
+	// /<pattern>/ = holds pattern
+	// /^<pattern>/ = starts with pattern
+	// /<pattern>$/ = ends with pattern
+	// /<pattern>/i = case insensitive
+	// /.*<pattern>.*/ = Containts 0 or more characters before and after pattern
+
 	const courses = await Course
-	.find({ author: 'kdahiya-hc', price:{ $gt: 500, $lte: 1000}})
-	.and([{author:'kdahiya-hc'}, {price: 1000 }])
+	.find({ author: /.*dahiya.*/i})
 	.limit(10)
 	.sort({ name: 1})
 	.select({name: 1, price: 1})
