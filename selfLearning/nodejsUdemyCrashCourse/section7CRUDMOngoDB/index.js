@@ -59,11 +59,14 @@ async function getCourse() {
 	// /<pattern>/i = case insensitive
 	// /.*<pattern>.*/ = Containts 0 or more characters before and after pattern
 
+	const pageNumber = 2;
+	const pageSize = 2;
+	// /api/course?pageNumber=2&pageSize=10
 	const courses = await Course
 	.find({ author: /.*dahiya.*/i})
-	.limit(10)
+	.skip((pageNumber -1) * pageSize)
+	.limit(pageSize)
 	.sort({ name: 1})
-	.countDocuments()
 	console.log(courses);
 }
 
