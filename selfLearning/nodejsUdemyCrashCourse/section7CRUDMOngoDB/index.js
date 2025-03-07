@@ -1,6 +1,7 @@
-require('dotenv').config(); // ✅ Load environment variables at the top
+require('dotenv').config();
 const config = require('config');
 const mongoose = require('mongoose');
+
 const dbUri = `mongodb://${config.get('db.user')}:${config.get('db.password')}@${config.get('db.host')}:${config.get('db.port')}/${config.get('db.database')}?authSource=admin`;
 
 mongoose.connect(dbUri)
@@ -20,7 +21,6 @@ const courseSchema = new mongoose.Schema({
 const Course = mongoose.model('Course', courseSchema);
 
 async function createCourse() {
-	// Object , camel case
 	const course = new Course({
 		name: 'Advanced Nodejs Course',
 		author: 'kdahiya-hc',
@@ -33,39 +33,33 @@ async function createCourse() {
 	console.log(result);
 }
 
-async function getCourse(id) {
-	const pageNumber = 1;
-	const pageSize = 1;
+async function getCourse() {
+	const pageNumber = 3;
+	const pageSize = 10;
 	const courses = await Course
-	.findById()
+	.find()
 	// .skip((pageNumber -1) * pageSize)
 	// .limit(pageSize)
-	// .sort({ name: 1})
+	.sort({ name: 1})
 	console.log(courses);
 }
 
 async function updateCourse(id) {
-	let courseID = new mongoose.Types.ObjectId(id);
-	const course = await Course.findById(courseID);
+	const course = await Course.findById(id)
 	if (!course) {
 		console.log('Course not found');
 		return;
 	}
 
-	// course.isPublished = true;
-	// course.author = 'KJay';
-
-	course.set({
-		isPublished: true,
-		author: 'Jay Shah'
-	});
+	course.isPublished = true;
+	course.author = 'KJay';
 
 	const result = await course.save();
 	console.log(result);
 }
 
-// updateCourse("5a68fdc3615eda645bc6bdec");
+updateCourse('5a68fdc3615eda645bc6bdec');
 
 // createCourse();
 
-getCourse('5a68fdc3615eda645bc6bdec');
+// getCourse();
