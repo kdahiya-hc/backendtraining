@@ -13,6 +13,7 @@ const courseSchema = new mongoose.Schema({
 	name: String,
 	author: String,
 	tags: [String ],
+	price: Number,
 	date: {type: Date, default: Date.now },
 	isPublished: Boolean,
 });
@@ -24,9 +25,10 @@ const Course = mongoose.model('Course', courseSchema);
 async function createCourse() {
 	// Object , camel case
 	const course = new Course({
-		name: 'Angular Course',
+		name: 'Advanced Nodejs Course',
 		author: 'kdahiya-hc',
-		tags: ['angula', 'frontend'],
+		tags: ['nodejs', 'backend'],
+		price: 1000,
 		isPublished: true,
 	});
 
@@ -36,11 +38,21 @@ async function createCourse() {
 }
 
 async function getCourse() {
+	// Comparision operators
+	// gt = greater than
+	// gte = greater than or equal to
+	// eq = equal
+	// ne = not equal
+	// lt = less than
+	// lte = less than or equal to
+	// in = in
+	// nin = not in
+
 	const courses = await Course
-	.find({ author: 'kdahiya-hc'})
+	.find({ author: 'kdahiya-hc', price:{ $gt: 500, $lte: 1000}})
 	.limit(10)
 	.sort({ name: 1})
-	.select({name: 1, tags: 1})
+	.select({name: 1, price: 1})
 	console.log(courses);
 }
 
