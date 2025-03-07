@@ -1,0 +1,16 @@
+{
+  "name": "section7crudmongodb",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon --env-file=.env index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "kdahiya-hc",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "mongoose": "^8.12.1"
+  }
+}
