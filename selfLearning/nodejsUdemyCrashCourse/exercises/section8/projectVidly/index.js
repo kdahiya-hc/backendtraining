@@ -2,6 +2,7 @@ require('dotenv').config();
 const config = require('config');
 const express = require('express');
 const genres = require('./routes/genres.js');
+const customers = require('./routes/customers.js');
 const home = require('./routes/home');
 const mongoose = require('mongoose');
 
@@ -18,6 +19,7 @@ mongoose.connect(dbUri)
 app.use(express.json());
 
 app.use('/api/genres', genres);
+app.use('/api/customers', customers);
 app.use('/', home);
 
 app.listen(PORT, () => {
