@@ -10,16 +10,25 @@ mongoose.connect(dbUri)
 
 // Define schema
 const courseSchema = new mongoose.Schema({
-	name: {type: String, nirequired: true},
+	name: {type: String, required: true},
 	author: String,
 	tags: {
 		type: Array,
 		validate: {
-			validator: function(value){
-				return value && value.length > 0;
+			// Asynchronous validation using Promises
+			validator: function(value) {
+			  return new Promise((resolve, reject) => {
+				setTimeout(() => {
+						const result = value && value.length > 0;
+						if (result) {
+							resolve(true);
+						} else {
+							reject(new Error('A course should have at least one tag!'));
+				}}, 4000);
+			  });
 			},
-			message: 'A course should have one tage at least!',
-		},
+			message: 'A course should have at least one tag!',
+		}
 	},
 	price: {type: Number,min: 50, max: 50000, required: function() { return this.isPublished;}},
 	date: {type: Date, default: Date.now },
@@ -32,7 +41,7 @@ async function createCourse() {
 	const course = new Course({
 		name: 'Advanced Nodejs Course',
 		author: 'kdahiya-hc',
-		// tags: ['nodejs', 'backend'],
+		tags: null,
 		price: 1000,
 		isPublished: true,
 	});
