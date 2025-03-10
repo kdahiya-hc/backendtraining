@@ -12,7 +12,15 @@ mongoose.connect(dbUri)
 const courseSchema = new mongoose.Schema({
 	name: {type: String, nirequired: true},
 	author: String,
-	tags: [String],
+	tags: {
+		type: Array,
+		validate: {
+			validator: function(value){
+				return value && value.length > 0;
+			},
+			message: 'A course should have one tage at least!',
+		},
+	},
 	price: {type: Number,min: 50, max: 50000, required: function() { return this.isPublished;}},
 	date: {type: Date, default: Date.now },
 	isPublished: Boolean,
@@ -22,10 +30,10 @@ const Course = mongoose.model('courses', courseSchema);
 
 async function createCourse() {
 	const course = new Course({
-		// name: 'Advanced Nodejs Course',
+		name: 'Advanced Nodejs Course',
 		author: 'kdahiya-hc',
-		tags: ['nodejs', 'backend'],
-		// price: 1000,
+		// tags: ['nodejs', 'backend'],
+		price: 1000,
 		isPublished: true,
 	});
 	try{
