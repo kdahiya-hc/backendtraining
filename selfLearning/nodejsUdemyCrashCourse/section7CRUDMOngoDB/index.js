@@ -83,7 +83,9 @@ async function removeAuthor(id) {
 	// Removing the 'name' field using $unset
 	const result = await Course.updateOne(
 	  { _id: id }, // Find the document by _id
-	  { $unset: { name: "" } } // Remove the 'name' field
+	  { $unset: {
+		name: ""
+	} }
 	);
 
 	console.log(result);
@@ -108,7 +110,7 @@ console.log(result);
 
 // updateAuthorUF('67caac43c30a39af7c08b7f6');
 
-removeCourse('67caac43c30a39af7c08b7f6');
+removeCourse('67caac43c30a39af7c08b7f9');
 
 // createCourse();
 
