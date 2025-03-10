@@ -10,7 +10,7 @@ mongoose.connect(dbUri)
 
 // Define schema
 const courseSchema = new mongoose.Schema({
-	name: {type: String, required: true},
+	name: {type: String, required: true, minLength: 5},
 	author: String,
 	tags: {
 		type: Array,
@@ -39,7 +39,7 @@ const Course = mongoose.model('courses', courseSchema);
 
 async function createCourse() {
 	const course = new Course({
-		name: 'Advanced Nodejs Course',
+		name: 2,
 		author: 'kdahiya-hc',
 		tags: null,
 		price: 1000,
@@ -49,8 +49,11 @@ async function createCourse() {
 		await course.validate()
 		const result = await course.save();
 		console.log("Course saved:",result);
-	}catch(exception){
-		console.log(exception.message);
+	}catch(err){
+		// console.log(err.message);
+		for (field in err.errors){
+			console.log(err.errors[field].message);
+		}
 	}
 }
 
