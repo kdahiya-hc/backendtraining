@@ -22,10 +22,7 @@ const authorSchema = new mongoose.Schema({
 
 const courseSchema = new mongoose.Schema({
 	name: String,
-	author: {
-		type: mongoose.Schema.Types.ObjectId,
-		ref: 'authors'
-	}
+	author: authorSchema,
 });
 
 const Author = mongoose.model('authors', authorSchema);
@@ -58,8 +55,45 @@ async function listCourses() {
 	console.log(courses);
 }
 
-// createAuthor('Mosh', 'My bio', 'My Website');
+// Updating the sub document using the parent
 
-// createCourse('Node Course', '67cea73729b9be512340b11d')
+// Query First approach
+async function updateAuthorQF(courseID) {
+	try{
+		const course = await Course.findById(courseID);
+		if(!course) throw new Error('Course not found with provided ID');
+		course.author.name = 'Kishan Dahiya';
+		await course.save()
+		console.log('Author is updated');
+	} catch(error) {
+		console.log(error.message);
+	}
+}
 
-listCourses();
+// Update First approach
+// use set to update
+async function updateAuthorUF(courseID) {
+	try{
+		await Course.updateOne({'_id': courseID }, { $set: { 'author.name': 'Jay Bab'}});
+		console.log('Author is updated');
+	} catch(error) {
+		console.log(error.message);
+	}
+}
+
+// Remove with unset
+async function removeAuthor(courseID) {
+	try{
+		await Course.updateOne({'_id': courseID }, { $unset: { 'author': ''}});
+		console.log('Author is deleted');
+	} catch(error) {
+		console.log(error.message);
+	}
+}
+
+// updateAuthorUF('');
+// updateAuthorUF('67cf836692083654d311fa97');
+removeAuthor('67cf836692083654d311fa97');
+// createCourse('Node Course', new Author({name: 'Kishan', bio: 'I am Kishan', website:'www.kishan'}));
+
+// listCourses();
