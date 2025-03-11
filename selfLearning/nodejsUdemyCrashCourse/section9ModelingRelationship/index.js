@@ -104,8 +104,8 @@ async function removeAuthor(courseID, authorID) {
 	course.save();
 }
 
-const courseID = '67cf96ea2e9daf365179ccd4' ;
-const authorID = '67cf96ea2e9daf365179ccd3'
+// const courseID = '';
+// const authorID = '';
 // const newAuthor = new Author({ name: 'Zako', bio: 'I am in early 30s', website: 'www.zako30'});
 
 // updateAuthorUF(courseID);
@@ -116,7 +116,7 @@ const authorID = '67cf96ea2e9daf365179ccd3'
 
 // addAuthor(courseID, newAuthor);
 
-removeAuthor(courseID, authorID);
+// removeAuthor(courseID, authorID);
 
 // createCourse('Node Course', [
 // 	new Author({name: 'Krupa', bio: 'I am Queen', website:'www.krupaQueen'}),
