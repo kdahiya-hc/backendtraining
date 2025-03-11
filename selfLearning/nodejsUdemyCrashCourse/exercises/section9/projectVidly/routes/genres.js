@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {Genre, validateGenreType} = require('../models/genre');
+const {Genre, validateGenreType} = require('../models/genre.js');
 
 // GET all genres
 router.get('/', async (req, res) => {

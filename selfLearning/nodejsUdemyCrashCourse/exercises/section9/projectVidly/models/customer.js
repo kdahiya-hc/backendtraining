@@ -51,4 +51,5 @@ const customerSchema = new mongoose.Schema({
 const Customer = mongoose.model('customers', customerSchema);
 
 module.exports.Customer = Customer;
+module.exports.customerSchema = customerSchema;
 module.exports.validateCustomer = validateCustomer;

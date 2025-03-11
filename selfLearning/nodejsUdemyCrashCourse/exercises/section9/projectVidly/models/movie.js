@@ -44,4 +44,5 @@ function validateMovie(req) {
 }
 
 module.exports.Movie = Movie;
+module.exports.movieSchema = movieSchema;
 module.exports.validateMovie = validateMovie;
