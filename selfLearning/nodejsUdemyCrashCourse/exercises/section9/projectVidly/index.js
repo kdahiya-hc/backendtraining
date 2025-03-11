@@ -1,6 +1,7 @@
 require('dotenv').config();
 const config = require('config');
 const express = require('express');
+const movies = require('./routes/movies.js');
 const genres = require('./routes/genres.js');
 const customers = require('./routes/customers.js');
 const home = require('./routes/home');
@@ -20,6 +21,8 @@ app.use(express.json());
 
 app.use('/api/genres', genres);
 app.use('/api/customers', customers);
+app.use('/api/movies', movies);
+
 app.use('/', home);
 
 app.listen(PORT, () => {
