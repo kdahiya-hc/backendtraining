@@ -22,7 +22,7 @@ const authorSchema = new mongoose.Schema({
 
 const courseSchema = new mongoose.Schema({
 	name: String,
-	author: authorSchema,
+	authors: [ authorSchema ],
 });
 
 const Author = mongoose.model('authors', authorSchema);
@@ -38,10 +38,10 @@ async function createAuthor(name, bio, website) {
 	console.log(result);
 }
 
-async function createCourse(name, author) {
+async function createCourse(name, authors) {
 	const course = new Course({
 		name,
-		author
+		authors
 	});
 	const result = await course.save();
 	console.log(result);
@@ -50,9 +50,9 @@ async function createCourse(name, author) {
 async function listCourses() {
 	const courses = await Course
 	.find()
-	.populate('author', 'name -_id')
-	.sort('name author');
-	console.log(courses);
+	.select('name authors.name')
+	// console.log(courses);
+	console.log(JSON.stringify(courses, null, 2));
 }
 
 // Updating the sub document using the parent
@@ -62,7 +62,7 @@ async function updateAuthorQF(courseID) {
 	try{
 		const course = await Course.findById(courseID);
 		if(!course) throw new Error('Course not found with provided ID');
-		course.author.name = 'Kishan Dahiya';
+		course.authors.name = 'Kishan Dahiya';
 		await course.save()
 		console.log('Author is updated');
 	} catch(error) {
@@ -74,7 +74,7 @@ async function updateAuthorQF(courseID) {
 // use set to update
 async function updateAuthorUF(courseID) {
 	try{
-		await Course.updateOne({'_id': courseID }, { $set: { 'author.name': 'Jay Bab'}});
+		await Course.updateOne({'_id': courseID }, { $set: { 'authors.name': 'Jay Bab'}});
 		console.log('Author is updated');
 	} catch(error) {
 		console.log(error.message);
@@ -82,18 +82,46 @@ async function updateAuthorUF(courseID) {
 }
 
 // Remove with unset
-async function removeAuthor(courseID) {
+async function removeAuthorElement(courseID) {
 	try{
-		await Course.updateOne({'_id': courseID }, { $unset: { 'author': ''}});
+		await Course.updateOne({'_id': courseID }, { $unset: { 'authors': ''}});
 		console.log('Author is deleted');
 	} catch(error) {
 		console.log(error.message);
 	}
 }
 
-// updateAuthorUF('');
-// updateAuthorUF('67cf836692083654d311fa97');
-removeAuthor('67cf836692083654d311fa97');
-// createCourse('Node Course', new Author({name: 'Kishan', bio: 'I am Kishan', website:'www.kishan'}));
+async function addAuthor(courseID, author) {
+	const course = await Course.findById(courseID);
+	course.authors.push(author);
+	await course.save();
+}
 
-// listCourses();
+async function removeAuthor(courseID, authorID) {
+	const course = await Course.findById(courseID);
+	const author = course.authors.id(authorID);
+	author.deleteOne();
+	course.save();
+}
+
+const courseID = '67cf96ea2e9daf365179ccd4' ;
+const authorID = '67cf96ea2e9daf365179ccd3'
+// const newAuthor = new Author({ name: 'Zako', bio: 'I am in early 30s', website: 'www.zako30'});
+
+// updateAuthorUF(courseID);
+
+// updateAuthorUF(courseID);
+
+// removeAuthor(courseID);
+
+// addAuthor(courseID, newAuthor);
+
+removeAuthor(courseID, authorID);
+
+// createCourse('Node Course', [
+// 	new Author({name: 'Krupa', bio: 'I am Queen', website:'www.krupaQueen'}),
+// 	new Author({name: 'Jay', bio: 'I am Jay SHAH!', website:'www.shajahn'}),
+// 	new Author({name: 'Kishan', bio: 'I am Kishan', website:'www.kishan'}),
+// ]);
+
+listCourses();
