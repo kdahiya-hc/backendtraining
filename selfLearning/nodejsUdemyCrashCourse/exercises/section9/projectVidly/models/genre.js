@@ -8,7 +8,7 @@ const genreSchema = new mongoose.Schema({
 		validate: {
 			validator: function(value) {
 				return new Promise((resolve, reject) => {
-					if (value && value.length > 4) {
+					if (value && value.length >= 4) {
 						resolve(true);
 					} else {
 						reject(new Error('The genre type should be at least 4 characters.'));
@@ -31,4 +31,5 @@ function validateGenreType(req) {
 }
 
 module.exports.Genre = Genre;
+module.exports.genreSchema = genreSchema;
 module.exports.validateGenreType = validateGenreType;
