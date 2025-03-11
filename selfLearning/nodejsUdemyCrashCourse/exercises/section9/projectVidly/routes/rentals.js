@@ -116,6 +116,10 @@ router.delete('/:id', async (req, res) => {
     const rental = await Rental.findByIdAndDelete(req.params.id);
     if (!rental) return res.status(404).send('No rental found with the provided ID.');
 
+	const foundMovie = await Movie.findById(rental.movie._id);
+	foundMovie.numberInStock++;
+	await foundMovie.save();
+
     res.status(200).json(rental);
   } catch (err) {
     console.log(err.message);
