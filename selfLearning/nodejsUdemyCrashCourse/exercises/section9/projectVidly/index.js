@@ -23,6 +23,9 @@ app.use('/api/genres', genres);
 app.use('/api/customers', customers);
 app.use('/api/movies', movies);
 
+app.set('view engine', 'pug');
+app.set('views', './views');
+
 app.use('/', home);
 
 app.listen(PORT, () => {
