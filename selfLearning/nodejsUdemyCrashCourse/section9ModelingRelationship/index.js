@@ -2,7 +2,7 @@ require('dotenv').config();
 const config = require('config');
 const mongoose = require('mongoose');
 
-const dbUri = `mongodb://${config.get('db.user')}:${config.get('db.password')}@${config.get('db.host')}:${config.get('db.port')}/${config.get('db.database')}?authSource=admin`;
+const dbUri = `mongodb://${config.get('db.user')}:${config.get('db.password')}@${config.get('db.host')}:27017,${config.get('db.host')}:27018,${config.get('db.host')}:27019/${config.get('db.database')}?authSource=admin&replicaSet=rs0`;
 
 mongoose.connect(dbUri)
   .then(() => console.log('Connected to MongoDB...'))

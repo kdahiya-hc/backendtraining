@@ -1,10 +1,15 @@
 require('dotenv').config();
 const config = require('config');
 const express = require('express');
+const movies = require('./routes/movies.js');
 const genres = require('./routes/genres.js');
 const customers = require('./routes/customers.js');
+const rentals = require('./routes/rentals.js');
 const home = require('./routes/home');
 const mongoose = require('mongoose');
+const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
+// const bodyParser = require("body-parser");
 
 const app = express();
 
@@ -17,9 +22,16 @@ mongoose.connect(dbUri)
 	.catch(err => console.log('Could not connect:',err.message));
 
 app.use(express.json());
+// app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/api/genres', genres);
 app.use('/api/customers', customers);
+app.use('/api/movies', movies);
+app.use('/api/rentals', rentals);
+
+app.set('view engine', 'pug');
+app.set('views', './views');
+
 app.use('/', home);
 
 app.listen(PORT, () => {
