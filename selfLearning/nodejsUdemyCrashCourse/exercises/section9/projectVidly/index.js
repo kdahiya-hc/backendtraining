@@ -7,6 +7,8 @@ const customers = require('./routes/customers.js');
 const rentals = require('./routes/rentals.js');
 const home = require('./routes/home');
 const mongoose = require('mongoose');
+const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
 // const bodyParser = require("body-parser");
 
 const app = express();
