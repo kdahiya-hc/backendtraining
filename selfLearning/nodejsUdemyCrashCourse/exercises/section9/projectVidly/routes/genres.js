@@ -34,11 +34,11 @@ router.post('/', async (req, res) => {
 
 	// Create and save the new genre
 	try {
-		let newGenre = new Genre({
+		const newGenre = new Genre({
 			typeOfGenre: value.typeOfGenre,
 		});
 		await newGenre.save();
-		res.status(201).send('New genre has been added successfully!');
+		res.status(201).json({ message: 'New genre has been added successfully!', genre: newGenre });
 	} catch (err) {
 		res.status(500).send('Error saving the genre');
 	}

@@ -38,9 +38,10 @@ router.post('/', async (req, res) => {
 
   // Create and save the new movie
   try {
-    let newMovie = new Movie({
+    const newMovie = new Movie({
       title: value.title,
       genre: {
+        // Since this is entering all the properties at creation it is embedded, with passing actual schema and fine
         _id: foundGenre._id,
         typeOfGenre: foundGenre.typeOfGenre,
       },
@@ -49,7 +50,7 @@ router.post('/', async (req, res) => {
     });
     console.log(newMovie);
     await newMovie.save();
-    res.status(201).send('New movie has been added successfully!');
+    res.status(201).json({ message: 'New movie has been added successfully!', movie: newMovie });
   } catch (err) {
     console.log(err.message)
     res.status(500).send('Error saving the movie');

@@ -31,21 +31,31 @@ router.get('/:id', async (req, res) => {
 
 // POST create a rental, user sends only customerId and movieId
 router.post('/', async (req, res) => {
-  // Validate the request body
   const { error, value } = validateRental(req);
   if (error) return res.status(400).send(error.details[0].message);
 
-  const foundMovie = await Movie.findById(value.movieId);
-  if (!foundMovie) return res.status(400).send('No Movie with given ID');
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
-  const foundCustomer = await Customer.findById(value.customerId);
-  if (!foundCustomer) return res.status(400).send('No Customer with given ID');
-
-  if (foundMovie.numberInStock === 0) return res.status(400).send('No Movies available to rent');
-
-  // Create and save the new rental
   try {
-    let newRental = new Rental({
+    const foundMovie = await Movie.findById(value.movieId).session(session);
+    if (!foundMovie) {
+      await session.abortTransaction();
+      return res.status(400).send('No Movie with given ID');
+    }
+
+    const foundCustomer = await Customer.findById(value.customerId).session(session);
+    if (!foundCustomer) {
+      await session.abortTransaction();
+      return res.status(400).send('No Customer with given ID');
+    }
+
+    if (foundMovie.numberInStock === 0) {
+      await session.abortTransaction();
+      return res.status(400).send('No Movies available to rent');
+    }
+
+    const newRental = new Rental({
       customer: {
         _id: foundCustomer._id,
         name: foundCustomer.name,
@@ -58,16 +68,19 @@ router.post('/', async (req, res) => {
       rentalFee: foundMovie.dailyRentalRate
     });
 
-    console.log(newRental);
-    await newRental.save();
+    await newRental.save({ session });
 
     foundMovie.numberInStock--;
-    await foundMovie.save();
+    await foundMovie.save({ session });
 
-    res.status(201).send('New rental has been added successfully!');
+    await session.commitTransaction();
+    res.status(201).json({ message: 'New rental has been added successfully!', rental: newRental });
   } catch (err) {
-    console.log(err.message);
+    await session.abortTransaction();
+    console.error(err.message);
     res.status(500).send('Error saving the rental');
+  } finally {
+    session.endSession(); // Ensure session is always ended
   }
 });
 

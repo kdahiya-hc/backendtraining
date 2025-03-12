@@ -34,14 +34,14 @@ router.post('/', async (req, res) => {
 
 	// Create and save the new customer
 	try {
-		let newCustomer = new Customer({
+		const newCustomer = new Customer({
 			name: value.name,
 			phone: value.phone,
 			isGold: value.isGold,
 		});
 		console.log(newCustomer);
 		await newCustomer.save();
-		res.status(201).send('New customer has been added successfully!');
+		res.status(201).json({ message: 'New customer has been added successfully!', customer: newCustomer });
 	} catch (err) {
 		res.status(500).send('Error saving the customer');
 	}
