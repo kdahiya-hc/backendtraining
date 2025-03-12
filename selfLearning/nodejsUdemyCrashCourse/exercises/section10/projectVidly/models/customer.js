@@ -2,13 +2,13 @@ const Joi = require('joi');
 const mongoose = require('mongoose');
 
 // Validate customer input using Joi
-function validateCustomer(req) {
+function validateCustomer(data) {
 	const schema = Joi.object({
 		name: Joi.string().min(3).required(),
 		phone: Joi.number().min(1000000000).required(),
 		isGold: Joi.boolean().required(),
 	});
-	return schema.validate(req.body);
+	return schema.validate(data);
 }
 
 // Define the customer schema

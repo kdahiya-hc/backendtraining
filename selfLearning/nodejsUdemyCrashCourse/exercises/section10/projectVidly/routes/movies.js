@@ -30,7 +30,7 @@ router.get('/:id', async (req, res) => {
 // POST create a movie
 router.post('/', async (req, res) => {
   // Validate the request body
-  const { error, value } = validateMovie(req);
+  const { error, value } = validateMovie(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   const foundGenre = await Genre.findById(req.body.genreId);
@@ -60,7 +60,7 @@ router.post('/', async (req, res) => {
 // PUT update a movie
 router.put('/:id', async (req, res) => {
   // Validate the request body
-  const { error, value } = validateMovie(req);
+  const { error, value } = validateMovie(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   const foundGenre = await Genre.findById(req.body.genreId);

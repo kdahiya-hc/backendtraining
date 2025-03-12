@@ -23,11 +23,11 @@ const genreSchema = new mongoose.Schema({
 const Genre = mongoose.model('genres', genreSchema);
 
 // Validate genre input using Joi
-function validateGenreType(req) {
+function validateGenreType(data) {
 	const schema = Joi.object({
 		typeOfGenre: Joi.string().min(4).required(),
 	});
-	return schema.validate(req.body);
+	return schema.validate(data);
 }
 
 module.exports.Genre = Genre;

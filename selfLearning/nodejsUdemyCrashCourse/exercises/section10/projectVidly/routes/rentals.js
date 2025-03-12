@@ -31,7 +31,7 @@ router.get('/:id', async (req, res) => {
 
 // POST create a rental, user sends only customerId and movieId
 router.post('/', async (req, res) => {
-  const { error, value } = validateRental(req);
+  const { error, value } = validateRental(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   const session = await mongoose.startSession();
@@ -87,7 +87,7 @@ router.post('/', async (req, res) => {
 // PUT update a rental
 router.put('/:id', async (req, res) => {
   // Validate the request body
-  const { error, value } = validateRental(req);
+  const { error, value } = validateRental(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   const foundMovie = await Movie.findById(value.movieId);

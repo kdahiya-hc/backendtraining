@@ -29,7 +29,7 @@ router.get('/:id', async (req, res) => {
 // POST create a genre
 router.post('/', async (req, res) => {
 	// Validate the request body
-	const { error, value } = validateGenreType(req);
+	const { error, value } = validateGenreType(req.body);
 	if (error) return res.status(400).send(error.details[0].message);
 
 	// Create and save the new genre
@@ -47,7 +47,7 @@ router.post('/', async (req, res) => {
 // PUT update a genre
 router.put('/:id', async (req, res) => {
 	// Validate the request body
-	const { error, value } = validateGenreType(req);
+	const { error, value } = validateGenreType(req.body);
 	if (error) return res.status(400).send(error.details[0].message);
 
 	try {

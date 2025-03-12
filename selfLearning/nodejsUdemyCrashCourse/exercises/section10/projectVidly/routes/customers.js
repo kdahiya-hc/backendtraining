@@ -29,7 +29,7 @@ router.get('/:id', async (req, res) => {
 // POST create a customer
 router.post('/', async (req, res) => {
 	// Validate the request body
-	const { error, value } = validateCustomer(req);
+	const { error, value } = validateCustomer(req.body);
 	if (error) return res.status(400).send(error.details[0].message);
 
 	// Create and save the new customer
@@ -50,7 +50,7 @@ router.post('/', async (req, res) => {
 // PUT update a customer
 router.put('/:id', async (req, res) => {
 	// Validate the request body
-	const { error, value } = validateCustomer(req);
+	const { error, value } = validateCustomer(req.body);
 	if (error) return res.status(400).send(error.details[0].message);
 
 	try {
