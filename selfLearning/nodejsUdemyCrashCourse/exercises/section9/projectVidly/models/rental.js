@@ -1,5 +1,7 @@
 const Joi = require('joi');
 const mongoose = require('mongoose');
+// this require returns a function so we assign it to Joi
+Joi.objectId = require('joi-objectid')(Joi);
 
 const rentalSchema = new mongoose.Schema({
 	// customer
@@ -45,8 +47,8 @@ const Rental = mongoose.model('rentals', rentalSchema);
 // Validate movie using Joi, returns { error , value }
 function validateRental(req) {
 	const schema = Joi.object({
-		movieId: Joi.string().max(50).required(),
-		customerId: Joi.string().required(),
+		movieId: Joi.objectId().required(),
+		customerId: Joi.objectId().required(),
 	});
 	return schema.validate(req.body);
 }

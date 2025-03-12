@@ -35,10 +35,6 @@ router.post('/', async (req, res) => {
   const { error, value } = validateRental(req);
   if (error) return res.status(400).send(error.details[0].message);
 
-  if (!mongoose.Types.ObjectId.isValid(value.customerId)) return res.status(400).json({message: 'Invalid customer ID'});
-
-  if (!mongoose.Types.ObjectId.isValid(value.movieId)) return res.status(400).json({message: 'Invalid movie ID'});
-
   const foundMovie = await Movie.findById(value.movieId);
   if (!foundMovie) return res.status(400).send('No Movie with given ID');
 
