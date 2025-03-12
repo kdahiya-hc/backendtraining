@@ -3,6 +3,7 @@ const router = express.Router();
 const { Rental, validateRental } = require('../models/rental.js');
 const { Movie } = require('../models/movie.js');
 const { Customer } = require('../models/customer.js');
+const { default: mongoose } = require('mongoose');
 
 // GET all rentals
 router.get('/', async (req, res) => {
@@ -34,11 +35,15 @@ router.post('/', async (req, res) => {
   const { error, value } = validateRental(req);
   if (error) return res.status(400).send(error.details[0].message);
 
+  if (!mongoose.Types.ObjectId.isValid(value.customerId)) return res.status(400).json({message: 'Invalid customer ID'});
+
+  if (!mongoose.Types.ObjectId.isValid(value.movieId)) return res.status(400).json({message: 'Invalid movie ID'});
+
   const foundMovie = await Movie.findById(value.movieId);
-  if (!foundMovie) return res.status(400).send('Invalid Movie');
+  if (!foundMovie) return res.status(400).send('No Movie with given ID');
 
   const foundCustomer = await Customer.findById(value.customerId);
-  if (!foundCustomer) return res.status(400).send('Invalid Customer');
+  if (!foundCustomer) return res.status(400).send('No Customer with given ID');
 
   if (foundMovie.numberInStock === 0) return res.status(400).send('No Movies available to rent');
 
