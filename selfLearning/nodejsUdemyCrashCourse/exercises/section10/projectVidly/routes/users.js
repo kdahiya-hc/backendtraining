@@ -1,7 +1,7 @@
 const _ = require('lodash');const express = require('express');
 const bcrypt = require('bcrypt');
 const router = express.Router();
-// const {auth} = require('../middlewares/auth.js')
+const {auth} = require('../middlewares/auth.js')
 const { User, validateUser } = require('../models/user.js');
 
 // // GET all users
@@ -14,19 +14,15 @@ const { User, validateUser } = require('../models/user.js');
 // 	}
 // });
 
-// // GET user by email
-// router.get('/:email', async (req, res) => {
-// 	try {
-// 		const user = await User.findOne({ email: req.params.email });
-// 		if (!user) {
-// 			return res.status(404).json({ message: 'No user found with provided email.' });
-// 		}
-
-// 		res.status(200).json({ user: _.pick(user, ['_id', 'name', 'email']) });
-// 	} catch (err) {
-// 		res.status(500).json({ message: 'Error retrieving the user', error: err.message });
-// 	}
-// });
+// GET user by email
+router.get('/me', auth, async (req, res) => {
+	try {
+		const user = await User.findById(req.user._id).select('-password');
+		res.status(200).json({ user: _.pick(user, ['name', 'email']) });
+	} catch (err) {
+		res.status(500).json({ message: 'Error retrieving the user', error: err.message });
+	}
+});
 
 // POST create a user
 router.post('/', async (req, res) => {

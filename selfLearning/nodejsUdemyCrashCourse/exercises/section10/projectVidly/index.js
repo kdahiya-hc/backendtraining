@@ -17,7 +17,7 @@ const app = express();
 
 const PORT = process.env.PORT || 5005;
 
-const dbUri = `mongodb://${config.get('db.user')}:${config.get('db.password')}@${config.get('db.host')}:27017,${config.get('db.host')}:27018,${config.get('db.host')}:27019/${config.get('db.database')}?authSource=admin&replicaSet=rs0`;
+const dbUri = `mongodb+srv://${config.get('db.user')}:${config.get('db.password')}@${config.get('db.atlasHost')}/${config.get('db.database')}?retryWrites=true&w=majority`;
 
 mongoose.connect(dbUri)
 	.then(() => console.log('Connected to MongoDB...'))
