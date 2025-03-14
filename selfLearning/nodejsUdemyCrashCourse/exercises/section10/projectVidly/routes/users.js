@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const express = require('express');
+const bcrypt = require('bcrypt');
 const router = express.Router();
 const { User, validateUser } = require('../models/user.js');
 
@@ -40,12 +41,16 @@ router.post('/', async (req, res) => {
 			return res.status(400).json({ message: 'User already registered', user: _.pick(existingUser, ['_id', 'name', 'email']) });
 		}
 
+		const salt = await bcrypt.genSalt(5);
+		const hashedPassword = await bcrypt.hash(value.password, salt);
+
 		// Create and save the new user
 		const newUser = new User({
 			name: value.name,
 			email: value.email,
-			password: value.password,
+			password: hashedPassword,
 		});
+
 		await newUser.save();
 
 		res.status(201).json({ message: 'New user has been added successfully!', user: 	_.pick(newUser, ['_id', 'name', 'email'])});
@@ -60,13 +65,16 @@ router.put('/:email', async (req, res) => {
 	const { error, value } = validateUser(req.body);
 	if (error) return res.status(400).send(error.details[0].message);
 
+	const salt = await bcrypt.genSalt(5);
+	const hashedPassword = await bcrypt.hash(value.password, salt);
+
 	try {
 		const user = await User.findOneAndUpdate(
 			{ email: req.params.email },
 			{
 				$set: {
 					name: value.name,
-					password: value.password,
+					password: hashedPassword,
 				},
 			},
 			{ new: true }
