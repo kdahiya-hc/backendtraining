@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const express = require('express');
 const router = express.Router();
 const { User, validateUser } = require('../models/user.js');
@@ -20,7 +21,7 @@ router.get('/:email', async (req, res) => {
 			return res.status(404).json({ message: 'No user found with provided email.' });
 		}
 
-		res.status(200).json(user);
+		res.status(200).json({ user: _.pick(user, ['_id', 'name', 'email']) });
 	} catch (err) {
 		res.status(500).json({ message: 'Error retrieving the user', error: err.message });
 	}
@@ -36,7 +37,7 @@ router.post('/', async (req, res) => {
 		// Check if user already exists
 		const existingUser = await User.findOne({ email: value.email });
 		if (existingUser) {
-			return res.status(400).json({ message: 'User already registered', user: existingUser });
+			return res.status(400).json({ message: 'User already registered', user: _.pick(existingUser, ['_id', 'name', 'email']) });
 		}
 
 		// Create and save the new user
@@ -46,7 +47,8 @@ router.post('/', async (req, res) => {
 			password: value.password,
 		});
 		await newUser.save();
-		res.status(201).json({ message: 'New user has been added successfully!', user: newUser });
+
+		res.status(201).json({ message: 'New user has been added successfully!', user: 	_.pick(newUser, ['_id', 'name', 'email'])});
 	} catch (err) {
 		res.status(500).json({ message: 'Error saving the user', error: err.message });
 	}
@@ -64,7 +66,6 @@ router.put('/:email', async (req, res) => {
 			{
 				$set: {
 					name: value.name,
-					email: value.email,
 					password: value.password,
 				},
 			},
@@ -74,7 +75,7 @@ router.put('/:email', async (req, res) => {
 			return res.status(404).json({ message: 'No user found with provided email.' });
 		}
 
-		res.status(200).json({ message: 'User has been updated successfully.', user });
+		res.status(200).json({ message: 'User has been updated successfully.', user: _.pick(user, ['_id', 'name', 'email']) });
 	} catch (err) {
 		res.status(500).json({ message: 'Error updating the user', error: err.message });
 	}
@@ -88,7 +89,7 @@ router.delete('/:email', async (req, res) => {
 			return res.status(404).json({ message: 'No user found with provided email.' });
 		}
 
-		res.status(200).json({ message: 'User has been deleted successfully.', user });
+		res.status(200).json({ message: 'User has been deleted successfully.', user:  _.pick(user, ['_id', 'name', 'email']) });
 	} catch (err) {
 		res.status(500).json({ message: 'Error deleting the user', error: err.message });
 	}
