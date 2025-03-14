@@ -33,7 +33,7 @@ function validateUser(data) {
 		name: Joi.string().min(3).trim().max(50).required(),
 		email: Joi.string().min(12).email().trim().max(255).required(),
 		password: Joi.string().min(8).trim().max(1024).required(),
-	});
+	}).options({ stripUnknown: true });
 	return schema.validate(data);
 }
 

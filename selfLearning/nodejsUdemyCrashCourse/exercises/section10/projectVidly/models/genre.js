@@ -26,7 +26,7 @@ const Genre = mongoose.model('genres', genreSchema);
 function validateGenreType(data) {
 	const schema = Joi.object({
 		typeOfGenre: Joi.string().min(4).required(),
-	});
+	}).options({ stripUnknown: true });
 	return schema.validate(data);
 }
 

@@ -47,7 +47,7 @@ function validateRental(data) {
 	const schema = Joi.object({
 		movieId: Joi.objectId().required(),
 		customerId: Joi.objectId().required(),
-	});
+	}).options({ stripUnknown: true });
 	return schema.validate(data);
 }
 

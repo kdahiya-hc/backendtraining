@@ -39,7 +39,7 @@ function validateMovie(data) {
 		genreId: Joi.objectId().required(),
 		numberInStock: Joi.number().min(0).max(255).required(),
 		dailyRentalRate: Joi.number().min(0).max(5000).required(),
-	});
+	}).options({ stripUnknown: true });
 	return schema.validate(data);
 }
 

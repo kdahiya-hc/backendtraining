@@ -7,7 +7,7 @@ function validateCustomer(data) {
 		name: Joi.string().min(3).required(),
 		phone: Joi.number().min(1000000000).required(),
 		isGold: Joi.boolean().required(),
-	});
+	}).options({ stripUnknown: true });
 	return schema.validate(data);
 }
 
