@@ -1,8 +1,4 @@
-require('dotenv').config();
-const config = require('config');
-const _ = require('lodash');
-const jwt = require('jsonwebtoken');
-const express = require('express');
+const _ = require('lodash');const express = require('express');
 const bcrypt = require('bcrypt');
 const router = express.Router();
 const { User, validateUser } = require('../models/user.js');
@@ -54,8 +50,7 @@ router.post('/', async (req, res) => {
 			password: hashedPassword,
 		});
 
-		// creating a JWT with ({payload}, {private_key})
-		const token = jwt.sign({ _id: newUser._id }, config.get('jwtPrivateKey'));
+		const token = newUser.generateAuthToken();
 		await newUser.save();
 		res.status(201).header('x-auth-token', token).json({ message: 'New user has been added successfully!', user: 	_.pick(newUser, ['_id', 'name', 'email'])});
 	} catch (err) {

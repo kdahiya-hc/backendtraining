@@ -1,4 +1,7 @@
+const config = require('config');
+require('dotenv').config();
 const Joi = require('joi');
+const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose');
 
 // Define the user schema
@@ -21,8 +24,13 @@ const userSchema = new mongoose.Schema({
 		required: true,
 		minlength: 8,
 		maxlength: 1024
-	},
+	}
 });
+
+// Add a function to User Model
+userSchema.methods.generateAuthToken = function() {
+	return jwt.sign({ _id: this._id }, config.get('jwtPrivateKey'));
+}
 
 // Create a User model
 const User = mongoose.model('users', userSchema);

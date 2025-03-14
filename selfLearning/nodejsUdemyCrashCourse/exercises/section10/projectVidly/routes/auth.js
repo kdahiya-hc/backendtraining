@@ -1,13 +1,9 @@
 const _ = require('lodash');
-require('dotenv').config();
-const config = require('config');
 const bcrypt = require('bcrypt');
 const express = require('express');
-const jwt = require('jsonwebtoken');
 const Joi = require('joi');
 const router = express.Router();
 const { User } = require('../models/user.js');
-const { json } = require('body-parser');
 
 function validate(data) {
 	const schema = Joi.object({
@@ -34,7 +30,7 @@ router.post('/', async (req, res) => {
 		}
 
 		// creating a JWT with ({payload}, {private_key})
-		const token = jwt.sign({ _id: validUser._id }, config.get('jwtPrivateKey'));
+		const token = validUser.generateAuthToken();
 
 		res.status(200).json({ message: 'Authentication succesful', token : token});
 	} catch (err) {
