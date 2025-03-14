@@ -1,10 +1,11 @@
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
 const express = require('express');
-const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 const Joi = require('joi');
 const router = express.Router();
 const { User } = require('../models/user.js');
+const { json } = require('body-parser');
 
 function validate(data) {
 	const schema = Joi.object({
@@ -20,17 +21,20 @@ router.post('/', async (req, res) => {
 	if (error) return res.status(400).send(error.details[0].message);
 
 	try {
-		const existingUser = await User.findOne({ email: value.email });
-		if (!existingUser) {
+		const validUser = await User.findOne({ email: value.email });
+		if (!validUser) {
 			return res.status(400).json({ message: 'Invalid email or password' });
 		}
 
-		const validPassword = await bcrypt.compare(value.password, existingUser.password)
+		const validPassword = await bcrypt.compare(value.password, validUser.password)
 		if (!validPassword) {
 			return res.status(400).json({ message: 'Invalid email or password' });
 		}
 
-		res.status(200).json({ message: 'Authentication succesful'});
+		// creating a JWT with ({payload}, {private_key})
+		const token = jwt.sign({ _id: validUser._id }, 'privatekey')
+		
+		res.status(200).json({ message: 'Authentication succesful', token : token});
 	} catch (err) {
 		res.status(500).json({ message: 'Error saving the user', error: err.message });
 	}
