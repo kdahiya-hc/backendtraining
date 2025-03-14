@@ -13,7 +13,7 @@ function validate(data) {
 	return schema.validate(data);
 }
 
-// POST create a user
+// Authenticate a user
 router.post('/', async (req, res) => {
 	const { error, value } = validate(req.body);
 	if (error) return res.status(400).send(error.details[0].message);

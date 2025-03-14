@@ -1,4 +1,5 @@
 const express = require('express');
+const {auth} = require('../middlewares/auth')
 const router = express.Router();
 const {Genre, validateGenreType} = require('../models/genre.js');
 
@@ -27,7 +28,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST create a genre
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
 	// Validate the request body
 	const { error, value } = validateGenreType(req.body);
 	if (error) return res.status(400).send(error.details[0].message);
