@@ -1,4 +1,6 @@
 const _ = require('lodash');
+require('dotenv').config();
+const config = require('config');
 const bcrypt = require('bcrypt');
 const express = require('express');
 const jwt = require('jsonwebtoken');
@@ -32,8 +34,8 @@ router.post('/', async (req, res) => {
 		}
 
 		// creating a JWT with ({payload}, {private_key})
-		const token = jwt.sign({ _id: validUser._id }, 'privatekey')
-		
+		const token = jwt.sign({ _id: validUser._id }, config.get('jwtPrivateKey'))
+
 		res.status(200).json({ message: 'Authentication succesful', token : token});
 	} catch (err) {
 		res.status(500).json({ message: 'Error saving the user', error: err.message });
