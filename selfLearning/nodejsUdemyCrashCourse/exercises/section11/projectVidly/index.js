@@ -33,7 +33,9 @@ app.use('/api/customers', customers);
 app.use('/api/movies', movies);
 app.use('/api/rentals', rentals);
 app.use('/api/auth', auth);
+// the next in any route goes to error handling middle ware because it was used in the last
 app.use(error)
+
 app.set('view engine', 'pug');
 app.set('views', './views');
 
