@@ -14,7 +14,7 @@ function validate(data) {
 }
 
 // Authenticate a user
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
 	const { error, value } = validate(req.body);
 	if (error) return res.status(400).send(error.details[0].message);
 
@@ -34,7 +34,8 @@ router.post('/', async (req, res) => {
 
 		res.status(200).json({ message: 'Authentication succesful', token : token});
 	} catch (err) {
-		res.status(500).json({ message: 'Error saving the user', error: err.message });
+		err.custom = 'Error saving the user';
+		next(err);
 	}
 });
 

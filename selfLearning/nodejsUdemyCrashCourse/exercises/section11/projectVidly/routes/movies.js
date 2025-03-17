@@ -5,17 +5,18 @@ const { Genre } = require('../models/genre');
 const {auth} = require('../middlewares/auth.js');
 
 // GET all movies
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
   try {
     const movies = await Movie.find().sort('title');
     res.status(200).json(movies);
   } catch (err) {
-    res.status(500).send('Error retrieving movies');
+      err.custom = 'Error retrieving movies';
+      next(err);
   }
 });
 
 // GET movie by ID
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req, res, next) => {
   try {
     const movie = await Movie.findById(req.params.id);
     if (!movie) {
@@ -24,12 +25,13 @@ router.get('/:id', async (req, res) => {
 
     res.status(200).json(movie);
   } catch (err) {
-    res.status(500).send('Error retrieving the movie');
+      err.custom = 'Error retrieving the movie';
+      next(err);
   }
 });
 
 // POST create a movie
-router.post('/', auth, async (req, res) => {
+router.post('/', auth, async (req, res, next) => {
   // Validate the request body
   const { error, value } = validateMovie(req.body);
   if (error) return res.status(400).send(error.details[0].message);
@@ -42,7 +44,6 @@ router.post('/', auth, async (req, res) => {
     const newMovie = new Movie({
       title: value.title,
       genre: {
-        // Since this is entering all the properties at creation it is embedded, with passing actual schema and fine
         _id: foundGenre._id,
         typeOfGenre: foundGenre.typeOfGenre,
       },
@@ -53,13 +54,13 @@ router.post('/', auth, async (req, res) => {
     await newMovie.save();
     res.status(201).json({ message: 'New movie has been added successfully!', movie: newMovie });
   } catch (err) {
-    console.log(err.message)
-    res.status(500).send('Error saving the movie');
+      err.custom = 'Error saving the movie';
+      next(err);
   }
 });
 
 // PUT update a movie
-router.put('/:id', auth, async (req, res) => {
+router.put('/:id', auth, async (req, res, next) => {
   // Validate the request body
   const { error, value } = validateMovie(req.body);
   if (error) return res.status(400).send(error.details[0].message);
@@ -90,12 +91,13 @@ router.put('/:id', auth, async (req, res) => {
 
     res.status(200).send('The movie has been updated successfully.');
   } catch (err) {
-    res.status(500).send('Error updating the movie');
+      err.custom = 'Error updating the movie';
+      next(err);
   }
 });
 
 // DELETE delete a movie
-router.delete('/:id', auth, async (req, res) => {
+router.delete('/:id', auth, async (req, res, next) => {
   try {
     const movie = await Movie.findByIdAndDelete(req.params.id);
     if (!movie) {
@@ -104,7 +106,8 @@ router.delete('/:id', auth, async (req, res) => {
 
     res.status(200).json(movie);
   } catch (err) {
-    res.status(500).send('Error deleting the movie');
+      err.custom = 'Error deleting the movie';
+      next(err);
   }
 });
 

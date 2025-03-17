@@ -7,31 +7,31 @@ const { Customer } = require('../models/customer.js');
 const { default: mongoose } = require('mongoose');
 
 // GET all rentals
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
   try {
     const rentals = await Rental.find().sort('dateOut');
     res.status(200).json(rentals);
   } catch (err) {
-    console.log(err.message);
-    res.status(500).send('Error retrieving rentals');
+      err.custom ='Error retrieving rentals';
+       next(err);
   }
 });
 
 // GET rental by ID
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req, res, next) => {
   try {
     const rental = await Rental.findById(req.params.id);
     if (!rental) return res.status(404).send('No rental found with the provided ID.');
 
     res.status(200).json(rental);
   } catch (err) {
-    console.log(err.message);
-    res.status(500).send('Error retrieving the rental');
+      err.custom ='Error retrieving the nrental';
+      next(err);
   }
 });
 
 // POST create a rental, user sends only customerId and movieId
-router.post('/', auth, async (req, res) => {
+router.post('/', auth, async (req, res, next) => {
   const { error, value } = validateRental(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
@@ -77,16 +77,16 @@ router.post('/', auth, async (req, res) => {
     await session.commitTransaction();
     res.status(201).json({ message: 'New rental has been added successfully!', rental: newRental });
   } catch (err) {
-    await session.abortTransaction();
-    console.error(err.message);
-    res.status(500).send('Error saving the rental');
+      await session.abortTransaction();
+      err.custom ='Error saving the rental';
+      next(err);
   } finally {
     session.endSession(); // Ensure session is always ended
   }
 });
 
 // PUT update a rental
-router.put('/:id', auth, async (req, res) => {
+router.put('/:id', auth, async (req, res, next) => {
   // Validate the request body
   const { error, value } = validateRental(req.body);
   if (error) return res.status(400).send(error.details[0].message);
@@ -120,13 +120,13 @@ router.put('/:id', auth, async (req, res) => {
 
     res.status(200).send('The rental has been updated successfully.');
   } catch (err) {
-    console.log(err.message);
-    res.status(500).send('Error updating the rental');
+      err.custom ='Error updating the rental';
+      next(err);
   }
 });
 
 // DELETE delete a rental
-router.delete('/:id', auth, async (req, res) => {
+router.delete('/:id', auth, async (req, res, next) => {
   try {
     const rental = await Rental.findByIdAndDelete(req.params.id);
     if (!rental) return res.status(404).send('No rental found with the provided ID.');
@@ -137,8 +137,8 @@ router.delete('/:id', auth, async (req, res) => {
 
     res.status(200).json(rental);
   } catch (err) {
-    console.log(err.message);
-    res.status(500).send('Error deleting the rental');
+      err.custom ='Error deleting the rental';
+      next(err);
   }
 });
 

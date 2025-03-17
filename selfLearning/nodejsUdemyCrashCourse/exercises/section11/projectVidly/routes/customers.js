@@ -4,17 +4,18 @@ const {auth} = require('../middlewares/auth.js');
 const {Customer, validateCustomer} = require('../models/customer.js');
 
 // GET all customers
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
 	try {
 		const customers = await Customer.find().sort('name');
 		res.status(200).json(customers);
 	} catch (err) {
-		res.status(500).send('Error retrieving customers');
+		err.custom = 'Error retrieving customers';
+		next(err);
 	}
 });
 
 // GET customer by ID
-router.get('/:id', async (req, res) => {
+router.get('/:id', async (req, res, next) => {
 	try {
 		const customer = await Customer.findById(req.params.id);
 		if (!customer) {
@@ -23,12 +24,12 @@ router.get('/:id', async (req, res) => {
 
 		res.status(200).json(customer);
 	} catch (err) {
-		res.status(500).send('Error retrieving the customer');
-	}
+		err.custom = 'Error retrieving the customer';
+		next(err);	}
 });
 
 // POST create a customer
-router.post('/', auth, async (req, res) => {
+router.post('/', auth, async (req, res, next) => {
 	// Validate the request body
 	const { error, value } = validateCustomer(req.body);
 	if (error) return res.status(400).send(error.details[0].message);
@@ -44,12 +45,12 @@ router.post('/', auth, async (req, res) => {
 		await newCustomer.save();
 		res.status(201).json({ message: 'New customer has been added successfully!', customer: newCustomer });
 	} catch (err) {
-		res.status(500).send('Error saving the customer');
-	}
+		err.custom = 'Error saving the customer';
+		next(err);	}
 });
 
 // PUT update a customer
-router.put('/:id', auth, async (req, res) => {
+router.put('/:id', auth, async (req, res, next) => {
 	// Validate the request body
 	const { error, value } = validateCustomer(req.body);
 	if (error) return res.status(400).send(error.details[0].message);
@@ -66,12 +67,12 @@ router.put('/:id', auth, async (req, res) => {
 
 		res.status(200).send('The type of customer for provided ID has been updated successfully.');
 	} catch (err) {
-		res.status(500).send('Error updating the customer');
-	}
+		err.custom = 'Error updating the customer';
+		next(err);	}
 });
 
 // DELETE delete a customer
-router.delete('/:id', auth, async (req, res) => {
+router.delete('/:id', auth, async (req, res, next) => {
 	try {
 		const customer = await Customer.findByIdAndDelete(req.params.id);
 		if (!customer) {
@@ -80,7 +81,8 @@ router.delete('/:id', auth, async (req, res) => {
 
 		res.status(200).json(customer);
 	} catch (err) {
-		res.status(500).send('Error deleting the customer');
+		err.custom = 'Error deleting the customer';
+		next(err);
 	}
 });
 

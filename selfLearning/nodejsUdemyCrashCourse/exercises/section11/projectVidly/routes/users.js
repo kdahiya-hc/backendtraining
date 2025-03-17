@@ -6,27 +6,27 @@ const {isAdmin} = require('../middlewares/admin.js')
 const { User, validateUser } = require('../models/user.js');
 
 // GET all users
-router.get('/', [auth, isAdmin], async (req, res) => {
+router.get('/', [auth, isAdmin], async (req, res, next) => {
 	try {
 		const users = await User.find().sort('name');
 		res.status(200).json(users);
 	} catch (err) {
-		res.status(500).json({ message: 'Error retrieving the users', error: err.message });
+		next(err);
 	}
 });
 
 // GET user by email
-router.get('/me', auth, async (req, res) => {
+router.get('/me', auth, async (req, res, next) => {
 	try {
 		const user = await User.findById(req.user._id).select('-password');
 		res.status(200).json({ message: 'Authenticated the user', user: _.pick(user, ['name', 'email']) });
 	} catch (err) {
-		res.status(500).json({ message: 'Error retrieving the user', error: err.message });
+		next(err);
 	}
 });
 
 // POST create a user
-router.post('/', async (req, res) => {
+router.post('/', async (req, res, next) => {
 	// Validate the request body
 	const { error, value } = validateUser(req.body);
 	if (error) return res.status(400).send(error.details[0].message);
@@ -52,12 +52,12 @@ router.post('/', async (req, res) => {
 		await newUser.save();
 		res.status(201).header('x-auth-token', token).json({ message: 'New user has been added successfully!', user: 	_.pick(newUser, ['_id', 'name', 'email'])});
 	} catch (err) {
-		res.status(500).json({ message: 'Error saving the user', error: err.message });
+		next(err);
 	}
 });
 
 // PUT update user by email
-router.put('/:email', [auth, isAdmin], async (req, res) => {
+router.put('/:email', [auth, isAdmin], async (req, res, next) => {
 	// Validate the request body
 	const { error, value } = validateUser(req.body);
 	if (error) return res.status(400).send(error.details[0].message);
@@ -82,12 +82,12 @@ router.put('/:email', [auth, isAdmin], async (req, res) => {
 
 		res.status(200).json({ message: 'User has been updated successfully.', user: _.pick(user, ['_id', 'name', 'email']) });
 	} catch (err) {
-		res.status(500).json({ message: 'Error updating the user', error: err.message });
+		next(err);
 	}
 });
 
 // DELETE user by email
-router.delete('/:email', [auth, isAdmin], async (req, res) => {
+router.delete('/:email', [auth, isAdmin], async (req, res, next) => {
 	try {
 		const user = await User.findOneAndDelete({ email: req.params.email });
 		if (!user) {
@@ -96,7 +96,7 @@ router.delete('/:email', [auth, isAdmin], async (req, res) => {
 
 		res.status(200).json({ message: 'User has been deleted successfully.', user:  _.pick(user, ['_id', 'name', 'email']) });
 	} catch (err) {
-		res.status(500).json({ message: 'Error deleting the user', error: err.message });
+		next(err);
 	}
 });
 
