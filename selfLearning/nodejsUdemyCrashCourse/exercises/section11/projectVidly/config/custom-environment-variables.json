@@ -1,0 +1,11 @@
+{
+    "db": {
+        "user": "MONGODB_USER",
+        "password": "MONGODB_PASSWORD",
+        "host": "MONGODB_HOST",
+        "atlasHost": "ATLAS_HOST",
+        "port": "MONGODB_PORT",
+        "database": "MONGODB_DATABASE"
+    },
+    "jwtPrivateKey": "JWT_PRIVATE_KEY"
+}
