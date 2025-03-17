@@ -1,6 +1,8 @@
+// having this makes us not needing to monkey path async handler everywhere, just remove try, catch and next. The code will work using the async handler.
+// It should be at top always with the log statements
+require('express-async-errors')
 require('dotenv').config();
 const config = require('config');
-const {error} = require('./middlewares/error.js')
 const express = require('express');
 const movies = require('./routes/movies.js');
 const genres = require('./routes/genres.js');
@@ -12,6 +14,7 @@ const home = require('./routes/home.js');
 const mongoose = require('mongoose');
 const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
+const {error} = require('./middlewares/error.js')
 // const bodyParser = require("body-parser");
 
 const app = express();

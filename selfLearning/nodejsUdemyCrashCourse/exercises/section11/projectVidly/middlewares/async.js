@@ -1,7 +1,7 @@
 function asyncHandler(routeFunction){
 	return async(req, res, next) => {
+		console.log('inside asyncHandler')
 		try{
-			console.log('inside asyncHandler')
 			await routeFunction(req, res, next);
 		}catch(err){
 			next(err);

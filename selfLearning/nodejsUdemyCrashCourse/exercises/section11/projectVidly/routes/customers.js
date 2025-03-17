@@ -1,27 +1,26 @@
 const express = require('express');
 const router = express.Router();
 const {auth} = require('../middlewares/auth.js');
-const asyncHandler = require('../middlewares/async.js')
 const {Customer, validateCustomer} = require('../models/customer.js');
 
 // GET all customers
-router.get('/', asyncHandler( async (req, res) => {
+router.get('/', async (req, res) => {
 	const customers = await Customer.find().sort('name');
 	res.status(200).json(customers);
-}));
+});
 
 // GET customer by ID
-router.get('/:id', asyncHandler(async (req, res) => {
+router.get('/:id', async (req, res) => {
 	const customer = await Customer.findById(req.params.id);
 	if (!customer) {
 		return res.status(404).send('No customer found with provided ID.');
 	}
 
 	res.status(200).json(customer);
-}));
+});
 
 // POST create a customer
-router.post('/', auth, asyncHandler(async (req, res) => {
+router.post('/', auth, async (req, res) => {
 	// Validate the request body
 	const { error, value } = validateCustomer(req.body);
 	if (error) return res.status(400).send(error.details[0].message);
@@ -34,10 +33,10 @@ router.post('/', auth, asyncHandler(async (req, res) => {
 	console.log(newCustomer);
 	await newCustomer.save();
 	res.status(201).json({ message: 'New customer has been added successfully!', customer: newCustomer });
-}));
+});
 
 // PUT update a customer
-router.put('/:id', auth, asyncHandler(async (req, res) => {
+router.put('/:id', auth, async (req, res) => {
 	// Validate the request body
 	const { error, value } = validateCustomer(req.body);
 	if (error) return res.status(400).send(error.details[0].message);
@@ -52,16 +51,16 @@ router.put('/:id', auth, asyncHandler(async (req, res) => {
 	}
 
 	res.status(200).send('The type of customer for provided ID has been updated successfully.');
-}));
+});
 
 // DELETE delete a customer
-router.delete('/:id', auth, asyncHandler( async (req, res, next) => {
+router.delete('/:id', auth,  async (req, res) => {
 	const customer = await Customer.findByIdAndDelete(req.params.id);
 	if (!customer) {
 		return res.status(404).send('No customer found with provided ID.');
 	}
 
 	res.status(200).json(customer);
-}));
+});
 
 module.exports = router;

@@ -2,7 +2,8 @@
 // Error handliong centralised with a middleware in index
 // This middleware has 4 than usual 3 params ( err, req, res, next)
 const error = function (err, req, res, next){
-    const customMessage = err.custom || 'custom An error occurred';
+	console.log('inside error.js')
+	const customMessage = err.custom || 'custom An error occurred';
 	const errorMessage = err.message || 'error An error occurred';
 	const statusCode = err.status || 500;
 
