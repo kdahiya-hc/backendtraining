@@ -1,5 +1,6 @@
 require('dotenv').config();
 const config = require('config');
+const {error} = require('./middlewares/error.js')
 const express = require('express');
 const movies = require('./routes/movies.js');
 const genres = require('./routes/genres.js');
@@ -32,7 +33,7 @@ app.use('/api/customers', customers);
 app.use('/api/movies', movies);
 app.use('/api/rentals', rentals);
 app.use('/api/auth', auth);
-
+app.use(error)
 app.set('view engine', 'pug');
 app.set('views', './views');
 
