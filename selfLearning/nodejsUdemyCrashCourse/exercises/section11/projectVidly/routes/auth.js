@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
 const express = require('express');
+const asyncHandler = require('../middlewares/async.js')
 const Joi = require('joi');
 const router = express.Router();
 const { User } = require('../models/user.js');
@@ -14,29 +15,24 @@ function validate(data) {
 }
 
 // Authenticate a user
-router.post('/', async (req, res, next) => {
+router.post('/', asyncHandler(async (req, res) => {
 	const { error, value } = validate(req.body);
 	if (error) return res.status(400).send(error.details[0].message);
 
-	try {
-		const validUser = await User.findOne({ email: value.email });
-		if (!validUser) {
-			return res.status(400).json({ message: 'Invalid email or password' });
-		}
-
-		const validPassword = await bcrypt.compare(value.password, validUser.password)
-		if (!validPassword) {
-			return res.status(400).json({ message: 'Invalid email or password' });
-		}
-
-		// creating a JWT with ({payload}, {private_key})
-		const token = validUser.generateAuthToken();
-
-		res.status(200).json({ message: 'Authentication succesful', token : token});
-	} catch (err) {
-		err.custom = 'Error saving the user';
-		next(err);
+	const validUser = await User.findOne({ email: value.email });
+	if (!validUser) {
+		return res.status(400).json({ message: 'Invalid email or password' });
 	}
-});
+
+	const validPassword = await bcrypt.compare(value.password, validUser.password)
+	if (!validPassword) {
+		return res.status(400).json({ message: 'Invalid email or password' });
+	}
+
+	// creating a JWT with ({payload}, {private_key})
+	const token = validUser.generateAuthToken();
+
+	res.status(200).json({ message: 'Authentication succesful', token : token});
+}));
 
 module.exports = router;
