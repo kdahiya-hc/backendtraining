@@ -13,7 +13,7 @@ router.get('/', async (req, res) => {
     res.status(200).json(rentals);
   } catch (err) {
     console.log(err.message);
-    res.status(500).send('Error retrieving rentals');
+    res.status(500).send({ message: 'Error retrieving rentals', error: err.message });
   }
 });
 
@@ -26,7 +26,7 @@ router.get('/:id', async (req, res) => {
     res.status(200).json(rental);
   } catch (err) {
     console.log(err.message);
-    res.status(500).send('Error retrieving the rental');
+    res.status(500).send({ message: 'Error retrieving the rental', error: err.message });
   }
 });
 
@@ -79,7 +79,7 @@ router.post('/', auth, async (req, res) => {
   } catch (err) {
     await session.abortTransaction();
     console.error(err.message);
-    res.status(500).send('Error saving the rental');
+    res.status(500).send({ message: 'Error saving the rental', error: err.message });
   } finally {
     session.endSession(); // Ensure session is always ended
   }
@@ -121,7 +121,7 @@ router.put('/:id', auth, async (req, res) => {
     res.status(200).send('The rental has been updated successfully.');
   } catch (err) {
     console.log(err.message);
-    res.status(500).send('Error updating the rental');
+    res.status(500).send({ message: 'Error updating the rental', error: err.message });
   }
 });
 
@@ -138,7 +138,7 @@ router.delete('/:id', auth, async (req, res) => {
     res.status(200).json(rental);
   } catch (err) {
     console.log(err.message);
-    res.status(500).send('Error deleting the rental');
+    res.status(500).send({ message: 'Error deleting the rental', error: err.message });
   }
 });
 

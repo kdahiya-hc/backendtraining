@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
 		const genres = await Genre.find().sort('typeOfGenre');
 		res.status(200).json(genres);
 	} catch (err) {
-		res.status(500).send('Error retrieving genres');
+		res.status(500).send({ message: 'Error retrieving genres', error: err.message });
 	}
 });
 
@@ -23,7 +23,7 @@ router.get('/:id', async (req, res) => {
 
 		res.status(200).json(genre);
 	} catch (err) {
-		res.status(500).send('Error retrieving the genre');
+		res.status(500).send({ message: 'Error retrieving the genre', error: err.message });
 	}
 });
 
@@ -41,7 +41,7 @@ router.post('/', auth, async (req, res) => {
 		await newGenre.save();
 		res.status(201).json({ message: 'New genre has been added successfully!', genre: newGenre });
 	} catch (err) {
-		res.status(500).send('Error saving the genre');
+		res.status(500).send({ message: 'Error saving the genre', error: err.message });
 	}
 });
 
@@ -65,7 +65,7 @@ router.put('/:id', auth, async (req, res) => {
 
 		res.status(200).send('The type of genre for provided ID has been updated successfully.');
 	} catch (err) {
-		res.status(500).send('Error updating the genre');
+		res.status(500).send({ message: 'Error updating the genre', error: err.message });
 	}
 });
 
@@ -79,7 +79,7 @@ router.delete('/:id', auth, async (req, res) => {
 
 		res.status(200).json(genre);
 	} catch (err) {
-		res.status(500).send('Error deleting the genre');
+		res.status(500).send({ message: 'Error deleting the genre', error: err.message });
 	}
 });
 

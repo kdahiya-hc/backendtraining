@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
     const movies = await Movie.find().sort('title');
     res.status(200).json(movies);
   } catch (err) {
-    res.status(500).send('Error retrieving movies');
+    res.status(500).send({ message: 'Error retrieving movies', error: err.message});
   }
 });
 
@@ -24,7 +24,7 @@ router.get('/:id', async (req, res) => {
 
     res.status(200).json(movie);
   } catch (err) {
-    res.status(500).send('Error retrieving the movie');
+    res.status(500).send({ message: 'Error retrieving the movie', error: err.message});
   }
 });
 
@@ -54,7 +54,7 @@ router.post('/', auth, async (req, res) => {
     res.status(201).json({ message: 'New movie has been added successfully!', movie: newMovie });
   } catch (err) {
     console.log(err.message)
-    res.status(500).send('Error saving the movie');
+    res.status(500).send({ message: 'Error saving the movie', error: err.message});
   }
 });
 
@@ -90,7 +90,7 @@ router.put('/:id', auth, async (req, res) => {
 
     res.status(200).send('The movie has been updated successfully.');
   } catch (err) {
-    res.status(500).send('Error updating the movie');
+    res.status(500).send({ message: 'Error updating the movie', error: err.message});
   }
 });
 
@@ -104,7 +104,7 @@ router.delete('/:id', auth, async (req, res) => {
 
     res.status(200).json(movie);
   } catch (err) {
-    res.status(500).send('Error deleting the movie');
+    res.status(500).send({ message: 'Error deleting the movie', error: err.message});
   }
 });
 

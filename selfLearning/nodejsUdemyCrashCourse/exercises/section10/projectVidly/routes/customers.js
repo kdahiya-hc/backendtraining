@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
 		const customers = await Customer.find().sort('name');
 		res.status(200).json(customers);
 	} catch (err) {
-		res.status(500).send('Error retrieving customers');
+		res.status(500).send({ message: 'Error retrieving customers', error: err.message});
 	}
 });
 
@@ -23,7 +23,7 @@ router.get('/:id', async (req, res) => {
 
 		res.status(200).json(customer);
 	} catch (err) {
-		res.status(500).send('Error retrieving the customer');
+		res.status(500).send({ message: 'Error retrieving the customer', error: err.message});
 	}
 });
 
@@ -44,7 +44,7 @@ router.post('/', auth, async (req, res) => {
 		await newCustomer.save();
 		res.status(201).json({ message: 'New customer has been added successfully!', customer: newCustomer });
 	} catch (err) {
-		res.status(500).send('Error saving the customer');
+		res.status(500).send({ message: 'Error saving the customer', error: err.message});
 	}
 });
 
@@ -66,7 +66,7 @@ router.put('/:id', auth, async (req, res) => {
 
 		res.status(200).send('The type of customer for provided ID has been updated successfully.');
 	} catch (err) {
-		res.status(500).send('Error updating the customer');
+		res.status(500).send({ message: 'Error updating the customer', error: err.message});
 	}
 });
 
@@ -80,7 +80,7 @@ router.delete('/:id', auth, async (req, res) => {
 
 		res.status(200).json(customer);
 	} catch (err) {
-		res.status(500).send('Error deleting the customer');
+		res.status(500).send({ message: 'Error deleting the customer', error: err.message});
 	}
 });
 
