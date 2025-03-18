@@ -1,4 +1,5 @@
-const _ = require('lodash');const express = require('express');
+const _ = require('lodash');
+const express = require('express');
 const bcrypt = require('bcrypt');
 const router = express.Router();
 const {auth} = require('../middlewares/auth.js')

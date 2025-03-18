@@ -1,3 +1,4 @@
+require('express-async-errors');
 require('dotenv').config();
 const config = require('config');
 require('winston-mongodb');

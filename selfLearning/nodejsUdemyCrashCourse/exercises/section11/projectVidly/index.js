@@ -1,15 +1,11 @@
-require('express-async-errors'); // Required to handle async errors in routes without try-catch
-require('dotenv').config(); // Loads environment variables from .env file
-const config = require('config');
 const express = require('express');
-
-// Initialize Express app
 const app = express();
 
-require('./startup/logger.js');
+const logger = require('./startup/logger.js');
 require('./startup/routes.js')(app);
 require('./startup/db.js')();
 require('./startup/config.js')();
+require('./startup/validation.js')();
 
 // Use express middleware for both JSON and URL-encoded data
 app.use(express.json());
@@ -22,5 +18,5 @@ app.set('views', './views');
 // Start the server
 const PORT = process.env.PORT || 5005;
 app.listen(PORT, () => {
-    console.log(`Server is listening on http://localhost:${PORT}`);
+    logger.info(`Server is listening on http://localhost:${PORT}`);
 });
