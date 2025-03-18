@@ -33,21 +33,12 @@ const logger = winston.createLogger({
     ],
 });
 
-// Global error handling: Log uncaught exceptions and unhandled promise rejections
-process.on('uncaughtException', (err) => {
-    throw err;
-});
-
-process.on('unhandledRejection', (err) => {
-    throw err;
-});
-
 // Handle uncaught exceptions and unhandled promise rejections
-winston.exceptions.handle(
+logger.exceptions.handle(
     new winston.transports.File({ filename: 'uncaughtExceptions.log' })
 );
 
-winston.rejections.handle(
+logger.rejections.handle(
     new winston.transports.File({ filename: 'unhandledRejections.log' })
 );
 
