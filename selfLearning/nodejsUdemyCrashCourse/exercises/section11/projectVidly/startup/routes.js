@@ -26,4 +26,4 @@ const routes = (app)=> {
 	app.use('/', home);
 }
 
-module.exports.routes = routes;
+module.exports = routes;

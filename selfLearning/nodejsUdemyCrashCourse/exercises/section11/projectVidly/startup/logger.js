@@ -74,4 +74,4 @@ winston.rejections.handle(
     new winston.transports.File({ filename: 'unhandledRejections.log' })
 );
 
-module.exports.logger = logger;
+module.exports = logger;

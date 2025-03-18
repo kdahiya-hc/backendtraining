@@ -1,6 +1,6 @@
 require('dotenv').config(); // Loads environment variables from .env file
 const config = require('config');
-const { logger } = require("../utils/logger");
+const { logger } = require("./logger");
 const mongoose = require('mongoose');
 
 const db = () => {
@@ -14,4 +14,4 @@ const db = () => {
 		});
 }
 
-module.exports.db = db;
+module.exports = db;

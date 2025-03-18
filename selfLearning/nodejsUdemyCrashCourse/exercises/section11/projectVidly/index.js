@@ -10,19 +10,13 @@ if (!jwtPrivateKey) {
     process.exit(1);
 }
 
-// Import error-handling middleware and logger
-const { logger } = require('./utils/logger.js');
-
 // Initialize Express app
 const app = express();
 
-// Import and initialize routes
-const { routes } = require('./startup/routes.js');
-routes(app);
-
-// Import and initialize DB connection
-const { db } = require('./startup/db.js');
-db();
+require('./startup/logger.js');
+require('./startup/routes.js')(app);
+require('./startup/db.js')();
+require('./startup/config.js')();
 
 // Global error handling: Log uncaught exceptions and unhandled promise rejections
 process.on('uncaughtException', (err) => {
