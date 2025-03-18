@@ -65,13 +65,12 @@ const logger = winston.createLogger({
     ],
 });
 
-// Handle uncaught exceptions globally using Winston's `handleExceptions`
-winston.handleExceptions(
+// Handle uncaught exceptions and unhandled promise rejections
+winston.exceptions.handle(
     new winston.transports.File({ filename: 'uncaughtExceptions.log' })
 );
 
-// Handle unhandled promise rejections globally using Winston's `handleRejections`
-winston.handleRejections(
+winston.rejections.handle(
     new winston.transports.File({ filename: 'unhandledRejections.log' })
 );
 
