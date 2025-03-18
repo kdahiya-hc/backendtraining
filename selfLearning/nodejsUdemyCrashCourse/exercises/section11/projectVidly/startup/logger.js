@@ -31,15 +31,30 @@ const logger = winston.createLogger({
             level: 'error',
         }),
     ],
+    // if not wanting to define below , can define the exception and rejection handlers here too
+    // exceptionHandlers: [],
+    // rejectionHandlers: [],
 });
 
 // Handle uncaught exceptions and unhandled promise rejections
 logger.exceptions.handle(
-    new winston.transports.File({ filename: 'uncaughtExceptions.log' })
+    new winston.transports.File({ filename: 'uncaughtExceptions.log' }),
+    new winston.transports.Console({
+        format: winston.format.combine(
+            winston.format.colorize(),
+            winston.format.simple()
+        ),
+    })
 );
 
 logger.rejections.handle(
-    new winston.transports.File({ filename: 'unhandledRejections.log' })
+    new winston.transports.File({ filename: 'unhandledRejections.log' }),
+    new winston.transports.Console({
+        format: winston.format.combine(
+            winston.format.colorize(),
+            winston.format.simple()
+        ),
+    })
 );
 
 module.exports = logger;
