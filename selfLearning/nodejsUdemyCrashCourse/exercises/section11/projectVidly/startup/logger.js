@@ -22,47 +22,24 @@ const logger = winston.createLogger({
         new winston.transports.File({
             format: winston.format.json(),
             filename: 'logfile.log',
-            level: 'error' // Logs only error-level logs here
+            level: 'error'
         }),
         // Transport to log errors to MongoDB
         new winston.transports.MongoDB({
             db: dbUri,
             collection: 'logs',
-            level: 'error', // Logs only error-level logs to MongoDB
+            level: 'error',
         }),
     ],
-    exceptionHandlers: [
-        // Transport for uncaught exceptions (will log to console)
-        new winston.transports.Console({
-            format: winston.format.simple(),
-        }),
-        // Transport for uncaught exceptions (will log to a file)
-        new winston.transports.File({
-            format: winston.format.json(),
-            filename: 'uncaughtExceptions.log',
-        }),
-        // Optional: Transport for uncaught exceptions (MongoDB)
-        new winston.transports.MongoDB({
-            db: dbUri,
-            collection: 'uncaughtExceptions',
-        }),
-    ],
-    rejectionHandlers: [
-        // Transport for unhandled promise rejections (will log to console)
-        new winston.transports.Console({
-            format: winston.format.simple(),
-        }),
-        // Transport for unhandled promise rejections (will log to a file)
-        new winston.transports.File({
-            format: winston.format.json(),
-            filename: 'unhandledRejections.log',
-        }),
-        // Optional: Transport for unhandled promise rejections (MongoDB)
-        new winston.transports.MongoDB({
-            db: dbUri,
-            collection: 'unhandledRejections',
-        }),
-    ],
+});
+
+// Global error handling: Log uncaught exceptions and unhandled promise rejections
+process.on('uncaughtException', (err) => {
+    throw err;
+});
+
+process.on('unhandledRejection', (err) => {
+    throw err;
 });
 
 // Handle uncaught exceptions and unhandled promise rejections
