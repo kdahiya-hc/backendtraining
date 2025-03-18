@@ -1,9 +1,16 @@
-// Importing dependencies and setting up async error handling
 require('express-async-errors'); // Required to handle async errors in routes without try-catch
 require('dotenv').config(); // Loads environment variables from .env file
 const config = require('config');
 const express = require('express');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+
+// Check if JWT key is present in environment variables
+const jwtPrivateKey = process.env.JWT_SECRET || config.get('jwtPrivateKey');
+if (!jwtPrivateKey) {
+    console.error('JWT Secret key is missing!');
+    process.exit(1);
+}
 
 // Import routes
 const movies = require('./routes/movies.js');
@@ -45,10 +52,11 @@ mongoose.connect(dbUri)
         logger.error('MongoDB connection failed:', err.message);
     });
 
-// Body parser middleware (used for parsing request bodies)
-app.use(express.json());
+// Use bodyParser middleware for both JSON and URL-encoded data
+app.use(bodyParser.json()); // Parse application/json
+app.use(bodyParser.urlencoded({ extended: true })); 
 
-// Register routes
+// Register all the routes
 app.use('/api/genres', genres);
 app.use('/api/users', users);
 app.use('/api/customers', customers);
