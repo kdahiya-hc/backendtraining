@@ -22,7 +22,11 @@ const app = express();
 
 process.on('uncaughtException', (err) => {
 	logger.error(err.message, err);
-})
+});
+
+process.on('unhandledRejection', (err) => {
+	logger.error(err.message, err);
+});
 
 const PORT = process.env.PORT || 5005;
 
