@@ -4,7 +4,7 @@ const {logger} = require('../utils/logger.js');
 // This middleware has 4 than usual 3 params ( err, req, res, next)
 const error = function (err, req, res, next){
 	console.log('inside error.js');
-	logger.error(`Error: ${err.message}`);
+	logger.error(err.message, err);
 
 	const customMessage = err.custom || 'custom An error occurred';
 	const errorMessage = err.message || 'error An error occurred';
