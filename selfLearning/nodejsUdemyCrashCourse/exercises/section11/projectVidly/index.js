@@ -15,9 +15,14 @@ const mongoose = require('mongoose');
 const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
 const {error} = require('./middlewares/error.js')
+const {logger} = require('./utils/logger.js');
 // const bodyParser = require("body-parser");
 
 const app = express();
+
+process.on('uncaughtException', (err) => {
+	logger.error(err.message, err);
+})
 
 const PORT = process.env.PORT || 5005;
 
