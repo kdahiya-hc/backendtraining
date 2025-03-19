@@ -58,3 +58,27 @@ describe('getProduct', () => {
 		expect(result).toHaveProperty('id',1);
 	});
 })
+
+describe('registerUser', () => {
+	it('should throw if username is falsy', () => {
+		// // const result = lib.registerUser(null	); // This doesnt return a value as username is not provided
+		// expect(() => {lib.registerUser(false)}).toThrow();
+		// expect(() => {lib.registerUser('')}).toThrow();
+		// expect(() => {lib.registerUser(null)}).toThrow();
+		// expect(() => {lib.registerUser(x)}).toThrow();
+		// expect(() => {lib.registerUser(Nan)}).toThrow();
+		// expect(() => {lib.registerUser(0)}).toThrow();
+
+		// run paramaterized test
+		const args = [null, undefined, 0, false, '', NaN];
+		args.forEach( (a) => {
+			expect(() => { lib.registerUser(a) }).toThrow();
+		})
+	});
+
+	it('should throw return user object if username is valid', () => {
+		const result = lib.registerUser('kishan');
+		expect(result).toMatchObject({ username: 'kishan' });
+		expect(result.id).toBeGreaterThan(0);
+	});
+})
