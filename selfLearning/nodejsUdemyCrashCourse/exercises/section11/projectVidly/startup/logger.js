@@ -37,25 +37,37 @@ const logger = winston.createLogger({
     // rejectionHandlers: [],
 });
 
+// Handle uncaught exceptions (synchronous errors)
+process.on('uncaughtException', (err) => {
+    logger.error('Uncaught Exception:', { message: err.message, stack: err.stack });
+    process.exit(1);  // Exit the process after logging the error
+  });
+
+  // Handle unhandled promise rejections (asynchronous errors)
+  process.on('unhandledRejection', (reason, promise) => {
+    logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    process.exit(1);  // Exit the process after logging the error
+  });
+
 // Handle uncaught exceptions and unhandled promise rejections
 logger.exceptions.handle(
     new winston.transports.File({ filename: 'uncaughtExceptions.log' }),
-    new winston.transports.Console({
-        format: winston.format.combine(
-            winston.format.colorize(),
-            winston.format.simple()
-        ),
-    })
+    // new winston.transports.Console({
+    //     format: winston.format.combine(
+    //         winston.format.colorize(),
+    //         winston.format.simple()
+    //     ),
+    // })
 );
 
 logger.rejections.handle(
     new winston.transports.File({ filename: 'unhandledRejections.log' }),
-    new winston.transports.Console({
-        format: winston.format.combine(
-            winston.format.colorize(),
-            winston.format.simple()
-        ),
-    })
+    // new winston.transports.Console({
+    //     format: winston.format.combine(
+    //         winston.format.colorize(),
+    //         winston.format.simple()
+    //     ),
+    // })
 );
 
 module.exports = logger;
