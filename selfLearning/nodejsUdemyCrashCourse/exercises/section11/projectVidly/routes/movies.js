@@ -38,7 +38,6 @@ router.post('/', auth, async (req, res) => {
     numberInStock: value.numberInStock,
     dailyRentalRate: value.dailyRentalRate,
   });
-  console.log(newMovie);
   await newMovie.save();
   res.status(201).json({ message: 'New movie has been added successfully!', movie: newMovie });
 });

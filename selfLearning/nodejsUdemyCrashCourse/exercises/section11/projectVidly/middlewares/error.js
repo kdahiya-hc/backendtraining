@@ -1,4 +1,4 @@
-require('../startup/logger.js');
+const logger =require('../startup/logger.js');
 
 // Error handliong centralised with a middleware in index
 // This middleware has 4 than usual 3 params ( err, req, res, next)

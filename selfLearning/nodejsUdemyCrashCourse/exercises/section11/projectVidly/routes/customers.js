@@ -30,7 +30,6 @@ router.post('/', auth, async (req, res) => {
 		phone: value.phone,
 		isGold: value.isGold,
 	});
-	console.log(newCustomer);
 	await newCustomer.save();
 	res.status(201).json({ message: 'New customer has been added successfully!', customer: newCustomer });
 });
