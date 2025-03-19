@@ -1,5 +1,6 @@
 const lib = require('../lib.js');
 const db = require('../db.js');
+const mail = require('../mail.js');
 
 describe('absolute', () => {
 	it('absolute - should return a positive number: when input is positive', () => {
@@ -74,7 +75,7 @@ describe('registerUser', () => {
 		const args = [null, undefined, 0, false, '', NaN];
 		args.forEach( (a) => {
 			expect(() => { lib.registerUser(a) }).toThrow();
-		})
+		});
 	});
 
 	it('should throw return user object if username is valid', () => {
@@ -94,23 +95,40 @@ describe('applyDiscount', () => {
 		// Mock Function 1
 		db.getCustomerSync = function(customerId){
 			console.log('Fake reading customer points for Id');
-			return ({ id: customerId, points: 4 });
+			return ({ points: 4 });
 		}
 
 		const order = { customerId: 1, totalPrice: 10 };
 		lib.applyDiscount(order);
 		expect(order.totalPrice).toBe(10);
-	})
+	});
 
 	it('should apply 10% discount when customer has more than 10 points', () => {
 		//Mock Function 2
 		db.getCustomerSync = function(customerId){
 			console.log('Fake reading customer points for Id');
-			return ({ id: customerId, points: 12 });
+			return ({ points: 12 });
 		}
 
 		const order = { customerId: 1, totalPrice: 10 };
 		lib.applyDiscount(order);
 		expect(order.totalPrice).toBe(9);
-	})
+	});
+})
+
+describe('notifyCustomer', () => {
+	it('should send an email to the customer when order is placed', () => {
+		db.getCustomerSync = function (customerId) {
+			return ({ email: 'test@rest.com' });
+		}
+
+		let mailSent = false;
+		mail.send = function(email, message){
+			mailSent = true
+		}
+
+		const order = { customerId: 1, totalPrice: 10 };
+		lib.notifyCustomer(order);
+		expect(mailSent).toBe(true);
+	});
 })
