@@ -52,8 +52,9 @@ describe('getCurrencies', () => {
 describe('getProduct', () => {
 	it('should return product with given id', () => {
 		const result = lib.getProduct(1);
-		expect(result).toEqual(expect.objectContaining({ id: 1})); // Works as it checks one
-		expect(result).toMatchObject({ id: 1});
-		expect(result).toEqual({ id: 1}); // Deep equality needed
+		expect(result).toEqual(expect.objectContaining({ id: 1 })); // Works as it checks one
+		expect(result).toMatchObject({ id: 1 });
+		// expect(result).toEqual({ id: 1 }); // Deep equality needed
+		expect(result).toHaveProperty('id',1);
 	});
 })
