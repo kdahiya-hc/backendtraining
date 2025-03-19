@@ -1,4 +1,5 @@
-const lib = require('../lib');
+const lib = require('../lib.js');
+const db = require('../db.js');
 
 describe('absolute', () => {
 	it('absolute - should return a positive number: when input is positive', () => {
@@ -81,4 +82,35 @@ describe('registerUser', () => {
 		expect(result).toMatchObject({ username: 'kishan' });
 		expect(result.id).toBeGreaterThan(0);
 	});
+})
+
+// Mock function to write unit test for function that have external dependencies
+// We can write a mock which sends value withoit having the external dependency available,
+// replicating its behaviour
+
+// Below module function has only one external dependency which has no other dependencies in itself
+describe('applyDiscount', () => {
+	it('should not apply discount when customer has less than 10 points', () => {
+		// Mock Function 1
+		db.getCustomerSync = function(customerId){
+			console.log('Fake reading customer points for Id');
+			return ({ id: customerId, points: 4 });
+		}
+
+		const order = { customerId: 1, totalPrice: 10 };
+		lib.applyDiscount(order);
+		expect(order.totalPrice).toBe(10);
+	})
+
+	it('should apply 10% discount when customer has more than 10 points', () => {
+		//Mock Function 2
+		db.getCustomerSync = function(customerId){
+			console.log('Fake reading customer points for Id');
+			return ({ id: customerId, points: 12 });
+		}
+
+		const order = { customerId: 1, totalPrice: 10 };
+		lib.applyDiscount(order);
+		expect(order.totalPrice).toBe(9);
+	})
 })
