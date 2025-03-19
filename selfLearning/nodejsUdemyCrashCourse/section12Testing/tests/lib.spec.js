@@ -92,24 +92,20 @@ describe('registerUser', () => {
 // Below module function has only one external dependency which has no other dependencies in itself
 describe('applyDiscount', () => {
 	it('should not apply discount when customer has less than 10 points', () => {
-		// Mock Function 1
-		db.getCustomerSync = function(customerId){
-			console.log('Fake reading customer points for Id');
-			return ({ points: 4 });
-		}
-
+		// Mock Function 1 with jest
+		db.getCustomerSync = jest.fn().mockReturnValue({points: 4});
 		const order = { customerId: 1, totalPrice: 10 };
 		lib.applyDiscount(order);
 		expect(order.totalPrice).toBe(10);
 	});
 
 	it('should apply 10% discount when customer has more than 10 points', () => {
-		//Mock Function 2
-		db.getCustomerSync = function(customerId){
-			console.log('Fake reading customer points for Id');
-			return ({ points: 12 });
-		}
-
+		//Mock Function 2 with jest
+		// db.getCustomerSync = function(customerId){
+		// 	console.log('Fake reading customer points for Id');
+		// 	return ({ points: 12 });
+		// }
+		db.getCustomerSync = jest.fn().mockReturnValue({points: 14});
 		const order = { customerId: 1, totalPrice: 10 };
 		lib.applyDiscount(order);
 		expect(order.totalPrice).toBe(9);
@@ -118,17 +114,16 @@ describe('applyDiscount', () => {
 
 describe('notifyCustomer', () => {
 	it('should send an email to the customer when order is placed', () => {
-		db.getCustomerSync = function (customerId) {
-			return ({ email: 'test@rest.com' });
-		}
+		db.getCustomerSync = jest.fn().mockReturnValue({ email: 'test@rest.com' });
+		mail.send = jest.fn();
 
-		let mailSent = false;
-		mail.send = function(email, message){
-			mailSent = true
-		}
+		lib.notifyCustomer({ customerId: 1 });
 
-		const order = { customerId: 1, totalPrice: 10 };
-		lib.notifyCustomer(order);
-		expect(mailSent).toBe(true);
+		expect(mail.send).toHaveBeenCalled();
+		// expect(mail.send).toHaveBeenCalledWith('test@rest.com', 'Your order was placed successfully.');
+
+		// Assert each option of the mock function calls
+		expect(mail.send.mock.calls[0][0]).toBe('test@rest.com');
+		expect(mail.send.mock.calls[0][1]).toMatch(/order/i);
 	});
 })
