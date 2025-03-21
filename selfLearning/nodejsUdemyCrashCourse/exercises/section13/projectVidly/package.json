@@ -2,10 +2,10 @@
   "name": "vidly",
   "version": "1.0.0",
   "description": "vidly is an imaginary service for renting out movies.",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "dev": "nodemon --env-file=.env index.js",
-    "test": "jest --watchAll --verbose --runInBand"
+    "test": "jest --watchAll --verbose"
   },
   "keywords": [
     "movies"
