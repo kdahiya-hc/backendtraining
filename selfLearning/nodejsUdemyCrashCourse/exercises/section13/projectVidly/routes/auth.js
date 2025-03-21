@@ -31,7 +31,7 @@ router.post('/', async (req, res) => {
 	// creating a JWT with ({payload}, {private_key})
 	const token = validUser.generateAuthToken();
 
-	res.status(200).json({ message: 'Authentication succesful', token : token});
+	res.status(200).json({ message: 'Authentication/Login succesful', token : token});
 });
 
 module.exports = router;
