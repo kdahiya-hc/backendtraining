@@ -35,5 +35,10 @@ describe('/api/genres', () => {
 			expect(res.body).toMatchObject({ typeOfGenre: 'Horror' });
 			expect(res.body).toMatchObject({ _id: genre._id.toString()})
 		});
+
+		it('should return a 404 if id is invalid', async() => {
+			const res = await request(server).get('/api/genres/1');
+			expect(res.status).toBe(404);
+		});
 	});
 });
