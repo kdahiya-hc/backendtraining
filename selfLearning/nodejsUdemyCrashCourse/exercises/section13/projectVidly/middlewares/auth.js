@@ -6,8 +6,7 @@ function auth( req, res, next){
 	const token = req.header('x-auth-token');
 	if (!token) { return res.status(401).json({message: 'Access denied!'}); }
 	try {
-		const decodedPayload = jwt.verify(token, config.get('jwtPrivateKey') )
-		if (!decodedPayload) { return res.status(401).json({message: 'Access denied. No valid token found'}); }
+		const decodedPayload = jwt.verify(token, config.get('jwtPrivateKey') );
 		req.user = decodedPayload;
 		next();
 	} catch(err) {
