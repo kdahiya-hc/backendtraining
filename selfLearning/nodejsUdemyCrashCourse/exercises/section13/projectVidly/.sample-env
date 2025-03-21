@@ -1,10 +1,21 @@
-PORT=8000
+# Port number
+PORT=3000
+
+# Environment (default, development, production, test)
 NODE_ENV=development
-MONGODB_USER=user
-MONGODB_PASSWORD=1234pass
-MONGODB_HOST=127.0.0.1
+
+# MongoDB credentials
+MONGODB_USER=yourMongoUser
+MONGODB_PASSWORD=yourMongoPassword
+MONGODB_HOST=yourMongoDBHost
 ATLAS_HOST=cluster0.kjkp5.mongodb.net
 MONGODB_PORT=27017
-MONGODB_DATABASE=exercise
-JWT_PRIVATE_KEY=
+
+# Database names for different environments
+TEST_DATABASE=testDB
+DEVELOPMENT_DATABASE=devDB
+PRODUCTION_DATABASE=prodDB
+
+# JWT keys
+JWT_PRIVATE_KEY=yourSuperSecretPrivateKey
 JWT_TOKEN=header.payload.secretKey
