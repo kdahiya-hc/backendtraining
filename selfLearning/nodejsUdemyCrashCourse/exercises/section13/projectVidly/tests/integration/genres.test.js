@@ -24,4 +24,16 @@ describe('/api/genres', () => {
 			expect(res.body.some((g)=> { return g.typeOfGenre === 'Romance'})).toBeTruthy();
 		});
 	});
+
+	describe('GET /:id', () => {
+		it('should return a genre if valid id is passed', async() => {
+			const genre = new Genre({ typeOfGenre : 'Horror'});
+			await genre.save();
+
+			const res = await request(server).get('/api/genres/' + genre._id);
+			expect(res.status).toBe(200);
+			expect(res.body).toMatchObject({ typeOfGenre: 'Horror' });
+			expect(res.body).toMatchObject({ _id: genre._id.toString()})
+		});
+	});
 });
