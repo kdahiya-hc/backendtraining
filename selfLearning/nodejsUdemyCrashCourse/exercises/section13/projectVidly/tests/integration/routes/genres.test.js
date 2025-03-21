@@ -48,8 +48,8 @@ describe('/api/genres', () => {
 		let token;
 		let typeOfGenre;
 
-		const exec = async() => {
-			return await request(server)
+		const exec = () => {
+			return request(server)
 			.post('/api/genres/')
 			.set('x-auth-token', token)
 			.send({ typeOfGenre });
