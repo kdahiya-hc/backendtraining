@@ -3,7 +3,6 @@ const {auth} = require('../middlewares/auth');
 const validateObjectId = require('../middlewares/validateObjectId.js');
 const router = express.Router();
 const {Genre, validateGenreType} = require('../models/genre.js');
-const { default: mongoose } = require('mongoose');
 
 // GET all genres
 router.get('/', async (req, res) => {

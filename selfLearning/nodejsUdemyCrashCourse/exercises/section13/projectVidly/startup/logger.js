@@ -1,5 +1,5 @@
-require('express-async-errors');
-require('dotenv').config();
+require('dotenv').config(); // Load environment variables first
+require('express-async-errors'); // Then set up async error handling
 const config = require('config');
 require('winston-mongodb');
 const winston = require('winston');
