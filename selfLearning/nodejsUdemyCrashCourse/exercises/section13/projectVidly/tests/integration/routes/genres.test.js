@@ -6,10 +6,10 @@ let server;
 
 describe('/api/genres', () => {
 	beforeEach( () => {
-		server = require('../../../index');
+		server = require('../../../app')
 	});
 	afterEach( async() => {
-		await server.close();
+		// await server.close();
 		await Genre.deleteMany({});
 	});
 

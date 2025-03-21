@@ -6,9 +6,11 @@ describe('auth middleware', () => {
 	let token;
 
 	beforeEach( () => {
-		server = require('../../../index')
+		server = require('../../../app')
 	});
- 	afterEach( async() => { await server.close(); });
+ 	afterEach( async() => {
+		// await server.close();
+	});
 
 	const exec = () => {
 		return request(server)
