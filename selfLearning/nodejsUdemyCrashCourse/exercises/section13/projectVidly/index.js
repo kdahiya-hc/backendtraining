@@ -9,6 +9,8 @@ require('./startup/validation.js')();
 
 // Start the server
 const PORT = process.env.PORT || 5005;
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     logger.info(`Server is listening on http://localhost:${PORT}`);
 });
+
+module.exports = server;
