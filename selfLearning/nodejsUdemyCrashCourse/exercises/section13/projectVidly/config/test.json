@@ -1,3 +1,5 @@
 {
-	"jwtPrivateKey": "test_key"
+    "db": {
+        "database": "TEST_DATABASE"
+    }
 }
