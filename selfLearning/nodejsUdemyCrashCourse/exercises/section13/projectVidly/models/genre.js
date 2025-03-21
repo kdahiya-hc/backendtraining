@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 const genreSchema = new mongoose.Schema({
 	typeOfGenre: {
 		type: String,
+		required: true,
+		maxlength:50,
 		validate: {
 			validator: function(value) {
 				return new Promise((resolve, reject) => {
