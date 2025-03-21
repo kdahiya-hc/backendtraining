@@ -9,7 +9,7 @@ const db = () => {
 	const dbUri = `mongodb+srv://${dbConfig.user}:${dbConfig.password}@${dbConfig.atlasHost}/${dbConfig.database}?retryWrites=true&w=majority&appName=Cluster0`;
 
 	mongoose.connect(dbUri)
-		.then(() => logger.info(`Connected to ${process.env.NODE_ENV} MongoDB...`))
+		.then(() => logger.info(`Connected to ${dbConfig.database}...`))
 }
 
 module.exports = db;
