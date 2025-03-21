@@ -63,5 +63,16 @@ describe('/api/genres', () => {
 
 			expect(res.status).toBe(400);
 		});
+
+		it('should return 400 if typeOfGenre is more than 50 character', async() => {
+			const token = new User().generateAuthToken();
+
+			const res = await request(server)
+			.post('/api/genres/')
+			.set('x-auth-token', token)
+			.send({ typeOfGenre: new Array(52).join('a')});
+
+			expect(res.status).toBe(400);
+		});
 	});
 });
