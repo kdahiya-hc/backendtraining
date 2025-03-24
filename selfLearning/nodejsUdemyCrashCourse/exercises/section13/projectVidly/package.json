@@ -4,7 +4,7 @@
   "description": "vidly is an imaginary service for renting out movies.",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon --env-file=.env index.js",
+    "dev": "nodemon --env-file=.env server.js",
     "test": "jest --watchAll --verbose --coverage"
   },
   "keywords": [
