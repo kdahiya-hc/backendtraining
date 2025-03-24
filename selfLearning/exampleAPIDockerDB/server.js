@@ -9,12 +9,10 @@ app.use(express.json());
 app.use(cors());
 
 const dbUri = `mongodb://${config.get('db.user')}:${config.get('db.password')}@${config.get('db.host')}:${config.get('db.port')}/`
-console.log(dbUri);
+
 // Connect to MongoDB
 mongoose
   .connect(dbUri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
     authSource: "admin",
   })
   .then(() => console.log("MongoDB connected"))
