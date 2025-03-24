@@ -1,0 +1,33 @@
+{
+  "name": "socialmedia_api",
+  "version": "1.0.0",
+  "description": "This contains the project created based on the backend training prepared. A social media api. Where a user can register, post content and make friends.",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon --env-file=.env server.js",
+    "test": "jest --watchAll --verbose --coverage"
+  },
+  "keywords": [
+    "api"
+  ],
+  "author": "kdahiya-hc",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.9"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "config": "^3.3.12",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-async-errors": "^3.1.1",
+    "joi": "^17.13.3",
+    "joi-objectid": "^4.0.2",
+    "jsonwebtoken": "^9.0.2",
+    "lodash": "^4.17.21",
+    "mongoose": "^8.12.2",
+    "pug": "^3.0.3",
+    "winston": "^3.17.0"
+  }
+}

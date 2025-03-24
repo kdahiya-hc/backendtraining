@@ -1,0 +1,11 @@
+{
+	"port": "PORT",
+	"host": "HOST",
+	"db": {
+		"user":"MONGODB_USER",
+		"pass":"MONGODB_PASS",
+		"host": "MONGODB_HOST",
+		"port": "MONGODB_PORT"
+	},
+	"jwtSecret": "JWT_SECRET"
+}
