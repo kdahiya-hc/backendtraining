@@ -9,7 +9,7 @@ function auth(req, res, next) {
 	}
 
 	try {
-		const decodedPayload = jwt.verify(token, config.get('jwtPrivateKey') );
+		const decodedPayload = jwt.verify(token, config.get('jwtSecret') );
 		req.user = decodedPayload;
 		next();
 	} catch(err) {

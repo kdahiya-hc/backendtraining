@@ -30,8 +30,6 @@ const userSchema = new mongoose.Schema({
   friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
 });
 
-const User = mongoose.model('User', userSchema);
-
 function validate(data) {
   const schema = Joi.object({
     email: Joi.string().trim().email().required(),
@@ -59,7 +57,9 @@ function validate(data) {
 }
 
 userSchema.methods.generateAuthToken = function() {
-	return jwt.sign({ _id: this._id }, config.get('jwtPrivateKey'));
+	return jwt.sign({ _id: this._id }, config.get('jwtSecret'));
 }
+
+const User = mongoose.model('User', userSchema);
 
 module.exports = { User, validate };
