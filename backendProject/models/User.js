@@ -1,3 +1,6 @@
+require('dotenv').config();
+const config = require('config');
+const jwt = require('jsonwebtoken');
 const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
 const mongoose = require('mongoose');
@@ -19,8 +22,9 @@ const userSchema = new mongoose.Schema({
   },
   dob: { type: Date, required: true },
   otp: {
-    otp: { type: Number, min: 1111, max: 9999 },
-    exp: { type: Date }
+    otpHash: { type: String, maxlength: 250 },
+    exp: { type: Date },
+    attempts: { type: Number, default: 0 }
   },
   registeredOn: { type: Date, default: Date.now },
   friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
@@ -46,7 +50,7 @@ function validate(data) {
     }).optional(),
     dob: Joi.date().required(),
 	otp: Joi.object({
-		otp: Joi.number().min(1111).max(9999).required(),
+		otpHash: Joi.number().min(1111).max(9999).required(),
 	  }).optional(),
     friends: Joi.array().items(Joi.objectId()).optional(),
   });
@@ -54,11 +58,8 @@ function validate(data) {
   return schema.validate(data);
 }
 
-userSchema.methods.generateOtp = function () {
-	this.otp = {
-	  otp: Math.floor(1000 + Math.random() * 9000),
-	  exp: Date.now() + 5 * 60 * 1000
-	};
-  };
+userSchema.methods.generateAuthToken = function() {
+	return jwt.sign({ _id: this._id }, config.get('jwtPrivateKey'));
+}
 
 module.exports = { User, validate };
