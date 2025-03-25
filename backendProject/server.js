@@ -1,12 +1,7 @@
 require('dotenv').config();
 const config = require('config');
-
-require('express-async-errors');
 const express = require('express');
-
 const mongoose = require('mongoose');
-
-const PORT = config.get('port');
 
 const dbConfig = config.get('db');
 const database = process.env[dbConfig.database]
@@ -19,7 +14,13 @@ mongoose.connect(dbUri)
 
 const app = express();
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 app.use('/', require('./routes/home'));
+app.use('/api/users', require('./routes/user'));
+
+const PORT = config.get('port');
 
 // Server
 app.listen(config.get('port'), () => {
