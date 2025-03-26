@@ -66,7 +66,7 @@ userSchema.methods.generateAuthToken = function() {
     return {
       success: true,
       message: 'JWT is generated',
-      value: { token: jwt.sign({ _id: this._id }, config.get('jwtSecret'))}
+      value: { token: jwt.sign({ _id: this._id }, config.get('jwtSecret'), { expiresIn: "10m" })}
     };
   }catch(err){
 		throw new Error(err.message);

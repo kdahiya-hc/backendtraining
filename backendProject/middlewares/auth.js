@@ -14,9 +14,17 @@ function auth(req, res, next) {
 		req.user = decodedPayload;
 		next();
 	} catch(err) {
-		res.status(400).json({
+		if (err.name === "TokenExpiredError") {
+			return res.status(400).json({
+				success: false,
+				message: 'Token has expired. Please log in again. ' + err.message,
+				value: { }
+			});
+		}
+
+		return res.status(400).json({
 			success: false,
-			message: err.message,
+			message: 'Invalid Token. ' + err.message,
 			value: { }
 		});
 	}
