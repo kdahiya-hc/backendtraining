@@ -2,6 +2,7 @@ require('dotenv').config();
 const config = require('config');
 const express = require('express');
 const mongoose = require('mongoose');
+const morgan = require('morgan');
 
 const dbConfig = config.get('db');
 const database = process.env[dbConfig.database]
@@ -16,9 +17,11 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(morgan('dev'));
 
 app.use('/', require('./routes/home'));
 app.use('/api/users', require('./routes/user'));
+app.use('/api/auth', require('./routes/auth'));
 
 const PORT = config.get('port');
 
