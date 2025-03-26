@@ -89,7 +89,7 @@ userSchema.methods.generateOtp = async function () {
 
     const otpObject = {
       otpHash: hashedOtp,
-      exp: Date.now() + 5 * 60 * 1000,
+      exp: Date.now() + 1 * 60 * 1000,
       attempts: 0
     };
 
