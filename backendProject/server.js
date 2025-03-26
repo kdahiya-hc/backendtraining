@@ -10,7 +10,7 @@ const database = process.env[dbConfig.database]
 const dbUri = `mongodb://${dbConfig.user}:${dbConfig.pass}@${dbConfig.host}:${dbConfig.port}/${database}?authSource=admin`;
 
 mongoose.connect(dbUri)
-	.then(() => console.log(`Connected to ${dbUri}`))
+	.then(() => console.log(`Connected to ${database}`))
 	.catch(err => console.log(err));
 
 const app = express();

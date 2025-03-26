@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const Joi = require('joi');
 Joi.objectId = require('joi-objectid')(Joi);
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
   email: { type: String, unique: true, required: true },
@@ -22,9 +23,13 @@ const userSchema = new mongoose.Schema({
   },
   dob: { type: Date, required: true },
   otp: {
-    otpHash: { type: String, maxlength: 250 },
-    exp: { type: Date },
-    attempts: { type: Number, default: 0 }
+    type: [{
+      otpHash: { type: String, maxlength: 250 },
+      exp: { type: Date },
+      attempts: { type: Number, default: 0 },
+    }],
+    default: [],
+    optional: true,
   },
   registeredOn: { type: Date, default: Date.now },
   friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
@@ -48,17 +53,105 @@ function validate(data) {
     }).optional(),
     dob: Joi.date().required(),
 	otp: Joi.object({
-		otpHash: Joi.number().min(1111).max(9999).required(),
+		otp: Joi.string().min(4).max(4).required(),
 	  }).optional(),
     friends: Joi.array().items(Joi.objectId()).optional(),
-  });
+  }).options({ stripUnknown: true });;
 
   return schema.validate(data);
 }
 
 userSchema.methods.generateAuthToken = function() {
-	return jwt.sign({ _id: this._id }, config.get('jwtSecret'));
+  try{
+    return {
+      success: true,
+      message: 'JWT is generated',
+      value: { token: jwt.sign({ _id: this._id }, config.get('jwtSecret'))}
+    };
+  }catch(err){
+		throw new Error(err.message);
+  }
 }
+
+userSchema.methods.generateOtp = async function () {
+  try{
+    const now = Date.now();
+    this.otp = this.otp.filter(otp => otp.exp > now);
+
+    if (this.otp.length >= 3) {
+      throw new Error("Maximum OTP limit reached. Please wait for OTP expiry.");
+    }
+
+    const otp = Math.floor(1000 + Math.random() * 9000).toString();
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedOtp = await bcrypt.hash(otp, salt);
+
+    const otpObject = {
+      otpHash: hashedOtp,
+      exp: Date.now() + 5 * 60 * 1000,
+      attempts: 0
+    };
+
+    this.otp.push(otpObject);
+
+    await this.save()
+
+    return {
+      success: true,
+      message: 'OTP generated succesfully. Valid for 5mins',
+      value: { otp : otp }
+    };
+  }catch(err){
+		throw new Error(err.message);
+  }
+  };
+
+userSchema.methods.verifyOtp = async function (enteredOtp) {
+  try {
+    const otpObject = this.otp.find(otp => otp.exp > Date.now() && otp.attempts <= 3);
+
+    if (!otpObject){
+      return {
+        success: false,
+        message: 'No valid OTP found or OTP expired',
+        value: { }
+      };
+    }
+
+    otpObject.attempts++;
+
+    if (otpObject.attempts > 3) {
+      this.otp = this.otp.filter(otp => otp !== otpObject);
+      await this.save();
+      return {
+        success: false,
+        message: 'OTP attempts exceeded, please request a new OTP',
+        value: { }
+      };
+    }
+
+    const isMatch = await bcrypt.compare(enteredOtp, otpObject.otpHash);
+
+    await this.save();
+
+    if (isMatch && Date.now() < otpObject.exp) {
+      return {
+        success: true,
+        message: 'OTP verified successfully',
+        value: { token: this.generateAuthToken().value }
+      };
+    } else {
+      return {
+        success: false,
+        message: 'Invalid OTP or OTP expired',
+        value: { }
+      };
+    }
+  } catch(err) {
+    throw new Error(err.message);
+  }
+};
 
 const User = mongoose.model('User', userSchema);
 
