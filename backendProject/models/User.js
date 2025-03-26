@@ -6,6 +6,32 @@ Joi.objectId = require('joi-objectid')(Joi);
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
+function validateUser(data) {
+  const schema = Joi.object({
+    email: Joi.string().trim().email().required(),
+    password: Joi.string().trim().min(8).max(50).required(),
+    name: Joi.object({
+      firstName: Joi.string().trim().min(3).max(50).required(),
+      middleName: Joi.string().trim().max(50).optional(),
+      lastName: Joi.string().trim().min(3).max(50).required()
+    }).required(),
+    address: Joi.object({
+      apartment: Joi.string().trim().max(100).optional(),
+      street: Joi.string().trim().max(100).optional(),
+      ward: Joi.string().trim().max(100).optional(),
+      city: Joi.string().trim().max(100).required(),
+      postalCode: Joi.number().max(9999999).required()
+    }).optional(),
+    dob: Joi.date().required(),
+	otp: Joi.object({
+		otp: Joi.string().min(4).max(4).required(),
+	  }).optional(),
+    friends: Joi.array().items(Joi.objectId()).optional(),
+  }).options({ stripUnknown: true });;
+
+  return schema.validate(data);
+}
+
 const userSchema = new mongoose.Schema({
   email: { type: String, unique: true, required: true },
   password: { type: String, minlength: 8, maxlength: 250, required: true },
@@ -34,32 +60,6 @@ const userSchema = new mongoose.Schema({
   registeredOn: { type: Date, default: Date.now },
   friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
 });
-
-function validate(data) {
-  const schema = Joi.object({
-    email: Joi.string().trim().email().required(),
-    password: Joi.string().trim().min(8).max(50).required(),
-    name: Joi.object({
-      firstName: Joi.string().trim().min(3).max(50).required(),
-      middleName: Joi.string().trim().max(50).optional(),
-      lastName: Joi.string().trim().min(3).max(50).required()
-    }).required(),
-    address: Joi.object({
-      apartment: Joi.string().trim().max(100).optional(),
-      street: Joi.string().trim().max(100).optional(),
-      ward: Joi.string().trim().max(100).optional(),
-      city: Joi.string().trim().max(100).required(),
-      postalCode: Joi.number().max(9999999).required()
-    }).optional(),
-    dob: Joi.date().required(),
-	otp: Joi.object({
-		otp: Joi.string().min(4).max(4).required(),
-	  }).optional(),
-    friends: Joi.array().items(Joi.objectId()).optional(),
-  }).options({ stripUnknown: true });;
-
-  return schema.validate(data);
-}
 
 userSchema.methods.generateAuthToken = function() {
   try{
@@ -155,4 +155,4 @@ userSchema.methods.verifyOtp = async function (enteredOtp) {
 
 const User = mongoose.model('User', userSchema);
 
-module.exports = { User, validate };
+module.exports = { User, validateUser };
