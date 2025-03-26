@@ -14,7 +14,11 @@ function auth(req, res, next) {
 		req.user = decodedPayload;
 		next();
 	} catch(err) {
-		res.status(400).json({ message: 'Error', error: err.message });
+		res.status(400).json({
+			success: false,
+			message: err.message,
+			value: { }
+		});
 	}
 }
 
