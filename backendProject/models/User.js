@@ -57,9 +57,9 @@ const userSchema = new mongoose.Schema({
     default: [],
     optional: true,
   },
-  registeredOn: { type: Date, default: Date.now },
-  friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
-});
+  friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]},
+  { timestamps: true }
+);
 
 userSchema.methods.generateAuthToken = function() {
   try{
