@@ -30,7 +30,8 @@ const userSchema = new mongoose.Schema({
     default: [],
     optional: true,
   },
-  friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+  friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true }],
+  pendingRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'FriendRequest', index: true }],
   },{
     timestamps: true,
   });
@@ -146,11 +147,12 @@ function validateUser(data) {
       postalCode: Joi.number().max(9999999).required()
     }).optional(),
     dob: Joi.date().required(),
-	otp: Joi.object({
-		otp: Joi.string().min(4).max(4).required(),
-	  }).optional(),
+    otp: Joi.object({
+      otp: Joi.string().min(4).max(4).required(),
+      }).optional(),
     friends: Joi.array().items(Joi.objectId()).optional(),
-  }).options({ stripUnknown: true });
+    pendingRequests: Joi.array().items(Joi.objectId()).optional(),
+    }).options({ stripUnknown: true });
 
   return schema.validate(data);
 }

@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 const Joi = require('joi');
 
 const friendRequestSchema = new mongoose.Schema({
-	sender: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-	receiver: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+	sender: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+	receiver: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
 	message: { type: String, default: 'Can you be my friend?' },
 	status: { type: String, enum: ['pending', 'declined', 'accepted'], default: 'pending' },
 	},{
