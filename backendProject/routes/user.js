@@ -41,7 +41,7 @@ router.get('/', auth, async (req, res) => {
 // Get logged in user details
 router.get('/me', auth, async (req, res) => {
 	try {
-		console.log('In view own page')
+		console.log('In get /me')
 		const user = await User.findById({ _id : req.user._id });
 
 		if (!user) {
@@ -58,7 +58,6 @@ router.get('/me', auth, async (req, res) => {
 			value: { user: _.pick(user, ['email', 'name']) }
 		});
 	} catch(err){
-		console.log(err.message);
 		return res.status(500).json({
 			success: false,
 			message: err.message,
@@ -70,7 +69,7 @@ router.get('/me', auth, async (req, res) => {
 // Update logged in user details
 router.put('/me', auth, async (req, res) => {
 	try {
-		console.log('In update')
+		console.log('In update /me')
 		const { error, value } = validate(req.body);
 		if (error) {
 			return res.status(500).json({

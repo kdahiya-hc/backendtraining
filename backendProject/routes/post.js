@@ -8,7 +8,7 @@ const router = express.Router();
 // Create a post
 router.post('/create', auth, async (req, res) => {
 	try{
-		console.log('In create')
+		console.log('In create post')
 		const { error, value } = validate(req.body);
 		if (error) {
 			return res.status(500).json({
@@ -42,16 +42,12 @@ router.post('/create', auth, async (req, res) => {
 // Get a post, only if friend or owned
 router.get('/:postId', auth, async (req, res) => {
 	try{
-		console.log('In get :postId')
-
 		const post = await Post.findById(req.params.postId).populate('postedBy', 'friendsId');
-		console.log(post.postedBy.friendsId);
-		console.log(new mongoose.Types.ObjectId(req.user._id));
+
 		if (post){
 			const isOwner = new mongoose.Types.ObjectId(req.user._id).equals(post.postedBy._id)
 			const isFriend = post.postedBy.friendsId.includes(req.user._id);
-			console.log('isOwner: ', isOwner);
-     		console.log('isFriend: ', isFriend);
+
 			if (isOwner || isFriend) {
 				return res.status(200).json({
 					success: true,
