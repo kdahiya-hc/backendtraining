@@ -3,6 +3,8 @@ const config = require('config');
 const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
+const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
 
 const dbConfig = config.get('db');
 const database = process.env[dbConfig.database]
