@@ -2,7 +2,7 @@ const _ = require('lodash');
 const { Post, validatePost: validate } = require('../models/Post');
 const auth = require('../middlewares/auth');
 const express = require('express');
-const { default: mongoose, mongo } = require('mongoose');
+const mongoose = require('mongoose');
 const router = express.Router();
 
 // Create a post
