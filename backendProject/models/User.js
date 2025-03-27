@@ -10,28 +10,28 @@ const userSchema = new mongoose.Schema({
   password: { type: String, minlength: 8, maxlength: 250, required: true },
   name: {
     firstName: { type: String, minlength: 3, maxlength: 50, required: true },
-    middleName: { type: String, maxlength: 50 },
+    middleName: { type: String, maxlength: 50, required: false },
     lastName: { type: String, minlength: 3, maxlength: 50, required: true }
   },
   address: {
-    apartment: { type: String, maxlength: 100 },
-    street: { type: String, maxlength: 100 },
-    ward: { type: String, maxlength: 100 },
-    city: { type: String, maxlength: 100 },
-    postalCode: { type: Number, max: 9999999 }
+    apartment: { type: String, maxlength: 100, required: true },
+    street: { type: String, maxlength: 100, required: false },
+    ward: { type: String, maxlength: 100, required: false },
+    city: { type: String, maxlength: 100, required: true },
+    postalCode: { type: Number, max: 9999999, required: true },
   },
   dob: { type: Date, required: true },
   otp: {
     type: [{
-      otpHash: { type: String, maxlength: 250 },
-      exp: { type: Date },
-      attempts: { type: Number, default: 0 },
+      otpHash: { type: String, maxlength: 250, required: true },
+      exp: { type: Date, default: Date.now() + 1 * 60 * 1000, required: true },
+      attempts: { type: Number, default: 0, required: true },
     }],
     default: [],
-    optional: true,
+    required: false
   },
-  friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', index: true }],
-  pendingRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'FriendRequest', index: true }],
+  friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true, default: [] }],
+  pendingRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'FriendRequest',required: true , index: true, default: [] }],
   },{
     timestamps: true,
   });
@@ -64,8 +64,6 @@ userSchema.methods.generateOtp = async function () {
 
     const otpObject = {
       otpHash: hashedOtp,
-      exp: Date.now() + 1 * 60 * 1000,
-      attempts: 0
     };
 
     this.otp.push(otpObject);
@@ -145,7 +143,7 @@ function validateUser(data) {
       ward: Joi.string().trim().max(100).optional(),
       city: Joi.string().trim().max(100).required(),
       postalCode: Joi.number().max(9999999).required()
-    }).optional(),
+    }).required(),
     dob: Joi.date().required(),
     otp: Joi.object({
       otp: Joi.string().min(4).max(4).required(),
