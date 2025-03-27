@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema({
   otp: {
     type: [{
       otpHash: { type: String, maxlength: 250 },
-      exp: { type: Date, default: Date.now() + 1 * 60 * 1000 },
+      exp: { type: Date },
       attempts: { type: Number, default: 0 },
     }],
     default: []
@@ -38,7 +38,7 @@ userSchema.methods.generateAuthToken = function() {
     return {
       success: true,
       message: 'JWT is generated',
-      value: { token: jwt.sign({ _id: this._id }, config.get('jwtSecret'), { expiresIn: "10m" })}
+      value: { token: jwt.sign({ _id: this._id }, config.get('jwtSecret'), { expiresIn: "60m" })}
     };
   }catch(err){
 		throw new Error(err.message);
@@ -61,6 +61,7 @@ userSchema.methods.generateOtp = async function () {
 
     const otpObject = {
       otpHash: hashedOtp,
+      exp: Date.now() + 1 * 60 * 1000
     };
 
     this.otp.push(otpObject);
@@ -80,6 +81,7 @@ userSchema.methods.generateOtp = async function () {
 userSchema.methods.verifyOtp = async function (enteredOtp) {
   try {
     const otpObject = this.otp.find(otp => otp.exp > Date.now() && otp.attempts <= 3);
+    console.log(otpObject)
 
     if (!otpObject){
       return {

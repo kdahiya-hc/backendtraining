@@ -26,8 +26,8 @@ app.use(morgan('dev'));
 
 // routes
 app.use('/', require('./routes/home'));
-app.use('/api/users', require('./routes/user'));
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/users', require('./routes/user'));
 app.use('/api/posts', require('./routes/post'));
 
 // server configuration
