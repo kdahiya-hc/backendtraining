@@ -34,7 +34,7 @@ router.post('/register', async (req, res) => {
 			email: value.email,
 			password: hashedPassword,
 			name: value.name,
-			address: value.apartment,
+			address: value.address,
 			dob: new Date(value.dob),
 		});
 

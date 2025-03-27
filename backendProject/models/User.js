@@ -15,26 +15,23 @@ const userSchema = new mongoose.Schema({
   },
   address: {
     apartment: { type: String, maxlength: 100, required: true },
-    street: { type: String, maxlength: 100, required: false },
-    ward: { type: String, maxlength: 100, required: false },
+    street: { type: String, maxlength: 100, default: '' },
+    ward: { type: String, maxlength: 100, default: '' },
     city: { type: String, maxlength: 100, required: true },
     postalCode: { type: Number, max: 9999999, required: true },
   },
   dob: { type: Date, required: true },
   otp: {
     type: [{
-      otpHash: { type: String, maxlength: 250, required: true },
-      exp: { type: Date, default: Date.now() + 1 * 60 * 1000, required: true },
-      attempts: { type: Number, default: 0, required: true },
+      otpHash: { type: String, maxlength: 250 },
+      exp: { type: Date, default: Date.now() + 1 * 60 * 1000 },
+      attempts: { type: Number, default: 0 },
     }],
-    default: [],
-    required: false
+    default: []
   },
-  friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true, default: [] }],
-  pendingRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: 'FriendRequest',required: true , index: true, default: [] }],
-  },{
-    timestamps: true,
-  });
+  friendsId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', default: [] }],
+  pendingRequestsId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'FriendRequest', default: [] }],
+  }, { timestamps: true });
 
 userSchema.methods.generateAuthToken = function() {
   try{
@@ -148,8 +145,8 @@ function validateUser(data) {
     otp: Joi.object({
       otp: Joi.string().min(4).max(4).required(),
       }).optional(),
-    friends: Joi.array().items(Joi.objectId()).optional(),
-    pendingRequests: Joi.array().items(Joi.objectId()).optional(),
+    friendsId: Joi.array().items(Joi.objectId()).optional(),
+    pendingRequestsId: Joi.array().items(Joi.objectId()).optional(),
     }).options({ stripUnknown: true });
 
   return schema.validate(data);
