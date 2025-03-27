@@ -2,35 +2,8 @@ require('dotenv').config();
 const config = require('config');
 const jwt = require('jsonwebtoken');
 const Joi = require('joi');
-Joi.objectId = require('joi-objectid')(Joi);
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-
-function validateUser(data) {
-  const schema = Joi.object({
-    email: Joi.string().trim().email().required(),
-    password: Joi.string().trim().min(8).max(50).required(),
-    name: Joi.object({
-      firstName: Joi.string().trim().min(3).max(50).required(),
-      middleName: Joi.string().trim().max(50).optional(),
-      lastName: Joi.string().trim().min(3).max(50).required()
-    }).required(),
-    address: Joi.object({
-      apartment: Joi.string().trim().max(100).optional(),
-      street: Joi.string().trim().max(100).optional(),
-      ward: Joi.string().trim().max(100).optional(),
-      city: Joi.string().trim().max(100).required(),
-      postalCode: Joi.number().max(9999999).required()
-    }).optional(),
-    dob: Joi.date().required(),
-	otp: Joi.object({
-		otp: Joi.string().min(4).max(4).required(),
-	  }).optional(),
-    friends: Joi.array().items(Joi.objectId()).optional(),
-  }).options({ stripUnknown: true });;
-
-  return schema.validate(data);
-}
 
 const userSchema = new mongoose.Schema({
   email: { type: String, unique: true, required: true },
@@ -57,9 +30,10 @@ const userSchema = new mongoose.Schema({
     default: [],
     optional: true,
   },
-  friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]},
-  { timestamps: true }
-);
+  friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+  },{
+    timestamps: true,
+  });
 
 userSchema.methods.generateAuthToken = function() {
   try{
@@ -154,5 +128,31 @@ userSchema.methods.verifyOtp = async function (enteredOtp) {
 };
 
 const User = mongoose.model('User', userSchema);
+
+function validateUser(data) {
+  const schema = Joi.object({
+    email: Joi.string().trim().email().required(),
+    password: Joi.string().trim().min(8).max(50).required(),
+    name: Joi.object({
+      firstName: Joi.string().trim().min(3).max(50).required(),
+      middleName: Joi.string().trim().max(50).optional(),
+      lastName: Joi.string().trim().min(3).max(50).required()
+    }).required(),
+    address: Joi.object({
+      apartment: Joi.string().trim().max(100).optional(),
+      street: Joi.string().trim().max(100).optional(),
+      ward: Joi.string().trim().max(100).optional(),
+      city: Joi.string().trim().max(100).required(),
+      postalCode: Joi.number().max(9999999).required()
+    }).optional(),
+    dob: Joi.date().required(),
+	otp: Joi.object({
+		otp: Joi.string().min(4).max(4).required(),
+	  }).optional(),
+    friends: Joi.array().items(Joi.objectId()).optional(),
+  }).options({ stripUnknown: true });
+
+  return schema.validate(data);
+}
 
 module.exports = { User, validateUser };
