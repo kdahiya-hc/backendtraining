@@ -6,8 +6,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router();
 
-// Send friend request
-router.post('/', auth, async (req, res) => {
+// Send friend request. Sender's Action
+router.post('/send', auth, async (req, res) => {
 	try {
 		console.log('In send friend request');
 		const { error, value } = validate(req.body);
@@ -70,7 +70,7 @@ router.post('/', auth, async (req, res) => {
 		return res.status(200).json({
 			success: true,
 			message: 'Friend request sent successfully!',
-			value: { friendRequest: newFriendRequest }
+			value: { friendRequest: _.pick(newFriendRequest, ['_id', 'to', 'message']) }
 		});
 	} catch(err){
 		return res.status(500).json({
@@ -81,10 +81,110 @@ router.post('/', auth, async (req, res) => {
 	}
 })
 
-// Cancel friend request
+// Cancel friend request. Sender's action
+router.delete('/:requestId/cancel', auth, async (req, res) => {
+	try {
+		console.log('In cancel friend request');
 
-// Accept (Sender's Action) friend request
+		const existingRequest = await FriendRequest.findById(req.params.requestId);
+
+		if (!existingRequest) {
+			return res.status(400).json({
+				success: false,
+				message: 'No friend request found',
+				value: { }
+			});
+		}
+
+		if (!existingRequest.from.equals(req.user._id)) {
+			return res.status(400).json({
+				success: false,
+				message: 'You didn\'t send this request hence you aren\'t authorized to cancel the request',
+				value: {}
+			});
+		}
+
+		// For the recipient
+		await User.findByIdAndUpdate(
+			existingRequest.to,
+			{ $pull: { pendingRequestsId: existingRequest._id } },
+			{ new: true }
+		);
+
+		// For the sender
+		await User.findByIdAndUpdate(
+			req.user._id,
+			{ $pull: { pendingRequestsId: existingRequest._id } },
+			{ new: true }
+		);
+
+		await FriendRequest.findByIdAndDelete(req.params.requestId);
+
+		return res.status(200).json({
+			success: true,
+			message: 'Friend request cancelled!',
+			value: { }
+		});
+	} catch(err){
+		return res.status(500).json({
+			success: false,
+			message: err.message,
+			value: { }
+		});
+	}
+})
 
 // Reject (Receiver's Action) friend request
+router.delete('/:requestId/reject', auth, async (req, res) => {
+	try {
+		console.log('In reject friend request');
+
+		const existingRequest = await FriendRequest.findById(req.params.requestId);
+
+		if (!existingRequest) {
+			return res.status(400).json({
+				success: false,
+				message: 'No friend request found',
+				value: { }
+			});
+		}
+
+		if (!existingRequest.to.equals(req.user._id)) {
+			return res.status(400).json({
+				success: false,
+				message: 'You sent this request hence you aren\'t authorized to reject the request',
+				value: {}
+			});
+		}
+
+		// For the recipient
+		await User.findByIdAndUpdate(
+			existingRequest.to,
+			{ $pull: { pendingRequestsId: existingRequest._id } },
+			{ new: true }
+		);
+
+		// For the sender
+		await User.findByIdAndUpdate(
+			req.user._id,
+			{ $pull: { pendingRequestsId: existingRequest._id } },
+			{ new: true }
+		);
+
+		await FriendRequest.findByIdAndDelete(req.params.requestId);
+
+		return res.status(200).json({
+			success: true,
+			message: 'Friend request rejected!',
+			value: { }
+		});
+	} catch(err){
+		return res.status(500).json({
+			success: false,
+			message: err.message,
+			value: { }
+		});
+	}
+})
 
 module.exports = router;
