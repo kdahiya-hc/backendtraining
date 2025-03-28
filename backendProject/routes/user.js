@@ -7,7 +7,7 @@ const router = express.Router();
 // Get all users details with pagination
 router.get('/', auth, async (req, res) => {
 	try {
-		console.log('In get all with pagination')
+		console.log('In get all users with pagination')
 		const page = parseInt(req.query.page) || 1;
 		const limit = parseInt(req.query.limit) || 5;
 		const skip = (page - 1) * limit;
@@ -18,8 +18,8 @@ router.get('/', auth, async (req, res) => {
 		if (users.length === 0){
 			return res.status(200).json({
 				success: false,
-				message: 'Register some Users',
-				value : { users : [] }
+				message: 'Nothing to show on this page, try removing all the limits!',
+				value : { users, totalUsers }
 			});
 		}
 

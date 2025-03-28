@@ -29,6 +29,7 @@ app.use('/', require('./routes/home'));
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/users', require('./routes/user'));
 app.use('/api/posts', require('./routes/post'));
+app.use('/api/friends/', require('./routes/friend'));
 app.use('/api/friends/requests', require('./routes/friendRequest'));
 
 // server configuration

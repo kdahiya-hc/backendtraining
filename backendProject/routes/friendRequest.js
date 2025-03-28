@@ -3,7 +3,6 @@ const { FriendRequest, validateFriendRequest: validate } = require('../models/Fr
 const { User } = require('../models/User');
 const auth = require('../middlewares/auth');
 const express = require('express');
-const mongoose = require('mongoose');
 const router = express.Router();
 
 // Send friend request. Sender's Action
