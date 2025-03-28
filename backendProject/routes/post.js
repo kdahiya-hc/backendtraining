@@ -85,7 +85,7 @@ router.get('/:postId', auth, async (req, res) => {
 	}
 })
 
-// Get a post and update it only if owned
+// Update post only if owned
 router.put('/:postId', auth, async (req, res) => {
 	try{
 		console.log('In Update post');
@@ -99,14 +99,13 @@ router.put('/:postId', auth, async (req, res) => {
 		};
 		const updatedPost = await Post.findOneAndUpdate(
 			// this is like find/where condition with key and values
-			{ _id: req.params.postId, 'postedBy': req.user._id },
+			{ _id: req.params.postId, postedBy: req.user._id },
 			// This is to set now
 			{ $set: { content: value.content, imageURL: value.imageURL }},
 			// This is like ensuring the object here after is modified one
 			{ new : true }
 		);
 
-		console.log('Post:', updatedPost);
 		if (!updatedPost) {
 			return res.status(403).json({
 				success: false,
@@ -119,6 +118,37 @@ router.put('/:postId', auth, async (req, res) => {
 			success: true,
 			message: 'Post updated successfully!',
 			value: { post: _.pick(updatedPost, ['content', 'imageURL', 'likesCount', 'commentsId', 'postedBy']) }
+		});
+	} catch(err) {
+		return res.status(500).json({
+			success: false,
+			message: err.message,
+			value: { }
+		});
+	}
+})
+
+// Get a post and update it only if owned
+router.delete('/:postId', auth, async (req, res) => {
+	try{
+		console.log('In delete post');
+
+		const deletedPost = await Post.findOneAndDelete(
+			{ _id: req.params.postId, postedBy: req.user._id },
+		);
+
+		if (!deletedPost) {
+			return res.status(403).json({
+				success: false,
+				message: 'Post not found or You are not authorized to delete this post',
+				value: { deletedPost }
+			});
+		}
+
+		return res.status(200).json({
+			success: true,
+			message: 'Post deleted successfully!',
+			value: { post: _.pick(deletedPost, ['content', 'imageURL', 'likesCount', 'commentsId', 'postedBy']) }
 		});
 	} catch(err) {
 		return res.status(500).json({
