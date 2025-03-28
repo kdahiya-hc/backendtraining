@@ -30,16 +30,51 @@ router.post('/add',auth, async (req, res) => {
 
 		await newLike.save();
 
-		await Post.updateOne(
+		const updatedPost = await Post.findOneAndUpdate(
 			{ _id: req.params.postId },
 			{ $inc: { likesCount: 1 } },
-			{ upsert : true }
+			{ new: true }
 		)
 
 		return res.status(200).json({
 			success: true,
 			message: 'Post liked successfully',
-			value: { like: _.pick(newLike, ['postId', 'likedBy']) }
+			value: { like: _.pick(updatedPost, ['_id', 'content','likesCount']) }
+		});
+	} catch(err) {
+		return res.status(500).json({
+			success: false,
+			message: err.message,
+			value: { }
+		});
+	}
+})
+
+// Remove a like
+router.post('/remove',auth, async (req, res) => {
+	try {
+		console.log("In dislike post");
+
+		const existingLike = await Like.deleteOne({ postId: req.params.postId, likedBy: req.user._id});
+
+		if (!existingLike) {
+			return res.status(400).json({
+				success: false,
+				message: 'You hadn\'t liked the post',
+				value: { like: _.pick(existingLike, ['postId', 'likedBy']) }
+			});
+		}
+
+		const updatedPost = await Post.findOneAndUpdate(
+			{ _id: req.params.postId },
+			{ $inc: { likesCount: -1 } },
+			{ new: true }
+		)
+
+		return res.status(200).json({
+			success: true,
+			message: 'Post disliked successfully',
+			value: { like: _.pick(updatedPost, ['_id', 'content','likesCount']) }
 		});
 	} catch(err) {
 		return res.status(500).json({
