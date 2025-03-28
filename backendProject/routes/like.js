@@ -8,6 +8,67 @@ const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router({ mergeParams: true });
 
+// Get all post like and likesCount
+router.get('/', async (req, res) => {
+	try {
+		console.log('In get all like and likesCount');
+		const page = parseInt(req.query.page) || 1;
+		const limit = parseInt(req.query.limit) || 5;
+		const skip = (page - 1) * limit;
+		const post = await Post.findById(req.params.postId);
+		if (!post) {
+			return res.status(404).json({
+			  success: false,
+			  message: 'Post not found',
+			  value: {}
+			});
+		  }
+
+		const likesCount = post.likesCount;
+		const likes = await Like.find({ postId: req.params.postId }).skip(skip).limit(limit);
+
+		if (likesCount === 0){
+			return res.status(200).json({
+				success: false,
+				message: 'There are no likes for this post',
+				value:{
+					post: _.pick(post, ['content', 'postedBy']),
+					likesCount: likesCount,
+					recentLikes: _.pick(likes, ['postId', 'likedBy'])
+				}
+			})
+		}
+
+		if (likes === 0){
+			return res.status(200).json({
+				success: false,
+				message: 'You got some high expectations there, either there are no likes for this post or limit is high',
+				value:{
+					post: _.pick(post, ['content', 'postedBy']),
+					likesCount: likesCount,
+					recentLikes: _.pick(likes, ['postId', 'likedBy'])
+				}
+			})
+		}
+
+		return res.status(200).json({
+			success: true,
+			message: `Here are most recent ${limit-skip} likes.`,
+			value:{
+				post: _.pick(post, ['content', 'postedBy']),
+				likesCount: likesCount,
+				recentLikes: _.pick(likes, ['postId', 'likedBy'])
+			}
+		})
+	} catch(err) {
+		return res.status(500).json({
+			success: false,
+			message: err.message,
+			value: { }
+		});
+	}
+})
+
 // Add a like
 router.post('/add',auth, async (req, res) => {
 	try {
@@ -36,7 +97,7 @@ router.post('/add',auth, async (req, res) => {
 			{ new: true }
 		)
 
-		return res.status(200).json({
+		return res.status(201).json({
 			success: true,
 			message: 'Post liked successfully',
 			value: { like: _.pick(updatedPost, ['_id', 'content','likesCount']) }
@@ -51,7 +112,7 @@ router.post('/add',auth, async (req, res) => {
 })
 
 // Remove a like
-router.post('/remove',auth, async (req, res) => {
+router.delete('/remove',auth, async (req, res) => {
 	try {
 		console.log("In dislike post");
 
