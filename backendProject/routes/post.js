@@ -85,4 +85,48 @@ router.get('/:postId', auth, async (req, res) => {
 	}
 })
 
+// Get a post and update it only if owned
+router.put('/:postId', auth, async (req, res) => {
+	try{
+		console.log('In Update post');
+		const { error, value } = validate(req.body);
+		if (error) {
+			return res.status(500).json({
+				success: false,
+				message: error.details[0].message,
+				value: { }
+			});
+		};
+		const updatedPost = await Post.findOneAndUpdate(
+			// this is like find/where condition with key and values
+			{ _id: req.params.postId, 'postedBy': req.user._id },
+			// This is to set now
+			{ $set: { content: value.content, imageURL: value.imageURL }},
+			// This is like ensuring the object here after is modified one
+			{ new : true }
+		);
+
+		console.log('Post:', updatedPost);
+		if (!updatedPost) {
+			return res.status(403).json({
+				success: false,
+				message: 'Post not found or You are not authorized to edit this post',
+				value: { updatedPost }
+			});
+		}
+
+		return res.status(200).json({
+			success: true,
+			message: 'Post updated successfully!',
+			value: { post: _.pick(updatedPost, ['content', 'imageURL', 'likesCount', 'commentsId', 'postedBy']) }
+		});
+	} catch(err) {
+		return res.status(500).json({
+			success: false,
+			message: err.message,
+			value: { }
+		});
+	}
+})
+
 module.exports = router
