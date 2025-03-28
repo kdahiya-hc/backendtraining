@@ -50,7 +50,7 @@ router.get('/me', auth, async (req, res) => {
 				message: 'No user found',
 				value: { user : { } }
 			});
-		};
+		}
 
 		return res.status(200).json({
 			success: true,
@@ -77,7 +77,7 @@ router.put('/me', auth, async (req, res) => {
 				message: error.details[0].message,
 				value: { }
 			});
-		};
+		}
 
 		const user = await User.findOneAndUpdate(
 			{ _id : req.user._id },
@@ -97,7 +97,7 @@ router.put('/me', auth, async (req, res) => {
 				message: 'No user updated',
 				value: { user : { } }
 			});
-		};
+		}
 
 		return res.status(200).json({
 			success: true,
@@ -125,7 +125,7 @@ router.get('/:id', auth, async (req, res) => {
 				message: 'No user updated',
 				value: { user : { } }
 			});
-		};
+		}
 
 		return res.status(200).json({
 			success: true,
