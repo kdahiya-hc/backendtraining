@@ -1,9 +1,9 @@
 const _ = require('lodash');
-const { FriendRequest, validateFriendRequest: validate } = require('../models/FriendRequest');
 const { User } = require('../models/User');
+const { FriendRequest, validateFriendRequest: validate } = require('../models/FriendRequest');
 const auth = require('../middlewares/auth');
 const express = require('express');
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 // Send friend request. Sender's Action
 router.post('/send', auth, async (req, res) => {

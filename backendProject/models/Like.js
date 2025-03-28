@@ -6,7 +6,7 @@ const likeSchema = new mongoose.Schema({
 	likedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
 	},{ timestamps: true });
 
-const Comment = mongoose.model('Like', commentSchema);
+const Comment = mongoose.model('Like', likeSchema);
 
 function validateLike(data){
 	const schema = Joi.object({

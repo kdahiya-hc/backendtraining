@@ -1,10 +1,10 @@
 const _ = require('lodash');
+const { User } = require('../models/User');
 const { Post, validatePost: validate } = require('../models/Post');
 const auth = require('../middlewares/auth');
 const express = require('express');
 const mongoose = require('mongoose');
-const { User } = require('../models/User');
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 // Create a post
 router.post('/create', auth, async (req, res) => {

@@ -2,7 +2,7 @@ const _ = require('lodash');
 const { User } = require('../models/User');
 const auth = require('../middlewares/auth');
 const express = require('express');
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 // Get all friends details with pagination
 router.get('/', auth, async (req, res) => {

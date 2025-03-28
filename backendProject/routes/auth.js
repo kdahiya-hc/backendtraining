@@ -1,8 +1,8 @@
 const _ = require('lodash');
+const bcrypt = require('bcrypt');
 const { User, validateUser: validate } = require('../models/User');
 const express = require('express');
-const router = express.Router();
-const bcrypt = require('bcrypt');
+const router = express.Router({ mergeParams: true });
 
 // Register a user
 router.post('/register', async (req, res) => {
