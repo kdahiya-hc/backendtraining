@@ -1,3 +1,4 @@
+// /routes/auth.js
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
 const { User, validateUser: validate } = require('../models/User');

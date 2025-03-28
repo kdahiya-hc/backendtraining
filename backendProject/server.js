@@ -1,3 +1,4 @@
+// server.js
 require('dotenv').config();
 const config = require('config');
 const Joi = require('joi');

@@ -1,3 +1,4 @@
+// /routes/friend.js
 const _ = require('lodash');
 const { User } = require('../models/User');
 const auth = require('../middlewares/auth');

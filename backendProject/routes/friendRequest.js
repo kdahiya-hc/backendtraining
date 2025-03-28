@@ -1,3 +1,4 @@
+// /routes/friendRequest.js
 const _ = require('lodash');
 const { User } = require('../models/User');
 const { FriendRequest, validateFriendRequest: validate } = require('../models/FriendRequest');

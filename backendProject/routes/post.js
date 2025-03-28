@@ -1,3 +1,4 @@
+// /routes/post.js
 const _ = require('lodash');
 const { User } = require('../models/User');
 const { Post, validatePost: validate } = require('../models/Post');

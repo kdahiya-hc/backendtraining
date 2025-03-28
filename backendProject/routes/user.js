@@ -1,3 +1,4 @@
+// /routes/user.js
 const _ = require('lodash');
 const { User, validateUser: validate } = require('../models/User');
 const auth = require('../middlewares/auth');
