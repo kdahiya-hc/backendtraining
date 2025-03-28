@@ -7,15 +7,15 @@ const likeSchema = new mongoose.Schema({
 	likedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
 	},{ timestamps: true });
 
-const Comment = mongoose.model('Like', likeSchema);
+const Like = mongoose.model('Like', likeSchema);
 
 function validateLike(data){
 	const schema = Joi.object({
-		postId: Joi.objectId().required(),
+		postId: Joi.objectId().optional(),
 		likedBy: Joi.objectId().optional(),
 	}).options({ stripUnknown: true });
 
 	return schema.validate(data);
 }
 
-module.exports = { Comment, validateLike };
+module.exports = { Like, validateLike };
