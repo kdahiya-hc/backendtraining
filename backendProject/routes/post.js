@@ -51,11 +51,9 @@ router.get('/:postId', auth, async (req, res) => {
 			// below are ObjectId so either make them object Id or make them string and fetch
 			// const isOwner = req.user._id === post.postedBy._id.toString();
 			const isOwner = new mongoose.Types.ObjectId(req.user._id).equals(post.postedBy._id);
-			console.log(isOwner);
 			// below are array so either use include or some
 			// const isFriend = user.friendsId.some(friendId => friendId.equals(post.postedBy._id));
 			const isFriend = user.friendsId.includes(post.postedBy._id);
-			console.log(isFriend);
 
 			if (isOwner || isFriend) {
 				return res.status(200).json({
