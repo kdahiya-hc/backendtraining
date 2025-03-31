@@ -1,6 +1,7 @@
 // /routes/user.js
 const _ = require('lodash');
-const { User, validateUser: validate } = require('../models/User');
+const { User, validateUpdateUser: validateUpdate } = require('../models/User');
+const { Post } = require('../models/Post');
 const auth = require('../middlewares/auth');
 const express = require('express');
 const router = express.Router({ mergeParams: true });
@@ -68,10 +69,10 @@ router.get('/me', auth, async (req, res) => {
 })
 
 // Update logged in user details
-router.put('/me', auth, async (req, res) => {
+router.patch('/me', auth, async (req, res) => {
 	try {
 		console.log('In update /me')
-		const { error, value } = validate(req.body);
+		const { error, value } = validateUpdate(req.body);
 		if (error) {
 			return res.status(500).json({
 				success: false,
@@ -114,25 +115,41 @@ router.put('/me', auth, async (req, res) => {
 	}
 })
 
-// Get user detail with id
-router.get('/:id', auth, async (req, res) => {
+// Get user page with id if friend
+router.get('/profile/:userId', auth, async (req, res) => {
 	try {
-		console.log('In get user detail by ID');
-		const user = await User.findById(req.params.id);
+		console.log('In get page by ID');
 
-		if (!user) {
-			return res.status(404).json({
-				success: false,
-				message: 'No user updated',
-				value: { user : { } }
-			});
+		const otherUserId = req.params.userId;
+		const myUserId = req.user._id;
+
+		const me = await User.findById(myUserId);
+		const other = await User.findById(otherUserId);
+
+		const isMe = myUserId === otherUserId ? true : false;
+		const isFriend = me.friendsId.some(id => id.equals(otherUserId));
+		// console.log(`isMe: ${isMe}`);
+		// console.log(`isFriend: ${isFriend}`);
+
+		if(isMe || isFriend){
+			const pageOf = isFriend? otherUserId: myUserId;
+			const posts = await Post.find({ postedBy: pageOf}).populate('commentsId', '-_id commentedBy content');
+			const profile = isFriend? other : me;
+			return res.status(200).json({
+				success: true,
+				message: 'User profile and posts fetched successfully',
+				value: {
+				  user: _.pick(profile, ['email', 'name', 'address', 'dob']),
+				  post: posts.map(post => _.pick(post, ['content', 'imageURL', 'likesCount', 'commentsId', 'postedBy']))
+				},
+			  });
 		}
 
-		return res.status(200).json({
-			success: true,
-			message: 'Query succesful',
-			value : { user: _.pick(user, ['email', 'name']) }
-		});
+		return res.status(403).json({
+			success: false,
+			message: 'You are not authorized to view this profile',
+			value: {},
+		  });
 	} catch(err) {
 		return res.status(500).json({
 			success: false,
