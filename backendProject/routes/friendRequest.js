@@ -32,7 +32,7 @@ router.get('/:reqStatus', auth, async(req, res) => {
 		if (requests.length === 0){
 			return res.status(200).json({
 				success: false,
-				message: 'No friend requests found for this status.',
+				message: 'No friend requests found for the specified status.',
 				value: { requests, totalRequests }
 			});
 		}
@@ -73,6 +73,14 @@ router.post('/send', auth, async (req, res) => {
 		const sender = await User.findById(req.user._id);
 		const receiver = await User.findById(value.to);
 
+		if (sender._id.toString() === receiver._id.toString()) {
+			return res.status(400).json({
+				success: false,
+				message: 'You cannot send a friend request to yourself.',
+				value: {}
+			});
+		}
+
 		if (sender.friendsId.includes(value.to) && receiver.friendsId.includes(req.user._id)) {
 			return res.status(400).json({
 				success: false,
@@ -83,8 +91,8 @@ router.post('/send', auth, async (req, res) => {
 
 		const existingRequest = await FriendRequest.findOne({
 			$or: [
-				{ from: req.user._id, to: value.to, status : { $in: ['rejected', 'pending'] } },
-				{ from: value.to, to: req.user._id, status : { $in : ['rejected', 'pending'] } }
+				{ from: req.user._id, to: value.to, status : 'pending' },
+				{ from: value.to, to: req.user._id, status : 'pending' }
 			]
 		});
 
@@ -92,7 +100,7 @@ router.post('/send', auth, async (req, res) => {
 			return res.status(400).json({
 				success: false,
 				message: 'Friend request already exists',
-				value: { requestId: _.pick(existingRequest, ['_id']) }
+				value: { requestId: _.pick(existingRequest, ['_id', 'status']) }
 			});
 		}
 
@@ -137,21 +145,13 @@ router.delete('/:requestId/cancel', auth, async (req, res) => {
 	try {
 		console.log('In cancel friend request');
 
-		const existingRequest = await FriendRequest.findById(req.params.requestId);
+		const existingRequest = await FriendRequest.findOne({ _id: req.params.requestId, from: req.user._id, status : 'pending'})
 
 		if (!existingRequest) {
 			return res.status(400).json({
 				success: false,
-				message: 'No friend request found',
+				message: 'No pending friend request found or you are not authorized to cancel this request.',
 				value: { }
-			});
-		}
-
-		if (!existingRequest.from.equals(req.user._id)) {
-			return res.status(400).json({
-				success: false,
-				message: 'You didn\'t send this request hence you aren\'t authorized to cancel the request',
-				value: {}
 			});
 		}
 
@@ -190,21 +190,13 @@ router.put('/:requestId/accept', auth, async (req, res) => {
 	try {
 		console.log('In accept friend request');
 
-		const existingRequest = await FriendRequest.findById(req.params.requestId);
+		const existingRequest = await FriendRequest.findOne({ _id: req.params.requestId, to: req.user._id, status : 'pending'})
 
 		if (!existingRequest) {
 			return res.status(400).json({
 				success: false,
-				message: 'No friend request found',
+				message: 'No pending friend request found or you are not authorized to accept this request.',
 				value: { }
-			});
-		}
-
-		if (!existingRequest.to.equals(req.user._id)) {
-			return res.status(400).json({
-				success: false,
-				message: 'You sent this request hence you aren\'t authorized to accept the request',
-				value: {}
 			});
 		}
 
@@ -236,7 +228,11 @@ router.put('/:requestId/accept', auth, async (req, res) => {
 			{ new: true }
 		);
 
-		await FriendRequest.findByIdAndDelete(req.params.requestId);
+		await FriendRequest.findByIdAndUpdate(
+			req.params.requestId,
+			{ status: 'accepted' },
+			{ new : true }
+		);
 
 		return res.status(200).json({
 			success: true,
@@ -257,39 +253,35 @@ router.delete('/:requestId/reject', auth, async (req, res) => {
 	try {
 		console.log('In reject friend request');
 
-		const existingRequest = await FriendRequest.findById(req.params.requestId);
+		const existingRequest = await FriendRequest.findOne({ _id: req.params.requestId, to: req.user._id, status : 'pending'})
 
 		if (!existingRequest) {
 			return res.status(400).json({
 				success: false,
-				message: 'No friend request found',
+				message: 'No pending friend request found or you are not authorized to reject this request.',
 				value: { }
 			});
 		}
 
-		if (!existingRequest.to.equals(req.user._id)) {
-			return res.status(400).json({
-				success: false,
-				message: 'You sent this request hence you aren\'t authorized to reject the request',
-				value: {}
-			});
-		}
-
-		// For the recipient
+		// For the sender
 		await User.findByIdAndUpdate(
-			existingRequest.to,
+			existingRequest.from,
 			{ $pull: { pendingRequestsId: existingRequest._id } },
 			{ new: true }
 		);
 
-		// For the sender
+		// For the recipient
 		await User.findByIdAndUpdate(
 			req.user._id,
 			{ $pull: { pendingRequestsId: existingRequest._id } },
 			{ new: true }
 		);
 
-		await FriendRequest.findByIdAndDelete(req.params.requestId);
+		await FriendRequest.findByIdAndUpdate(
+			req.params.requestId,
+			{ status: 'rejected' },
+			{ new: true }
+		);
 
 		return res.status(200).json({
 			success: true,
