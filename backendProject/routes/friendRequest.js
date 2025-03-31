@@ -6,6 +6,57 @@ const auth = require('../middlewares/auth');
 const express = require('express');
 const router = express.Router({ mergeParams: true });
 
+// Get pending/accepted/rejected friend requests
+router.get('/:reqStatus', auth, async(req, res) => {
+	try {
+		console.log('In get all friend requests with pagination')
+		const page = parseInt(req.query.page) || 1;
+		const limit = parseInt(req.query.limit) || 5;
+		const skip = (page - 1) * limit;
+
+		if (!['pending', 'accepted', 'rejected'].includes(req.params.reqStatus)) {
+			return res.status(400).json({
+				success: false,
+				message: 'Invalid status. Use pending, accepted, or rejected.',
+				value: {}
+			});
+		}
+
+		const totalRequests = await FriendRequest.countDocuments({ $or:[{ from: req.user._id }, { to: req.user._id}], status: req.params.reqStatus });
+		const requests = await FriendRequest.find({ status: req.params.reqStatus, $or: [{ from: req.user._id }, { to: req.user._id }]})
+								.skip(skip).limit(limit)
+								.select('_id')
+								.populate('from', 'name email')
+								.populate('to', 'name email');
+
+		if (requests.length === 0){
+			return res.status(200).json({
+				success: false,
+				message: 'No friend requests found for this status.',
+				value: { requests, totalRequests }
+			});
+		}
+
+		const requestData = requests.map(request => ({
+			id: request._id,
+			from : request.from.name.firstName,
+			to : request.to.name.firstName,
+			status: request.status
+		}))
+		return res.status(200).json({
+			success: true,
+			message: 'Friend requests retrieved successfully.',
+			value: { requests : requestData, totalRequests }
+		});
+	} catch(err) {
+		return res.status(500).json({
+			success: false,
+			message: err.message,
+			value: { }
+		});
+	}
+})
+
 // Send friend request. Sender's Action
 router.post('/send', auth, async (req, res) => {
 	try {
