@@ -13,7 +13,7 @@ const Comment = mongoose.model('Comment', commentSchema);
 function validateComment(data){
 	const schema = Joi.object({
 		content: Joi.string().required(),
-		postId: Joi.objectId().required(),
+		postId: Joi.objectId().optional(),
 		commentedBy: Joi.objectId().optional(),
 	}).options({ stripUnknown: true });
 

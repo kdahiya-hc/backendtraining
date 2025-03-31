@@ -44,7 +44,7 @@ router.post('/create', auth, async (req, res) => {
 // Get a post, only if friend or owned
 router.get('/:postId', auth, async (req, res) => {
 	try{
-		const post = await Post.findById(req.params.postId);
+		const post = await Post.findById(req.params.postId).populate('commentsId', 'commentedBy content');
 
 		if (post){
 			const user = await User.findById(req.user._id);
