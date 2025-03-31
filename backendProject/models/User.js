@@ -128,7 +128,7 @@ userSchema.methods.verifyOtp = async function (enteredOtp) {
 
 const User = mongoose.model('User', userSchema);
 
-function validateUser(data) {
+function validateNewUser(data) {
   const schema = Joi.object({
     email: Joi.string().trim().email().required(),
     password: Joi.string().trim().min(8).max(50).required(),
@@ -155,4 +155,24 @@ function validateUser(data) {
   return schema.validate(data);
 }
 
-module.exports = { User, validateUser };
+function validateUpdateUser(data) {
+  const schema = Joi.object({
+    name: Joi.object({
+      firstName: Joi.string().trim().min(3).max(50).required(),
+      middleName: Joi.string().trim().max(50).optional(),
+      lastName: Joi.string().trim().min(3).max(50).required()
+    }).required(),
+    address: Joi.object({
+      apartment: Joi.string().trim().max(100).optional(),
+      street: Joi.string().trim().max(100).optional(),
+      ward: Joi.string().trim().max(100).optional(),
+      city: Joi.string().trim().max(100).required(),
+      postalCode: Joi.number().max(9999999).required()
+    }).required(),
+    dob: Joi.date().required(),
+    }).options({ stripUnknown: true });
+
+  return schema.validate(data);
+}
+
+module.exports = { User, validateNewUser, validateUpdateUser };
