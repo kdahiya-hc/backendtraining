@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const Joi = require('joi');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 
 const userSchema = new mongoose.Schema({
   email: { type: String, unique: true, required: true },
@@ -55,7 +56,7 @@ userSchema.methods.generateOtp = async function () {
       throw new Error("Maximum OTP limit reached. Please wait for OTP expiry.");
     }
 
-    const otp = Math.floor(1000 + Math.random() * 9000).toString();
+    const otp = crypto.randomInt(1000, 9999).toString();
 
     const salt = await bcrypt.genSalt(10);
     const hashedOtp = await bcrypt.hash(otp, salt);
@@ -82,7 +83,6 @@ userSchema.methods.generateOtp = async function () {
 userSchema.methods.verifyOtp = async function (enteredOtp) {
   try {
     const otpObject = this.otp.find(otp => otp.exp > Date.now() && otp.attempts <= 3);
-    console.log(otpObject)
 
     if (!otpObject){
       return {
