@@ -7,7 +7,11 @@ const morgan = require('morgan');
 const express = require('express');
 const mongoose = require('mongoose');
 const swaggerUI = require('swagger-ui-express');
+// Either do the swagger documentation in code and load or
+// do the swagger documentation in a json or yaml file and load it.
 const swaggerJsDoc = require('swagger-jsdoc');
+// const YAML = require('yamljs');
+// const swaggerDocument = YAML.load('./swagger.yaml');
 
 // database configuration
 const dbConfig = config.get('db');
@@ -21,19 +25,23 @@ mongoose.connect(dbUri)
 
 // swagger configuration
 const options = {
-	definition: {
-		openapi: '3.0.0',
-		info: {
-			title: 'Social Media API',
-			version: '1.0.0',
-			description: 'This is the social media api created based on the backend training project document.'
+		definition: {
+			openapi: '3.0.0',
+			info: {
+				title: 'Social Media API',
+				description: 'This is the social media api created based on the backend training project document.\n\nSome useful links: \n\n - [The Backend training repository](https://github.com/swagger-api/swagger-petstore)',
+				version: '1.0.0',
+			},
+			servers: [
+				{
+					url: 'http://localhost:8000',
+					description: 'Development environment'
+				},
+			],
 		},
-		servers: [
-			{ url: 'http://localhost:8000' },
-		],
-	},
-	apis: [ './routes/*.js', './models/*.js']
-}
+		apis: [ './routes/*.js', './models/*.js']
+		// Read API docs from route and model files
+	}
 
 const specs = swaggerJsDoc(options);
 
