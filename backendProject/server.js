@@ -45,8 +45,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 
 // Serving the Swagger UI at the '/api-docs' route to visualize the API documentation
-app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs));
-// app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+// app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs));
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 // routes
 app.use('/', require('./routes/home'));
