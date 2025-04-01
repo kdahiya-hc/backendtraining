@@ -9,6 +9,7 @@ const router = express.Router({ mergeParams: true });
 router.delete('/remove/:friendId', auth, async (req, res) => {
 	try {
 		console.log('In Remove a friend');
+
 		const user = await User.findById(req.user._id);
 
 		if (!user) {
@@ -69,6 +70,7 @@ router.delete('/remove/:friendId', auth, async (req, res) => {
 router.get('/', auth, async (req, res) => {
 	try {
 		console.log('In get all friends with pagination');
+
 		const page = parseInt(req.query.page) || 1;
 		const limit = parseInt(req.query.limit) || 5;
 		const skip = (page - 1) * limit;

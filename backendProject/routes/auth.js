@@ -9,6 +9,7 @@ const router = express.Router({ mergeParams: true });
 router.post('/register', async (req, res) => {
 	try {
 		console.log('In register');
+
 		const { error, value } = validate(req.body);
 		if (error){
 			return res.status(400).json({
@@ -59,6 +60,7 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
 	try {
 		console.log('In login');
+
 		const validUser = await User.findOne({ email: req.body.email });
 		if (!validUser){
 			return res.status(400).json({
@@ -98,7 +100,6 @@ router.post('/verify-otp', async (req, res) => {
 		console.log('In verify-otp');
 
 		const user = await User.findOne({ email : req.body.email });
-
 		if (!user) {
 			return res.status(400).json({
 				success: false,

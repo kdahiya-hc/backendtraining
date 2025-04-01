@@ -10,6 +10,7 @@ const router = express.Router({ mergeParams: true });
 router.post('/send', auth, async (req, res) => {
 	try {
 		console.log('In send friend request');
+
 		const { error, value } = validate(req.body);
 		if (error) {
 			return res.status(500).json({
@@ -249,7 +250,8 @@ router.delete('/:requestId/reject', auth, async (req, res) => {
 // Get pending/accepted/rejected friend requests
 router.get('/:reqStatus', auth, async(req, res) => {
 	try {
-		console.log('In get all friend requests with pagination')
+		console.log('In get all friend requests with pagination');
+
 		const page = parseInt(req.query.page) || 1;
 		const limit = parseInt(req.query.limit) || 5;
 		const skip = (page - 1) * limit;

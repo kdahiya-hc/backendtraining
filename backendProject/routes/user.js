@@ -9,7 +9,8 @@ const router = express.Router({ mergeParams: true });
 // Get all users details with pagination
 router.get('/', auth, async (req, res) => {
 	try {
-		console.log('In get all users with pagination')
+		console.log('In get all users with pagination');
+
 		const page = parseInt(req.query.page) || 1;
 		const limit = parseInt(req.query.limit) || 5;
 		const skip = (page - 1) * limit;
@@ -43,7 +44,8 @@ router.get('/', auth, async (req, res) => {
 // Get logged in user details
 router.get('/me', auth, async (req, res) => {
 	try {
-		console.log('In get /me')
+		console.log('In get /me');
+
 		const user = await User.findById({ _id : req.user._id });
 
 		if (!user) {
@@ -71,7 +73,8 @@ router.get('/me', auth, async (req, res) => {
 // Update logged in user details
 router.patch('/me', auth, async (req, res) => {
 	try {
-		console.log('In update /me')
+		console.log('In update /me');
+
 		const { error, value } = validateUpdate(req.body);
 		if (error) {
 			return res.status(500).json({

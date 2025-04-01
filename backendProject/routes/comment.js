@@ -10,7 +10,6 @@ const router = express.Router({ mergeParams: true }); // This merge params is ge
 router.patch('/:commentId/update',auth, async (req, res) => {
 	try {
 		console.log("In update a comment on a post");
-		const commentId = req.params.commentId;
 
 		const { error, value } = validate(req.body);
 		if (error) {
@@ -20,6 +19,8 @@ router.patch('/:commentId/update',auth, async (req, res) => {
 				value: { }
 			});
 		}
+
+		const commentId = req.params.commentId;
 
 		const updatedComment = await Comment.findByIdAndUpdate(
 			commentId,
@@ -88,8 +89,8 @@ router.delete('/:commentId/delete',auth, async (req, res) => {
 router.post('/:postId/add',auth, async (req, res) => {
 	try {
 		console.log("In add a comment on a post");
+
 		const postId = req.params.postId;
-		console.log(postId);
 		const { error, value } = validate(req.body);
 		if (error) {
 			return res.status(500).json({
@@ -101,7 +102,6 @@ router.post('/:postId/add',auth, async (req, res) => {
 
 		const post = await Post.findById(postId);
         if (!post) {
-			console.log('Post not found with ID:', postId);
             return res.status(400).json({
                 success: false,
                 message: 'Post not found',
@@ -139,6 +139,7 @@ router.post('/:postId/add',auth, async (req, res) => {
 router.get('/:postId', auth, async(req, res) => {
 	try {
 		console.log('In get all comments of a post from me');
+
 		const postId = req.params.postId;
 
 		const comments = await Comment.find({ postId: postId, commentedBy: req.user._id });

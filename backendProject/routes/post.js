@@ -10,7 +10,8 @@ const router = express.Router({ mergeParams: true });
 // Create a post
 router.post('/create', auth, async (req, res) => {
 	try{
-		console.log('In create post')
+		console.log('In create post');
+
 		const { error, value } = validate(req.body);
 		if (error) {
 			return res.status(500).json({
@@ -44,6 +45,8 @@ router.post('/create', auth, async (req, res) => {
 // Get a post, only if friend or owned
 router.get('/:postId', auth, async (req, res) => {
 	try{
+		console.log('In get post by postId');
+
 		const post = await Post.findById(req.params.postId).populate('commentsId', 'commentedBy content');
 
 		if (post){
@@ -87,7 +90,8 @@ router.get('/:postId', auth, async (req, res) => {
 // Update post only if owned
 router.put('/:postId', auth, async (req, res) => {
 	try{
-		console.log('In Update post');
+		console.log('In Update post with postId');
+
 		const { error, value } = validate(req.body);
 		if (error) {
 			return res.status(500).json({
@@ -130,7 +134,7 @@ router.put('/:postId', auth, async (req, res) => {
 // Get a post and update it only if owned
 router.delete('/:postId', auth, async (req, res) => {
 	try{
-		console.log('In delete post');
+		console.log('In delete post with postId');
 
 		const deletedPost = await Post.findOneAndDelete(
 			{ _id: req.params.postId, postedBy: req.user._id },
