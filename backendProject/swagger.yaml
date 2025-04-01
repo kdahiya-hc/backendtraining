@@ -1,0 +1,15 @@
+openapi: 3.0.0
+info:
+  title: Social Media API
+  description: |
+    This is the social media api created based on the backend training project document.
+
+    Some useful links
+    - [The Backend training repository(public)](https://github.com/kdahiya-hc/backendtraining)
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8000
+    description: Local host server, development environment
+
+paths:
