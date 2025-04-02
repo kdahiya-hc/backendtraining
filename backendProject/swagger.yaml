@@ -3,9 +3,11 @@ info:
   title: Social Media API
   version: 1.0.0
   description: |
+    This is from YAML File based application of swagger documentation
+
     This is the social media api created based on the backend training project document.
 
-    Some useful links
+    Some useful links: 
     - [The Backend training repository(public)](https://github.com/kdahiya-hc/backendtraining)
 
 servers:
@@ -16,10 +18,13 @@ paths:
   /{number}:
     get:
       tags:
-      - /:number
+        - /:number
       summary: Check if a number is odd or even
+      security:
+        - xAuthToken: []
       description: |
         Given a number in the URL path, the endpoint checks if the number is odd or even.
+
         If no number is passed, or if the value is not a number, it returns a 400 error.
       parameters:
         - in: path
@@ -85,6 +90,11 @@ paths:
                     properties: {}
 
 components:
+  securitySchemes:
+    xAuthToken:
+      type: apiKey
+      in: header
+      name: x-auth-token
   schemas:
     defaultResponse:
       type: object

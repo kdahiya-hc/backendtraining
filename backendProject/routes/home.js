@@ -1,36 +1,21 @@
 // /routes/home.js
+const auth = require('../middlewares/auth');
 const express = require('express')
 const router = express.Router({ mergeParams: true });
-/**
- * @swagger
- * components:
- *  schemas:
- *   defaultResponse:
- *    type: object
- *    properties:
- *     success:
- *      type: boolean
- *     message:
- *      type: string
- *     value:
- *      type: object
- *    example:
- *     success: true
- *     message: Passed
- *     value: { key: value }
- */
 
 /**
  * @swagger
  * /{number}:
  *  get:
  *   tags:
- *    - /:number
+ *    - home
  *   summary: Check if a number is odd or even
  *   description: |
  *    Given a number in the URL path, the endpoint checks if the number is odd or even.
  *
  *    If no number is passed, or if the value is not a number, it returns a 400 error.
+ *   security:
+ *    - xAuthToken: []
  *   parameters:
  *    - in: path
  *      name: number
@@ -95,7 +80,7 @@ const router = express.Router({ mergeParams: true });
  *          properties: {}
 */
 
-router.get('/:number', (req, res) => {
+router.get('/:number', auth, (req, res) => {
 	try{
 		console.log('In / to check server is listening on port');
 		const number = Number(req.params.number);

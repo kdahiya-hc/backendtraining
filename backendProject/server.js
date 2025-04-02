@@ -13,6 +13,30 @@ const swaggerJsDoc = require('swagger-jsdoc');
 const YAML = require('yamljs');
 const swaggerDocument = YAML.load('./swagger.yaml');
 
+/**
+ * @swagger
+ * components:
+ *  securitySchemes:
+ *   xAuthToken:
+ *    type: apiKey
+ *    in: header
+ *    name: x-auth-token
+ *  schemas:
+ *   defaultResponse:
+ *    type: object
+ *    properties:
+ *     success:
+ *      type: boolean
+ *     message:
+ *      type: string
+ *     value:
+ *      type: object
+ *    example:
+ *     success: true
+ *     message: Passed
+ *     value: { key: value }
+ */
+
 // Swagger configuration: Set up Swagger UI with OpenAPI specs for API documentation
 const options = {
 	definition: {
@@ -20,7 +44,7 @@ const options = {
 		info: {
 			title: 'Social Media API',
 			version: '1.0.0',
-			description: 'This is the social media api created based on the backend training project document.\n\nSome useful links: \n\n - [The Backend training repository(public)](https://github.com/kdahiya-hc/backendtraining)',
+			description: '\n\nThis is from JsDoc comment based application of swagger documentation.\n\nThis is the social media api created based on the backend training project document.\n\nSome useful links: \n\n - [The Backend training repository(public)](https://github.com/kdahiya-hc/backendtraining)',
 		},
 		servers: [
 			{
@@ -30,7 +54,7 @@ const options = {
 		],
 	},
 	// This below line tells where to read the paths or components from. Read API docs from route and model files
-	apis: [ './routes/*.js', './models/*.js']
+	apis: [ './server.js', './routes/*.js', './models/*.js']
 }
 
 // Initialize swaggerJSDoc, specs is used to build the ui
@@ -45,8 +69,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 
 // Serving the Swagger UI at the '/api-docs' route to visualize the API documentation
-// app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs));
-app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs));
+// app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 // routes
 app.use('/', require('./routes/home'));
