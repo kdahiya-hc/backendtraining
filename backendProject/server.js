@@ -54,7 +54,7 @@ const options = {
 		],
 	},
 	// This below line tells where to read the paths or components from. Read API docs from route and model files
-	apis: [ './server.js', './routes/*.js', './models/*.js']
+	apis: ['./middlewares/*.js', './*.js', './routes/*.js', './models/*.js']
 }
 
 // Initialize swaggerJSDoc, specs is used to build the ui

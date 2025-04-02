@@ -5,6 +5,31 @@ const { User, validateNewUser: validate } = require('../models/User');
 const express = require('express');
 const router = express.Router({ mergeParams: true });
 
+/**
+ * @swagger
+ * /api/auth/register:
+ *   post:
+ *     tags:
+ *       - auth
+ *     summary: Register a user
+ *     description: |
+ *       It checks if entered data is valid and creates a user into the database.
+ *     requestBody:
+ *       description: Needs valid user data
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: "#/components/schemas/user"
+ *     responses:
+ *       201:
+ *         description: success in creating a user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/defaultResponse"
+*/
+
 // Register a user
 router.post('/register', async (req, res) => {
 	try {
@@ -38,6 +63,8 @@ router.post('/register', async (req, res) => {
 			name: value.name,
 			address: value.address,
 			dob: new Date(value.dob),
+			friendsId: value.friendsId,
+			pendingRequestsId: value.pendingRequestsId,
 		});
 
 		await newUser.save();

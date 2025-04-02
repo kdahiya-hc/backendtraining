@@ -61,6 +61,7 @@ const redis = require('../utils/redisClient');
  *               type: integer
  *               summary: postal code without hiphens
  *           required:
+ *             - apartment
  *             - city
  *             - postalCode
  *         dob:
@@ -89,17 +90,14 @@ const redis = require('../utils/redisClient');
  *         - dob
  *       example:
  *         email: "testuser@test.com"
- *         password: 12345678
+ *         password: "12345678"
  *         name:
  *           firstName: Test
- *           middleName: ""
  *           lastName: User
  *         address:
- *           apartment: Space level
- *           street: 7-4-11
- *           ward: water god ward
+ *           apartment: space water god
  *           city: Tokyo
- *           postalCode: 12345678
+ *           postalCode: 1234567
  *         dob: 2000-12-31
  *         friendsId: [ "aAbB1234cCdD5678eEfF9090", "aAbB1234cCdD5678eEfF9090"]
  *         pendingRequestsId: [ "aAbB1234cCdD5678eEfF9090", "aAbB1234cCdD5678eEfF9090"]
@@ -221,7 +219,7 @@ function validateNewUser(data) {
       lastName: Joi.string().trim().min(3).max(50).required()
     }),
     address: Joi.object({
-      apartment: Joi.string().trim().max(100).optional(),
+      apartment: Joi.string().trim().max(100).required(),
       street: Joi.string().trim().max(100).optional(),
       ward: Joi.string().trim().max(100).optional(),
       city: Joi.string().trim().max(100).required(),
@@ -243,7 +241,7 @@ function validateUpdateUser(data) {
       lastName: Joi.string().trim().min(3).max(50).required()
     }).required(),
     address: Joi.object({
-      apartment: Joi.string().trim().max(100).optional(),
+      apartment: Joi.string().trim().max(100).required(),
       street: Joi.string().trim().max(100).optional(),
       ward: Joi.string().trim().max(100).optional(),
       city: Joi.string().trim().max(100).required(),
