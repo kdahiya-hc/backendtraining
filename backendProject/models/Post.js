@@ -16,6 +16,7 @@ const Joi = require('joi');
  *         imageURL:
  *           type: string
  *           description: The URL of the attachement
+ *           format: uri
  *           default: ''
  *         likesCount:
  *           type: integer
@@ -26,17 +27,20 @@ const Joi = require('joi');
  *           description: Array of comment IDs
  *           items:
  *             type: string
+ *             description: 24-hex-decimal comment ID
+ *             pattern: "^[a-fA-F0-9]{24}$"
  *         postedBy:
  *           type: string
  *           description: 24 hex-decimal user ID
+ *           pattern: "^[a-fA-F0-9]{24}$"
  *       required:
  *         - content
- *       additionalProperties: false
  *       example:
  *         content: "This is my example post"
  *         imageURL: "https://example.com/image.jpg"
- *         likesCount: 999
- *         commentsId: ["aAbB1234cCdD5678", "1234567890abcdef"]
+ *         likesCount: 999999
+ *         commentsId: ["aAbB1234cCdD5678eEfF9090", "aAbB1234cCdD5678eEfF9090"]
+ *         postedBy: aAbB1234cCdD5678eEfF9090
  */
 
 const postSchema = new mongoose.Schema({

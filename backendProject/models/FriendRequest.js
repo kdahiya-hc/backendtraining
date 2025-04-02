@@ -25,17 +25,18 @@ const Joi = require('joi');
  *         from:
  *           type: string
  *           description: 24 hex decimals or 12 bytes id of sender
+ *           pattern: "^[a-fA-F0-9]{24}$"
  *         to:
  *           type: string
  *           description: 24 hex decimals or 12 bytes id of receiver
+ *           pattern: "^[a-fA-F0-9]{24}$"
  *       required:
  *         - to
- *       additionalProperties: false
  *       example:
  *         message: Can you be my friend?
  *         status: pending
- *         from: aAbB1234cCdD5678
- *         to: aAbB1234cCdD5678
+ *         from: aAbB1234cCdD5678eEfF9090
+ *         to: aAbB1234cCdD5678eEfF9090
  */
 
 const friendRequestSchema = new mongoose.Schema({

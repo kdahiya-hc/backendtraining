@@ -16,16 +16,17 @@ const Joi = require('joi');
  *         postId:
  *           type: string
  *           description: 24 hex decimals or 12 bytes id of post
+ *           pattern: "^[a-fA-F0-9]{24}$"
  *         commentedBy:
  *           type: string
  *           description: 24 hex decimals or 12 bytes id of user
- *       required:
+ *           pattern: "^[a-fA-F0-9]{24}$"
+*       required:
  *         - content
- *       additionalProperties: false
  *       example:
  *         content: Hey that is my picture, give credits!
- *         postId: aAbB1234cCdD5678
- *         commentedBy: aAbB1234cCdD5678
+ *         postId: aAbB1234cCdD5678eEfF9090
+ *         commentedBy: aAbB1234cCdD5678eEfF9090
 */
 
 const commentSchema = new mongoose.Schema({

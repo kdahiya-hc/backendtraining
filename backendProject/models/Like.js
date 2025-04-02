@@ -13,12 +13,14 @@ const Joi = require('joi');
  *         postId:
  *           type: string
  *           description: 24 hex decimals or 12 bytes id of post
+ *           pattern: "^[a-fA-F0-9]{24}$"
  *         likedBy:
  *           type: string
  *           description: 24 hex decimals or 12 bytes id of user
+ *           pattern: "^[a-fA-F0-9]{24}$"
  *       example:
- *         postId: aAbB1234cCdD5678
- *         likedBy: aAbB1234cCdD5678
+ *         postId: aAbB1234cCdD5678eEfF9090
+ *         likedBy: aAbB1234cCdD5678eEfF9090
  */
 
 const likeSchema = new mongoose.Schema({
