@@ -11,6 +11,7 @@ const mongoose = require('mongoose');
 const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
 const YAML = require('yamljs');
+// const swaggerDocument = require('./swagger-output.json');
 const swaggerDocument = YAML.load('./swagger.yaml');
 
 /**
