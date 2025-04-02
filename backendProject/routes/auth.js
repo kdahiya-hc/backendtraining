@@ -1,7 +1,7 @@
 // /routes/auth.js
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
-const { User, validateUser: validate } = require('../models/User');
+const { User, validateNewUser: validate } = require('../models/User');
 const express = require('express');
 const router = express.Router({ mergeParams: true });
 
@@ -118,9 +118,9 @@ router.post('/verify-otp', async (req, res) => {
 			});
 		} else {
 			return res.status(400).json({
-				success: false,
+				success: isOtpValid.success,
 				message: isOtpValid.message,
-				error: 'OTP verification failed'
+				value: isOtpValid.value
 			});
 		}
 	} catch(err) {
