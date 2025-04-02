@@ -6,6 +6,7 @@ Joi.objectId = require('joi-objectid')(Joi);
 const morgan = require('morgan');
 const express = require('express');
 const mongoose = require('mongoose');
+const { error } = require('./middlewares/error.js');
 // You can either define the Swagger documentation inline using JSDoc comments,
 // or load the documentation from an external JSON or YAML file. Here it is swagger.yaml file
 const swaggerUI = require('swagger-ui-express');
@@ -120,6 +121,7 @@ app.use('/api/friends', require('./routes/friend'));
 app.use('/api/posts', require('./routes/post'));
 app.use('/api/likes/:postId', require('./routes/like'));
 app.use('/api/comments', require('./routes/comment'));
+app.use(error);
 
 // Database configuration
 const dbConfig = config.get('db');
