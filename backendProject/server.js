@@ -22,7 +22,7 @@ const swaggerDocument = YAML.load('./swagger.yaml');
  *    in: header
  *    name: x-auth-token
  *  schemas:
- *   defaultResponse:
+ *   baseResponse:
  *    type: object
  *    properties:
  *     success:
@@ -31,10 +31,48 @@ const swaggerDocument = YAML.load('./swagger.yaml');
  *      type: string
  *     value:
  *      type: object
+ *   successResponse:
+ *    allOf:
+ *     - $ref: "#/components/schemas/baseResponse"
  *    example:
  *     success: true
  *     message: Passed
  *     value: { key: value }
+ *   failureResponse:
+ *    allOf:
+ *     - $ref: "#/components/schemas/baseResponse"
+ *    example:
+ *     success: false
+ *     message: Failed
+ *     value: { }
+ *   errorResponse:
+ *    allOf:
+ *    - $ref: "#/components/schemas/baseResponse"
+ *    example:
+ *     success: false
+ *     message: Error mesage
+ *     value: {  }
+ *   unauthorizedResponse:
+ *    allOf:
+ *     - $ref: "#/components/schemas/baseResponse"
+ *    example:
+ *     success: false
+ *     message: access denied
+ *     value: { }
+ *   badRequestResponse:
+ *    allOf:
+ *     - $ref: "#/components/schemas/baseResponse"
+ *    example:
+ *     success: false
+ *     message: Bad Request
+ *     value: { }
+ *   notFoundResponse:
+ *    allOf:
+ *     - $ref: "#/components/schemas/baseResponse"
+ *    example:
+ *     success: false
+ *     message: Not found
+ *     value: { }
  */
 
 // Swagger configuration: Set up Swagger UI with OpenAPI specs for API documentation
