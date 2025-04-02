@@ -8,6 +8,103 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const redis = require('../utils/redisClient');
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     user:
+ *       description: A user
+ *       type: object
+ *       properties:
+ *         email:
+ *           type: string
+ *           description: email of the user
+ *           format: email
+ *         password:
+ *           type: string
+ *           description: A valid password string
+ *           format: password
+ *           pattern: "^[a-zA-Z0-9$%!@_-]{8,}$"
+ *         name:
+ *           type: object
+ *           description: Name of the user
+ *           properties:
+ *             firstName:
+ *               type: string
+ *               summary: first name of user
+ *             middleName:
+ *               type: string
+ *               summary: middle name of user
+ *             lastName:
+ *               type: string
+ *               summary: last name of the user
+ *           required:
+ *             - firstName
+ *             - lastName
+ *         address:
+ *           type: object
+ *           description: Address of the user
+ *           properties:
+ *             apartment:
+ *               type: string
+ *               summary: name of the apartment
+ *             street:
+ *               type: string
+ *               summary: name/number of street
+ *             ward:
+ *               type: string
+ *               summary: name of the ward
+ *             city:
+ *               type: string
+ *               summary: name of the city
+ *             postalCode:
+ *               type: integer
+ *               summary: postal code without hiphens
+ *           required:
+ *             - city
+ *             - postalCode
+ *         dob:
+ *           type: string
+ *           description: date of birth in YYYY-MM-DD format
+ *           format: date
+ *         friendsId:
+ *           type: array
+ *           description: Array of userIds
+ *           items:
+ *             type: string
+ *             description: 24-hex-decimal userId
+ *             pattern: "^[a-fA-F0-9]{24}$"
+ *           default: []
+ *         pendingRequestsId:
+ *           type: array
+ *           description: Array of friendRequest IDs
+ *           items:
+ *             type: string
+ *             description: 24-hex-decimal friendRequest ID
+ *             pattern: "^[a-fA-F0-9]{24}$"
+ *           default: []
+ *       required:
+ *         - email
+ *         - password
+ *         - dob
+ *       example:
+ *         email: "testuser@test.com"
+ *         password: 12345678
+ *         name:
+ *           firstName: Test
+ *           middleName: ""
+ *           lastName: User
+ *         address:
+ *           apartment: Space level
+ *           street: 7-4-11
+ *           ward: water god ward
+ *           city: Tokyo
+ *           postalCode: 12345678
+ *         dob: 2000-12-31
+ *         friendsId: [ "aAbB1234cCdD5678eEfF9090", "aAbB1234cCdD5678eEfF9090"]
+ *         pendingRequestsId: [ "aAbB1234cCdD5678eEfF9090", "aAbB1234cCdD5678eEfF9090"]
+*/
+
 const userSchema = new mongoose.Schema({
   email: { type: String, unique: true, required: true },
   password: { type: String, minlength: 8, maxlength: 250, required: true },
@@ -21,7 +118,7 @@ const userSchema = new mongoose.Schema({
     street: { type: String, maxlength: 100, default: '' },
     ward: { type: String, maxlength: 100, default: '' },
     city: { type: String, maxlength: 100, required: true },
-    postalCode: { type: Number, max: 9999999, required: true },
+    postalCode: { type: Number, min: 1000000, max: 9999999, required: true },
   },
   dob: { type: Date, required: true },
   friendsId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', default: [] }],
@@ -122,14 +219,14 @@ function validateNewUser(data) {
       firstName: Joi.string().trim().min(3).max(50).required(),
       middleName: Joi.string().trim().max(50).optional(),
       lastName: Joi.string().trim().min(3).max(50).required()
-    }).required(),
+    }),
     address: Joi.object({
       apartment: Joi.string().trim().max(100).optional(),
       street: Joi.string().trim().max(100).optional(),
       ward: Joi.string().trim().max(100).optional(),
       city: Joi.string().trim().max(100).required(),
       postalCode: Joi.number().max(9999999).required()
-    }).required(),
+    }),
     dob: Joi.date().required(),
     friendsId: Joi.array().items(Joi.objectId()).optional(),
     pendingRequestsId: Joi.array().items(Joi.objectId()).optional(),
