@@ -6,6 +6,7 @@ const Joi = require('joi');
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+const redis = require('../utils/redisClient');
 
 const userSchema = new mongoose.Schema({
   email: { type: String, unique: true, required: true },
@@ -23,14 +24,6 @@ const userSchema = new mongoose.Schema({
     postalCode: { type: Number, max: 9999999, required: true },
   },
   dob: { type: Date, required: true },
-  otp: {
-    type: [{
-      otpHash: { type: String, maxlength: 250 },
-      exp: { type: Date },
-      attempts: { type: Number, default: 0 },
-    }],
-    default: []
-  },
   friendsId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', default: [] }],
   pendingRequestsId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'FriendRequest', default: [] }],
   }, { timestamps: true });
@@ -49,13 +42,7 @@ userSchema.methods.generateAuthToken = function() {
 
 userSchema.methods.generateOtp = async function () {
   try{
-    const now = Date.now();
-    this.otp = this.otp.filter(otp => otp.exp > now);
-
-    if (this.otp.length >= 3) {
-      throw new Error("Maximum OTP limit reached. Please wait for OTP expiry.");
-    }
-
+    const redisKey = `otp:${this.email}`;
     const otp = crypto.randomInt(1000, 9999).toString();
 
     const salt = await bcrypt.genSalt(10);
@@ -63,12 +50,10 @@ userSchema.methods.generateOtp = async function () {
 
     const otpObject = {
       otpHash: hashedOtp,
-      exp: Date.now() + 1 * 60 * 1000
+      attempts: 0
     };
 
-    this.otp.push(otpObject);
-
-    await this.save()
+    await redis.set(redisKey, JSON.stringify(otpObject), 'EX', 300);
 
     return {
       success: true,
@@ -82,7 +67,8 @@ userSchema.methods.generateOtp = async function () {
 
 userSchema.methods.verifyOtp = async function (enteredOtp) {
   try {
-    const otpObject = this.otp.find(otp => otp.exp > Date.now() && otp.attempts <= 3);
+    const redisKey = `otp:${this.email}`;
+    const otpObject = await redis.get(redisKey);
 
     if (!otpObject){
       return {
@@ -92,11 +78,10 @@ userSchema.methods.verifyOtp = async function (enteredOtp) {
       };
     }
 
-    otpObject.attempts++;
+    const { otpHash, attempts } = JSON.parse(otpObject);
 
-    if (otpObject.attempts > 3) {
-      this.otp = this.otp.filter(otp => otp !== otpObject);
-      await this.save();
+    if (attempts >= 3) {
+      await redis.del(redisKey);
       return {
         success: false,
         message: 'OTP attempts exceeded, please request a new OTP',
@@ -104,21 +89,22 @@ userSchema.methods.verifyOtp = async function (enteredOtp) {
       };
     }
 
-    const isMatch = await bcrypt.compare(enteredOtp, otpObject.otpHash);
+    const isMatch = await bcrypt.compare(enteredOtp, otpHash);
 
-    await this.save();
-
-    if (isMatch && Date.now() < otpObject.exp) {
+    if (isMatch) {
+      const jwtResult = this.generateAuthToken();
+      await redis.del(redisKey);
       return {
         success: true,
-        message: 'OTP verified successfully',
-        value: { token: this.generateAuthToken().value }
+        message: 'OTP verified successfully. '+ jwtResult.message,
+        value: { token: jwtResult.value.token }
       };
     } else {
+      await redis.set(redisKey, JSON.stringify({ otpHash, attempts: attempts + 1 }));
       return {
         success: false,
-        message: 'Invalid OTP or OTP expired',
-        value: { }
+        message: `Invalid OTP. Attempts left: ${2 - attempts}`,
+        value: {}
       };
     }
   } catch(err) {
@@ -145,9 +131,6 @@ function validateNewUser(data) {
       postalCode: Joi.number().max(9999999).required()
     }).required(),
     dob: Joi.date().required(),
-    otp: Joi.object({
-      otp: Joi.string().min(4).max(4).required(),
-      }).optional(),
     friendsId: Joi.array().items(Joi.objectId()).optional(),
     pendingRequestsId: Joi.array().items(Joi.objectId()).optional(),
     }).options({ stripUnknown: true });
