@@ -2,6 +2,43 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     post:
+ *       description: A post made by user
+ *       type: object
+ *       properties:
+ *         content:
+ *           type: string
+ *           description: The content of the post
+ *         imageURL:
+ *           type: string
+ *           description: The URL of the attachement
+ *           default: ''
+ *         likesCount:
+ *           type: integer
+ *           description: The count of likes to the post
+ *           default: 0
+ *         commentsId:
+ *           type: array
+ *           description: Array of comment IDs
+ *           items:
+ *             type: string
+ *         postedBy:
+ *           type: string
+ *           description: 24 hex-decimal user ID
+ *       required:
+ *         - content
+ *       additionalProperties: false
+ *       example:
+ *         content: "This is my example post"
+ *         imageURL: "https://example.com/image.jpg"
+ *         likesCount: 999
+ *         commentsId: ["aAbB1234cCdD5678", "1234567890abcdef"]
+ */
+
 const postSchema = new mongoose.Schema({
 	content: { type: String, required: true },
 	imageURL: { type: String, default: ''},
