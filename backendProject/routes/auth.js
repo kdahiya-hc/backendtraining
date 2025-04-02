@@ -27,7 +27,25 @@ const router = express.Router({ mergeParams: true });
  *         content:
  *           application/json:
  *             schema:
- *               $ref: "#/components/schemas/defaultResponse"
+ *               $ref: "#/components/schemas/successResponse"
+ *       400:
+ *         description: Bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/badRequestResponse"
+ *       500:
+ *         description: Internal server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/errorResponse"
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/unauthorizedResponse"
 */
 
 // Register a user
