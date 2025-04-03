@@ -36,6 +36,12 @@ const router = express.Router({ mergeParams: true });
  *           application/json:
  *             schema:
  *               $ref: "#/components/schemas/badRequestResponse"
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/unauthorizedResponse"
  *       404:
  *         description: User or friend not found
  *         content:
@@ -121,7 +127,7 @@ router.delete('/remove/:friendId', auth, async (req, res, next) => {
  *     parameters:
  *       - in: query
  *         name: page
- *         description: The index of friend we are at
+ *         description: The index of friend we are start at
  *         schema:
  *           type: integer
  *           example: 1
@@ -138,6 +144,18 @@ router.delete('/remove/:friendId', auth, async (req, res, next) => {
  *           application/json:
  *             schema:
  *               $ref: "#/components/schemas/successResponse"
+ *       204:
+ *         description: Success but not Content to get
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/noContentResponse"
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/unauthorizedResponse"
  *       404:
  *         description: User not found
  *         content:
@@ -178,7 +196,7 @@ router.get('/', auth, async (req, res, next) => {
 		const friends = user.friendsId.slice(skip, skip + limit);
 
 		if (friends.length === 0){
-			return res.status(200).json({
+			return res.status(204).json({
 				success: true,
 				message: 'You either have no friends of too high expectation. Add some friends or try removing all the limits!',
 				value : { friends, totalFriends }
