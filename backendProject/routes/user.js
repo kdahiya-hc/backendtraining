@@ -20,7 +20,7 @@ router.get('/', auth, async (req, res, next) => {
 
 		if (users.length === 0){
 			return res.status(200).json({
-				success: false,
+				success: true,
 				message: 'Nothing to show on this page, try removing all the limits!',
 				value : { users, totalUsers }
 			});

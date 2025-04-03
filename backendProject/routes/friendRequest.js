@@ -257,7 +257,7 @@ router.get('/:reqStatus', auth, async(req, res, next) => {
 
 		if (requests.length === 0){
 			return res.status(200).json({
-				success: false,
+				success: true,
 				message: 'No friend requests found for the specified status.',
 				value: { requests, totalRequests }
 			});

@@ -339,7 +339,7 @@ router.get('/:postId', auth, async(req, res, next) => {
 
 		if (comments.length === 0) {
 			return res.status(200).json({
-				success: false,
+				success: true,
 				message: 'No comments on this post',
 				value: comments
 			});

@@ -119,6 +119,16 @@ const options = {
 				description: 'Development environment'
 			},
 		],
+		tags: [
+			{ name: 'home', description: 'This route is just to check if server is working with the endpoints'},
+			{ name: 'auth', description: 'This route is to test out the endpoints of auth route' },
+			{ name: 'users', description: 'This route is to test out the endpoints of users route' },
+			{ name: 'friends', description: 'This route is to test out the endpoints of friends route' },
+			{ name: 'friendRequests', description: 'This route is to test out the endpoints of friendRequests route' },
+			{ name: 'posts', description: 'This route is to test out the endpoints of posts route' },
+			{ name: 'comments', description: 'This route is to test out the endpoints of comments route' },
+			{ name: 'likes', description: 'This route is to test out the endpoints of likes route' },
+		]
 	},
 	// This below line tells where to read the paths or components from. Read API docs from route and model files
 	apis: ['./middlewares/*.js', './*.js', './routes/*.js', './models/*.js']
