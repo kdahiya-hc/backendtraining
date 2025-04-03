@@ -59,7 +59,7 @@ router.post('/register', async (req, res, next) => {
 		const existingUser = await User.findOne({ email: value.email });
 
 		if (existingUser){
-			return res.status(404).json({
+			return res.status(400).json({
 			success: false,
 			message: 'User with this email already exists',
 			value: { user: _.pick(existingUser, ['email', 'name']) }
@@ -134,7 +134,7 @@ router.post('/register', async (req, res, next) => {
  *             schema:
  *               $ref: "#/components/schemas/badRequestResponse"
  *       401:
- *         description: Wrong credentials passed
+ *         description: Unauthorized
  *         content:
  *           application/json:
  *             schema:
@@ -231,7 +231,7 @@ router.post('/login', async (req, res, next) => {
  *             schema:
  *               $ref: "#/components/schemas/badRequestResponse"
  *       401:
- *         description: Wrong credentials passed
+ *         description: Unauthorized
  *         content:
  *           application/json:
  *             schema:
