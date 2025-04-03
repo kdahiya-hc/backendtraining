@@ -45,6 +45,12 @@ const router = express.Router({ mergeParams: true }); // This merge params is ge
  *           application/json:
  *             schema:
  *               $ref: "#/components/schemas/badRequestResponse"
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/unauthorizedResponse"
  *       403:
  *         description: It is not your comment
  *         content:
@@ -93,7 +99,7 @@ router.patch('/:commentId/update', auth, async (req, res, next) => {
         if (comment.commentedBy.toString() !== req.user._id.toString()) {
             return res.status(403).json({
                 success: false,
-                message: 'Unauthorized: You can only update your own comments',
+                message: 'Forbidden: You can only update your own comments',
                 value: {}
             });
         }
@@ -137,6 +143,12 @@ router.patch('/:commentId/update', auth, async (req, res, next) => {
  *           application/json:
  *             schema:
  *               $ref: "#/components/schemas/successResponse"
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/unauthorizedResponse"
  *       403:
  *         description: It is not your comment
  *         content:
@@ -177,7 +189,7 @@ router.delete('/:commentId/delete', auth, async (req, res, next) => {
         if (comment.commentedBy.toString() !== req.user._id.toString()) {
             return res.status(403).json({
                 success: false,
-                message: 'Unauthorized: You can only delete your own comments',
+                message: 'Forbidden: You can only delete your own comments',
                 value: {}
             });
         }
@@ -234,6 +246,12 @@ router.delete('/:commentId/delete', auth, async (req, res, next) => {
  *           application/json:
  *             schema:
  *               $ref: "#/components/schemas/badRequestResponse"
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/unauthorizedResponse"
  *       404:
  *         description: Post not found
  *         content:
@@ -320,6 +338,18 @@ router.post('/:postId/add', auth, async (req, res, next) => {
  *           application/json:
  *             schema:
  *               $ref: "#/components/schemas/successResponse"
+ *       204:
+ *         description: Success but not Content to get
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/noContentResponse"
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/unauthorizedResponse"
  *       500:
  *         description: Internal server Error
  *         content:
@@ -338,7 +368,7 @@ router.get('/:postId', auth, async(req, res, next) => {
 		const comments = await Comment.find({ postId: postId });
 
 		if (comments.length === 0) {
-			return res.status(200).json({
+			return res.status(204).json({
 				success: true,
 				message: 'No comments on this post',
 				value: comments
