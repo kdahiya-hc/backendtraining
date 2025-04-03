@@ -99,7 +99,7 @@ router.get('/', async (req, res, next) => {
 		const likes = await Like.find({ postId: postId }).skip(skip).limit(limit);
 
 		if (likes.length === 0){
-			return res.status(200).json({
+			return res.status(204).json({
 				success: true,
 				message: 'You got some high expectations there, either there are no likes for this post or limit is high',
 				value:{

@@ -19,7 +19,7 @@ router.get('/', auth, async (req, res, next) => {
 		const users = await User.find().skip(skip).limit(limit);
 
 		if (users.length === 0){
-			return res.status(200).json({
+			return res.status(204).json({
 				success: true,
 				message: 'Nothing to show on this page, try removing all the limits!',
 				value : { users, totalUsers }
