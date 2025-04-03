@@ -19,7 +19,7 @@ const swaggerDocument = YAML.load('./swagger.yaml');
  * @swagger
  * components:
  *  securitySchemes:
- *   xAuthToken:
+ *   authToken:
  *    type: apiKey
  *    in: header
  *    name: x-auth-token
@@ -66,7 +66,7 @@ const swaggerDocument = YAML.load('./swagger.yaml');
  *     - $ref: "#/components/schemas/baseResponse"
  *    example:
  *     success: false
- *     message: Error mesage
+ *     message: Error message
  *     value: { }
  *   forbiddenResponse:
  *     allOf:
