@@ -23,11 +23,7 @@ function auth(req, res, next) {
 			});
 		}
 
-		return res.status(400).json({
-			success: false,
-			message: 'Invalid Token. ' + err.message,
-			value: { }
-		});
+		next(err);
 	}
 }
 

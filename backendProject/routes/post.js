@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 const router = express.Router({ mergeParams: true });
 
 // Create a post
-router.post('/create', auth, async (req, res) => {
+router.post('/create', auth, async (req, res, next) => {
 	try{
 		console.log('In create post');
 
@@ -34,16 +34,12 @@ router.post('/create', auth, async (req, res) => {
 					value: { post: _.pick(newPost, ['content', 'imageURL', 'likesCount', 'commentsId' ,'postedBy']) }
 				});
 	} catch(err) {
-		return res.status(500).json({
-			success: false,
-			message: err.message,
-			value: { }
-		});
+		next(err);
 	}
 })
 
 // Get a post, only if friend or owned
-router.get('/:postId', auth, async (req, res) => {
+router.get('/:postId', auth, async (req, res, next) => {
 	try{
 		console.log('In get post by postId');
 
@@ -79,16 +75,12 @@ router.get('/:postId', auth, async (req, res) => {
 					value: { }
 				});
 	} catch(err) {
-		return res.status(500).json({
-			success: false,
-			message: err.message,
-			value: { }
-		});
+		next(err);
 	}
 })
 
 // Update post only if owned
-router.put('/:postId', auth, async (req, res) => {
+router.put('/:postId', auth, async (req, res, next) => {
 	try{
 		console.log('In Update post with postId');
 
@@ -123,16 +115,12 @@ router.put('/:postId', auth, async (req, res) => {
 			value: { post: _.pick(updatedPost, ['content', 'imageURL', 'likesCount', 'commentsId', 'postedBy']) }
 		});
 	} catch(err) {
-		return res.status(500).json({
-			success: false,
-			message: err.message,
-			value: { }
-		});
+		next(err);
 	}
 })
 
 // Get a post and update it only if owned
-router.delete('/:postId', auth, async (req, res) => {
+router.delete('/:postId', auth, async (req, res, next) => {
 	try{
 		console.log('In delete post with postId');
 
@@ -154,11 +142,7 @@ router.delete('/:postId', auth, async (req, res) => {
 			value: { post: _.pick(deletedPost, ['content', 'imageURL', 'likesCount', 'commentsId', 'postedBy']) }
 		});
 	} catch(err) {
-		return res.status(500).json({
-			success: false,
-			message: err.message,
-			value: { }
-		});
+		next(err);
 	}
 })
 

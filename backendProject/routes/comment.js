@@ -7,7 +7,7 @@ const express = require('express');
 const router = express.Router({ mergeParams: true }); // This merge params is getting :postId
 
 // update a comment
-router.patch('/:commentId/update',auth, async (req, res) => {
+router.patch('/:commentId/update',auth, async (req, res, next) => {
 	try {
 		console.log("In update a comment on a post");
 
@@ -42,16 +42,12 @@ router.patch('/:commentId/update',auth, async (req, res) => {
             value: { comment: _.pick(updatedComment, ['content', 'postId']) }
         });
 	} catch(err) {
-		return res.status(500).json({
-			success: false,
-			message: err.message,
-			value: { }
-		});
+		next(err);
 	}
 })
 
 // delete a comment
-router.delete('/:commentId/delete',auth, async (req, res) => {
+router.delete('/:commentId/delete',auth, async (req, res, next) => {
 	try {
 		console.log("In delete a comment on a post");
 
@@ -77,16 +73,12 @@ router.delete('/:commentId/delete',auth, async (req, res) => {
             value: { comment: _.pick(deletedComment, ['content', 'postId']) }
         });
 	} catch(err) {
-		return res.status(500).json({
-			success: false,
-			message: err.message,
-			value: { }
-		});
+		next(err);
 	}
 })
 
 // Add a comment
-router.post('/:postId/add',auth, async (req, res) => {
+router.post('/:postId/add',auth, async (req, res, next) => {
 	try {
 		console.log("In add a comment on a post");
 
@@ -127,16 +119,12 @@ router.post('/:postId/add',auth, async (req, res) => {
             value: { comment: _.pick(newComment, ['content', 'postId']) }
         });
 	} catch(err) {
-		return res.status(500).json({
-			success: false,
-			message: err.message,
-			value: { }
-		});
+		next(err);
 	}
 })
 
 // get comments
-router.get('/:postId', auth, async(req, res) => {
+router.get('/:postId', auth, async(req, res, next) => {
 	try {
 		console.log('In get all comments of a post from me');
 
@@ -158,11 +146,7 @@ router.get('/:postId', auth, async(req, res) => {
 			value: { comments: comments.map(comment => _.pick(comment, ['id', 'content']))}
 		})
 	} catch(err) {
-		return res.status(500).json({
-			success: false,
-			message: err.message,
-			value: { }
-		});
+		next(err);
 	}
 })
 

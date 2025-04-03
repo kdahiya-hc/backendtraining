@@ -7,7 +7,7 @@ const express = require('express');
 const router = express.Router({ mergeParams: true });
 
 // Get all users details with pagination
-router.get('/', auth, async (req, res) => {
+router.get('/', auth, async (req, res, next) => {
 	try {
 		console.log('In get all users with pagination');
 
@@ -33,16 +33,12 @@ router.get('/', auth, async (req, res) => {
 			value: { users : usersData, totalUsers }
 		});
 	} catch(err) {
-		return res.status(500).json({
-			success: false,
-			message: err.message,
-			value: { }
-		});
+		next(err);
 	}
 });
 
 // Get logged in user details
-router.get('/me', auth, async (req, res) => {
+router.get('/me', auth, async (req, res, next) => {
 	try {
 		console.log('In get /me');
 
@@ -62,16 +58,12 @@ router.get('/me', auth, async (req, res) => {
 			value: { user: _.pick(user, ['email', 'name']) }
 		});
 	} catch(err){
-		return res.status(500).json({
-			success: false,
-			message: err.message,
-			value: { }
-		});
+		next(err);
 	}
 })
 
 // Update logged in user details
-router.patch('/me', auth, async (req, res) => {
+router.patch('/me', auth, async (req, res, next) => {
 	try {
 		console.log('In update /me');
 
@@ -110,16 +102,12 @@ router.patch('/me', auth, async (req, res) => {
 			value: { user: _.pick(user, ['email', 'name']) }
 		});
 	} catch(err){
-		return res.status(500).json({
-			success: false,
-			message: err.message,
-			value: { }
-		});
+		next(err);
 	}
 })
 
 // Get user page with id if friend
-router.get('/profile/:userId', auth, async (req, res) => {
+router.get('/profile/:userId', auth, async (req, res, next) => {
 	try {
 		console.log('In get page by ID');
 
@@ -154,11 +142,7 @@ router.get('/profile/:userId', auth, async (req, res) => {
 			value: {},
 		  });
 	} catch(err) {
-		return res.status(500).json({
-			success: false,
-			message: err.message,
-			value: { }
-		});
+		next(err);
 	}
 });
 

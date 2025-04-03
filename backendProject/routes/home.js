@@ -77,7 +77,7 @@ const router = express.Router({ mergeParams: true });
  *          properties: {}
 */
 
-router.get('/:number', (req, res) => {
+router.get('/:number', (req, res, next) => {
 	try{
 		console.log('In / to check server is listening on port');
 		const number = Number(req.params.number);
@@ -103,11 +103,7 @@ router.get('/:number', (req, res) => {
 			value: { Text: req.params.number }
 		})
 	} catch(err) {
-		return res.status(500).json({
-			success: false,
-			message: err.message,
-			value: { }
-		});
+		next(err);
 	}
 });
 

@@ -6,7 +6,7 @@ const express = require('express');
 const router = express.Router({ mergeParams: true });
 
 // remove friend
-router.delete('/remove/:friendId', auth, async (req, res) => {
+router.delete('/remove/:friendId', auth, async (req, res, next) => {
 	try {
 		console.log('In Remove a friend');
 
@@ -58,16 +58,12 @@ router.delete('/remove/:friendId', auth, async (req, res) => {
 			value: { Removed : removedFriend }
 		});
 	} catch(err){
-		return res.status(500).json({
-			success: false,
-			message: err.message,
-			value: { }
-		});
+		next(err);
 	}
 })
 
 // Get all friends details with pagination
-router.get('/', auth, async (req, res) => {
+router.get('/', auth, async (req, res, next) => {
 	try {
 		console.log('In get all friends with pagination');
 
@@ -107,11 +103,7 @@ router.get('/', auth, async (req, res) => {
 			value: { friends : friendsData, totalFriends }
 		});
 	} catch(err) {
-		return res.status(500).json({
-			success: false,
-			message: err.message,
-			value: { }
-		});
+		next(err);
 	}
 });
 

@@ -49,7 +49,7 @@ const router = express.Router({ mergeParams: true });
 */
 
 // Register a user
-router.post('/register', async (req, res) => {
+router.post('/register', async (req, res, next) => {
 	try {
 		console.log('In register');
 
@@ -93,16 +93,12 @@ router.post('/register', async (req, res) => {
 			value: { user: _.pick(newUser, ['email', 'name']) }
 		});
 	} catch(err) {
-		return res.status(500).json({
-			success: false,
-			message: err.message,
-			value : { }
-		});
+		next(err);
 	}
 });
 
 // Login a registered user
-router.post('/login', async (req, res) => {
+router.post('/login', async (req, res, next) => {
 	try {
 		console.log('In login');
 
@@ -131,16 +127,12 @@ router.post('/login', async (req, res) => {
 			value: otp.value
 		});
 	} catch(err) {
-		return res.status(500).json({
-			success: false,
-			message: err.message,
-			value: { }
-		});
+		next(err);
 	}
 });
 
 // Verify OTP and return JWT
-router.post('/verify-otp', async (req, res) => {
+router.post('/verify-otp', async (req, res, next) => {
 	try {
 		console.log('In verify-otp');
 
@@ -169,11 +161,7 @@ router.post('/verify-otp', async (req, res) => {
 			});
 		}
 	} catch(err) {
-		return res.status(500).json({
-			success: false,
-			message: err.message,
-			value: { }
-		});
+		next(err);
 	}
 });
 

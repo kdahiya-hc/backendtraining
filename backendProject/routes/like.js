@@ -7,7 +7,7 @@ const express = require('express');
 const router = express.Router({ mergeParams: true });
 
 // Add a like
-router.post('/add',auth, async (req, res) => {
+router.post('/add',auth, async (req, res, next) => {
 	try {
 		console.log("In like post");
 
@@ -41,16 +41,12 @@ router.post('/add',auth, async (req, res) => {
 			value: { like: _.pick(updatedPost, ['_id', 'content','likesCount']) }
 		});
 	} catch(err) {
-		return res.status(500).json({
-			success: false,
-			message: err.message,
-			value: { }
-		});
+		next(err);
 	}
 })
 
 // Remove a like
-router.delete('/remove',auth, async (req, res) => {
+router.delete('/remove',auth, async (req, res, next) => {
 	try {
 		console.log("In dislike post");
 
@@ -77,16 +73,12 @@ router.delete('/remove',auth, async (req, res) => {
 			value: { like: _.pick(updatedPost, ['_id', 'content','likesCount']) }
 		});
 	} catch(err) {
-		return res.status(500).json({
-			success: false,
-			message: err.message,
-			value: { }
-		});
+		next(err);
 	}
 })
 
 // Get all likes of a post and likesCount
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
 	try {
 		console.log('In get all like and likesCount');
 
@@ -128,11 +120,7 @@ router.get('/', async (req, res) => {
 			}
 		})
 	} catch(err) {
-		return res.status(500).json({
-			success: false,
-			message: err.message,
-			value: { }
-		});
+		next(err);
 	}
 })
 

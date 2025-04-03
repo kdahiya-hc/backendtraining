@@ -7,7 +7,7 @@ const express = require('express');
 const router = express.Router({ mergeParams: true });
 
 // Send friend request. Sender's Action
-router.post('/send', auth, async (req, res) => {
+router.post('/send', auth, async (req, res, next) => {
 	try {
 		console.log('In send friend request');
 
@@ -82,16 +82,12 @@ router.post('/send', auth, async (req, res) => {
 			value: { friendRequest: _.pick(newFriendRequest, ['_id', 'to', 'message']) }
 		});
 	} catch(err){
-		return res.status(500).json({
-			success: false,
-			message: err.message,
-			value: { }
-		});
+		next(err);
 	}
 })
 
 // Cancel friend request. Sender's action
-router.delete('/:requestId/cancel', auth, async (req, res) => {
+router.delete('/:requestId/cancel', auth, async (req, res, next) => {
 	try {
 		console.log('In cancel friend request');
 
@@ -127,16 +123,12 @@ router.delete('/:requestId/cancel', auth, async (req, res) => {
 			value: { }
 		});
 	} catch(err){
-		return res.status(500).json({
-			success: false,
-			message: err.message,
-			value: { }
-		});
+		next(err);
 	}
 })
 
 // Accept (receiver's Action) friend request
-router.put('/:requestId/accept', auth, async (req, res) => {
+router.put('/:requestId/accept', auth, async (req, res, next) => {
 	try {
 		console.log('In accept friend request');
 
@@ -190,16 +182,12 @@ router.put('/:requestId/accept', auth, async (req, res) => {
 			value: { }
 		});
 	} catch(err){
-		return res.status(500).json({
-			success: false,
-			message: err.message,
-			value: { }
-		});
+		next(err);
 	}
 })
 
 // Reject (Receiver's Action) friend request
-router.delete('/:requestId/reject', auth, async (req, res) => {
+router.delete('/:requestId/reject', auth, async (req, res, next) => {
 	try {
 		console.log('In reject friend request');
 
@@ -239,16 +227,12 @@ router.delete('/:requestId/reject', auth, async (req, res) => {
 			value: { }
 		});
 	} catch(err){
-		return res.status(500).json({
-			success: false,
-			message: err.message,
-			value: { }
-		});
+		next(err);
 	}
 })
 
 // Get pending/accepted/rejected friend requests
-router.get('/:reqStatus', auth, async(req, res) => {
+router.get('/:reqStatus', auth, async(req, res, next) => {
 	try {
 		console.log('In get all friend requests with pagination');
 
@@ -291,11 +275,7 @@ router.get('/:reqStatus', auth, async(req, res) => {
 			value: { requests : requestData, totalRequests }
 		});
 	} catch(err) {
-		return res.status(500).json({
-			success: false,
-			message: err.message,
-			value: { }
-		});
+		next(err);
 	}
 })
 
