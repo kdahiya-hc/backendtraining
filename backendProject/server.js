@@ -40,33 +40,19 @@ const swaggerDocument = YAML.load('./swagger.yaml');
  *     success: true
  *     message: Passed
  *     value: { key: value }
- *   failureResponse:
- *    allOf:
- *     - $ref: "#/components/schemas/baseResponse"
- *    example:
- *     success: false
- *     message: Failed
- *     value: { }
- *   errorResponse:
- *    allOf:
- *    - $ref: "#/components/schemas/baseResponse"
- *    example:
- *     success: false
- *     message: Error mesage
- *     value: {  }
- *   unauthorizedResponse:
- *    allOf:
- *     - $ref: "#/components/schemas/baseResponse"
- *    example:
- *     success: false
- *     message: access denied
- *     value: { }
  *   badRequestResponse:
  *    allOf:
  *     - $ref: "#/components/schemas/baseResponse"
  *    example:
  *     success: false
  *     message: Bad Request
+ *     value: { }
+ *   unauthorizedResponse:
+ *    allOf:
+ *     - $ref: "#/components/schemas/baseResponse"
+ *    example:
+ *     success: false
+ *     message: Access denied
  *     value: { }
  *   notFoundResponse:
  *    allOf:
@@ -75,6 +61,20 @@ const swaggerDocument = YAML.load('./swagger.yaml');
  *     success: false
  *     message: Not found
  *     value: { }
+ *   errorResponse:
+ *    allOf:
+ *     - $ref: "#/components/schemas/baseResponse"
+ *    example:
+ *     success: false
+ *     message: Error mesage
+ *     value: { }
+ *   forbiddenResponse:
+ *     allOf:
+ *      - $ref: "#/components/schemas/baseResponse"
+ *     example:
+ *      success: false
+ *      message: Forbidden
+ *      value: { }
  */
 
 // Swagger configuration: Set up Swagger UI with OpenAPI specs for API documentation
