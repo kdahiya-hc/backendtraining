@@ -23,7 +23,20 @@ const swaggerDocument = YAML.load('./swagger.yaml');
  *    type: apiKey
  *    in: header
  *    name: x-auth-token
+ *    description: JWT token for authentication
  *  schemas:
+ *   objectId:
+ *    type: string
+ *    pattern: "^[a-fA-F0-9]{24}$"
+ *    example: "507f1f77bcf86cd799439011"
+ *   objectIdArray:
+ *    type: array
+ *    description: Array of comment IDs
+ *    items:
+ *     type: string
+ *     description: 24-hex-decimal comment ID
+ *     pattern: "^[a-fA-F0-9]{24}$"
+ *     example: "507f1f77bcf86cd799439011"
  *   baseResponse:
  *    type: object
  *    properties:
@@ -32,14 +45,28 @@ const swaggerDocument = YAML.load('./swagger.yaml');
  *     message:
  *      type: string
  *     value:
- *      type: object
+ *      oneOf:
+ *       - type: object
+ *         description: "For single-item responses (e.g., a user object)."
+ *         properties:
+ *          key:
+ *           type: string
+ *       - type: array
+ *         description: "For lists (e.g., comments)."
+ *         items:
+ *          type: object
+ *          properties:
+ *           key:
+ *            type: string
+ *       - type: string
+ *         description: "For IDs or simple messages."
  *   successResponse:
  *    allOf:
  *     - $ref: "#/components/schemas/baseResponse"
  *    example:
  *     success: true
  *     message: Passed
- *     value: { key: value }
+ *     value: []
  *   badRequestResponse:
  *    allOf:
  *     - $ref: "#/components/schemas/baseResponse"
