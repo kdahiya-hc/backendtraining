@@ -5,6 +5,51 @@ const auth = require('../middlewares/auth');
 const express = require('express');
 const router = express.Router({ mergeParams: true });
 
+/**
+ * @swagger
+ * /api/friends/remove/{friendId}:
+ *   delete:
+ *     tags:
+ *       - friends
+ *     summary: Remove a friend
+ *     description: |
+ *       This end point shall remove a friend of given id
+ *     security:
+ *       - authToken: []
+ *     parameters:
+ *       - in: path
+ *         name: friendId
+ *         required: true
+ *         description: The 24 hexadecimal characters Id of friend
+ *         schema:
+ *           $ref: "#/components/schemas/objectId"
+ *     responses:
+ *       200:
+ *         description: Success in removing the friend
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/successResponse"
+ *       400:
+ *         description: Can not remove yourself Bad Request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/badRequestResponse"
+ *       404:
+ *         description: User or friend not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/notFoundResponse"
+ *       500:
+ *         description: Internal server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/errorResponse"
+ */
+
 // remove friend
 router.delete('/remove/:friendId', auth, async (req, res, next) => {
 	try {
@@ -29,7 +74,7 @@ router.delete('/remove/:friendId', auth, async (req, res, next) => {
 		}
 
 		if (!user.friendsId.toString().includes(req.params.friendId)){
-			return res.status(400).json({
+			return res.status(404).json({
 				success: false,
 				message: 'No friends with this Id',
 				value: {}
@@ -62,6 +107,51 @@ router.delete('/remove/:friendId', auth, async (req, res, next) => {
 	}
 })
 
+/**
+ * @swagger
+ * /api/friends:
+ *   get:
+ *     tags:
+ *       - friends
+ *     summary: Get all friends with pagination
+ *     description: |
+ *       This end point shall get all friend with page and limit as query parameters. If no page or limit is passed it gets 5 friends from page 1.
+ *     security:
+ *       - authToken: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         description: The index of friend we are at
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *       - in: query
+ *         name: limit
+ *         description: The limit of friend objects we shall fetch
+ *         schema:
+ *           type: integer
+ *           example: 2
+ *     responses:
+ *       200:
+ *         description: Success in getting the friends
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/successResponse"
+ *       404:
+ *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/notFoundResponse"
+ *       500:
+ *         description: Internal server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/errorResponse"
+ */
+
 // Get all friends details with pagination
 router.get('/', auth, async (req, res, next) => {
 	try {
@@ -89,7 +179,7 @@ router.get('/', auth, async (req, res, next) => {
 
 		if (friends.length === 0){
 			return res.status(200).json({
-				success: false,
+				success: true,
 				message: 'You either have no friends of too high expectation. Add some friends or try removing all the limits!',
 				value : { friends, totalFriends }
 			});
