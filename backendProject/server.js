@@ -131,7 +131,10 @@ const dbUri = `mongodb://${dbConfig.user}:${dbConfig.pass}@${dbConfig.host}:${db
 
 mongoose.connect(dbUri)
 	.then(() => console.log(`Connected to ${database}`))
-	.catch(err => console.log(err));
+	.catch(err => {
+		console.log(err);
+		process.exit(1);
+	});
 
 // server configuration
 const PORT = config.get('port');
