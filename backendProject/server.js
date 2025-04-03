@@ -67,12 +67,26 @@ const swaggerDocument = YAML.load('./swagger.yaml');
  *     success: true
  *     message: Passed
  *     value: []
+ *   notContentResponse:
+ *    allOf:
+ *     - $ref: "#/components/schemas/baseResponse"
+ *    example:
+ *     success: true
+ *     message: No Content to get
+ *     value: { }
  *   badRequestResponse:
  *    allOf:
  *     - $ref: "#/components/schemas/baseResponse"
  *    example:
  *     success: false
  *     message: Bad Request
+ *     value: { }
+ *   conflictResponse:
+ *    allOf:
+ *     - $ref: "#/components/schemas/baseResponse"
+ *    example:
+ *     success: false
+ *     message: Conflict
  *     value: { }
  *   unauthorizedResponse:
  *    allOf:
