@@ -189,14 +189,77 @@ router.post('/login', async (req, res, next) => {
 	}
 });
 
+/**
+ * @swagger
+ * /api/auth/verify-otp:
+ *   post:
+ *     tags:
+ *       - auth
+ *     summary: Verify the OTP passed
+ *     description: |
+ *       This endpoint shall verify if OTP passed is valid and returns JWT
+ *     requestBody:
+ *       description: Needs valid email and OTP
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - otp
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               otp:
+ *                 type: string
+ *           example:
+ *             email: "testuser@test.com"
+ *             otp: 1234
+ *     responses:
+ *       200:
+ *         description: The entered credentials are valid
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/successResponse"
+ *       400:
+ *         description: No credentials passed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/badRequestResponse"
+ *       401:
+ *         description: Wrong credentials passed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/unauthorizedResponse"
+ *       500:
+ *         description: Internal Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/errorResponse"
+ */
+
 // Verify OTP and return JWT
 router.post('/verify-otp', async (req, res, next) => {
 	try {
 		console.log('In verify-otp');
 
+		if (!req.body.email || !req.body.otp) {
+			return res.status(400).json({
+				success: false,
+				message: 'Missing email or otp',
+				value: { }
+			});
+		}
+
 		const user = await User.findOne({ email : req.body.email });
 		if (!user) {
-			return res.status(400).json({
+			return res.status(401).json({
 				success: false,
 				message: 'User with this email does not exist',
 				value: { user: { } }
