@@ -23,13 +23,13 @@ const router = express.Router({ mergeParams: true });
  *             $ref: "#/components/schemas/user"
  *     responses:
  *       201:
- *         description: success in creating a user
+ *         description: Success in creating a user
  *         content:
  *           application/json:
  *             schema:
  *               $ref: "#/components/schemas/successResponse"
  *       400:
- *         description: Bad request
+ *         description: Wrong details passed
  *         content:
  *           application/json:
  *             schema:
@@ -40,12 +40,6 @@ const router = express.Router({ mergeParams: true });
  *           application/json:
  *             schema:
  *               $ref: "#/components/schemas/errorResponse"
- *       401:
- *         description: Unauthorized
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/unauthorizedResponse"
 */
 
 // Register a user
@@ -65,7 +59,7 @@ router.post('/register', async (req, res, next) => {
 		const existingUser = await User.findOne({ email: value.email });
 
 		if (existingUser){
-			return res.status(400).json({
+			return res.status(404).json({
 			success: false,
 			message: 'User with this email already exists',
 			value: { user: _.pick(existingUser, ['email', 'name']) }
@@ -97,14 +91,78 @@ router.post('/register', async (req, res, next) => {
 	}
 });
 
+/**
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     tags:
+ *       - auth
+ *     summary: login a user
+ *     description: |
+ *       It shall check if the entered email and password and then return an OTP. This OTP is valid for 5 minutes.
+ *     requestBody:
+ *       description: valid email and password
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               password:
+ *                 type: string
+ *                 format: password
+ *           example:
+ *             email: "testuser@test.com"
+ *             password: 12345678
+ *     responses:
+ *       200:
+ *         description: The entered credentials are valid
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/successResponse"
+ *       400:
+ *         description: No credentials passed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/badRequestResponse"
+ *       401:
+ *         description: Wrong credentials passed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/unauthorizedResponse"
+ *       500:
+ *         description: Internal Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/errorResponse"
+ */
+
 // Login a registered user
 router.post('/login', async (req, res, next) => {
 	try {
 		console.log('In login');
 
+		if (!req.body.email || !req.body.password) {
+			return res.status(400).json({
+				success: false,
+				message: 'Missing email or password',
+				value: { }
+			});
+		}
+
 		const validUser = await User.findOne({ email: req.body.email });
 		if (!validUser){
-			return res.status(400).json({
+			return res.status(401).json({
 				success: false,
 				message: 'Invalid email or password',
 				value: { }
@@ -113,7 +171,7 @@ router.post('/login', async (req, res, next) => {
 
 		const validPassword = await bcrypt.compare(req.body.password, validUser.password);
 		if (!validPassword){
-			return res.status(400).json({
+			return res.status(401).json({
 				success: false,
 				message: 'Invalid email or password',
 				value: { }
