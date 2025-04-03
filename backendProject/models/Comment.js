@@ -14,14 +14,10 @@ const Joi = require('joi');
  *           type: string
  *           description: The content of the comment
  *         postId:
- *           type: string
- *           description: 24 hex decimals or 12 bytes id of post
- *           pattern: "^[a-fA-F0-9]{24}$"
+ *           $ref: "#/components/schemas/objectId"
  *         commentedBy:
- *           type: string
- *           description: 24 hex decimals or 12 bytes id of user
- *           pattern: "^[a-fA-F0-9]{24}$"
-*       required:
+ *           $ref: "#/components/schemas/objectId"
+ *       required:
  *         - content
  *       example:
  *         content: Hey that is my picture, give credits!
