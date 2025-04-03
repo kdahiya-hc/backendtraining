@@ -119,7 +119,7 @@ router.post('/register', async (req, res, next) => {
  *                 format: password
  *           example:
  *             email: "testuser@test.com"
- *             password: 12345678
+ *             password: "12345678"
  *     responses:
  *       200:
  *         description: The entered credentials are valid
@@ -216,7 +216,7 @@ router.post('/login', async (req, res, next) => {
  *                 type: string
  *           example:
  *             email: "testuser@test.com"
- *             otp: 1234
+ *             otp: "1234"
  *     responses:
  *       200:
  *         description: The entered credentials are valid
