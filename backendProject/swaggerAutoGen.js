@@ -1,4 +1,4 @@
-// swagger.js
+// swaggerAutoGen.js
 const swaggerAutogen = require('swagger-autogen')();
 const path = require('path');
 

@@ -1,3 +1,4 @@
+# swagger.yaml
 openapi: 3.0.0
 info:
   title: Social Media API
@@ -7,7 +8,7 @@ info:
 
     This is the social media api created based on the backend training project document.
 
-    Some useful links: 
+    Some useful links:
     - [The Backend training repository(public)](https://github.com/kdahiya-hc/backendtraining)
 
 servers:

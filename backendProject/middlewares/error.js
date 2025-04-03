@@ -1,3 +1,4 @@
+// middlewares/error.js
 
 // This middleware has 4 than usual 3 params ( err, req, res, next)
 const error = function (err, req, res, next){
