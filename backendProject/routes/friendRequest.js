@@ -464,12 +464,6 @@ router.put('/:requestId/reject', auth, async (req, res, next) => {
  *           application/json:
  *             schema:
  *               $ref: "#/components/schemas/successResponse"
- *       204:
- *         description: Success but not Content to get
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/noContentResponse"
  *       400:
  *         description: Bad request
  *         content:
@@ -522,7 +516,7 @@ router.get('/:reqStatus', auth, async(req, res, next) => {
 								.populate('to', 'name');
 
 		if (requests.length === 0){
-			return res.status(204).json({
+			return res.status(200).json({
 				success: true,
 				message: 'No friend requests found for the specified status.',
 				value: { requests, totalRequests }

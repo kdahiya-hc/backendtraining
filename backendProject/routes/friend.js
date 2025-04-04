@@ -7,7 +7,7 @@ const router = express.Router({ mergeParams: true });
 
 /**
  * @swagger
- * /api/friends/remove/{friendId}:
+ * /api/friends/{friendId}/remove:
  *   delete:
  *     tags:
  *       - friends
@@ -57,7 +57,7 @@ const router = express.Router({ mergeParams: true });
  */
 
 // remove friend
-router.delete('/remove/:friendId', auth, async (req, res, next) => {
+router.delete('/:friendId/remove', auth, async (req, res, next) => {
 	try {
 		console.log('In Remove a friend');
 
@@ -144,12 +144,6 @@ router.delete('/remove/:friendId', auth, async (req, res, next) => {
  *           application/json:
  *             schema:
  *               $ref: "#/components/schemas/successResponse"
- *       204:
- *         description: Success but not Content to get
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/noContentResponse"
  *       401:
  *         description: Unauthorized
  *         content:
@@ -196,7 +190,7 @@ router.get('/', auth, async (req, res, next) => {
 		const friends = user.friendsId.slice(skip, skip + limit);
 
 		if (friends.length === 0){
-			return res.status(204).json({
+			return res.status(200).json({
 				success: true,
 				message: 'You either have no friends of too high expectation. Add some friends or try removing all the limits!',
 				value : { friends, totalFriends }

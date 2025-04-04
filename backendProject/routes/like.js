@@ -200,7 +200,7 @@ router.delete('/remove',auth, async (req, res, next) => {
  *       - likes
  *     summary: get all likes of a post
  *     description: |
- *       This end point is to get al like of a post if valid Id is in the path.
+ *       This end point is to get all like of a post if valid Id is in the path.
  *     security:
  *       - authToken: []
  *     parameters:
@@ -229,12 +229,6 @@ router.delete('/remove',auth, async (req, res, next) => {
  *           application/json:
  *             schema:
  *               $ref: "#/components/schemas/successResponse"
- *       204:
- *         description: Success but not Content to get
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/noContentResponse"
  *       401:
  *         description: Unauthorized
  *         content:
@@ -279,7 +273,7 @@ router.get('/', async (req, res, next) => {
 		const likes = await Like.find({ postId: postId }).skip(skip).limit(limit);
 
 		if (likes.length === 0){
-			return res.status(204).json({
+			return res.status(200).json({
 				success: true,
 				message: 'You got some high expectations there, either there are no likes for this post or limit is high',
 				value:{
