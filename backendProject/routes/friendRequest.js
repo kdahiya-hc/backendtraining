@@ -425,7 +425,7 @@ router.put('/:requestId/reject', auth, async (req, res, next) => {
 
 /**
  * @swagger
- * /api/friends/requests/{requestStatus}:
+ * /api/friends/requests/{reqStatus}:
  *   get:
  *     tags:
  *       - friendRequests
@@ -436,7 +436,7 @@ router.put('/:requestId/reject', auth, async (req, res, next) => {
  *       - authToken: []
  *     parameters:
  *       - in: path
- *         name: requestStatus
+ *         name: reqStatus
  *         required: true
  *         description: The status of friendRequest.
  *         schema:

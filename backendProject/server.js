@@ -67,7 +67,7 @@ const swaggerDocument = YAML.load('./swagger.yaml');
  *     success: true
  *     message: Passed
  *     value: []
- *   notContentResponse:
+ *   noContentResponse:
  *    allOf:
  *     - $ref: "#/components/schemas/baseResponse"
  *    example:

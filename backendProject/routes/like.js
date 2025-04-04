@@ -6,6 +6,57 @@ const auth = require('../middlewares/auth');
 const express = require('express');
 const router = express.Router({ mergeParams: true });
 
+/**
+ * @swagger
+ * /api/likes/{postId}/add:
+ *   post:
+ *     tags:
+ *       - likes
+ *     summary: add a like
+ *     description: |
+ *       This end point is to add a like to a post if valid Id is in the path.
+ *     security:
+ *       - authToken: []
+ *     parameters:
+ *       - in: path
+ *         name: postId
+ *         required: true
+ *         description: The 24 hexadecimal characters Id of friendRequest
+ *         schema:
+ *           $ref: "#/components/schemas/objectId"
+ *     responses:
+ *       201:
+ *         description: Success in adding the like
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/successResponse"
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/unauthorizedResponse"
+ *       404:
+ *         description: Not Found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/notFoundResponse"
+ *       409:
+ *         description: Conflict
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/conflictResponse"
+ *       500:
+ *         description: Internal server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/errorResponse"
+ */
+
 // Add a like
 router.post('/add',auth, async (req, res, next) => {
 	try {
@@ -54,6 +105,51 @@ router.post('/add',auth, async (req, res, next) => {
 	}
 })
 
+/**
+ * @swagger
+ * /api/likes/{postId}/remove:
+ *   delete:
+ *     tags:
+ *       - likes
+ *     summary: remove a like
+ *     description: |
+ *       This end point is to remove a like to a post if valid Id is in the path.
+ *     security:
+ *       - authToken: []
+ *     parameters:
+ *       - in: path
+ *         name: postId
+ *         required: true
+ *         description: The 24 hexadecimal characters Id of friendRequest
+ *         schema:
+ *           $ref: "#/components/schemas/objectId"
+ *     responses:
+ *       200:
+ *         description: Success in removing the like
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/successResponse"
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/unauthorizedResponse"
+ *       404:
+ *         description: Not Found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/notFoundResponse"
+ *       500:
+ *         description: Internal server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/errorResponse"
+ */
+
 // Remove a like
 router.delete('/remove',auth, async (req, res, next) => {
 	try {
@@ -95,6 +191,69 @@ router.delete('/remove',auth, async (req, res, next) => {
 		next(err);
 	}
 })
+
+/**
+ * @swagger
+ * /api/likes/{postId}:
+ *   get:
+ *     tags:
+ *       - likes
+ *     summary: get all likes of a post
+ *     description: |
+ *       This end point is to get al like of a post if valid Id is in the path.
+ *     security:
+ *       - authToken: []
+ *     parameters:
+ *       - in: path
+ *         name: postId
+ *         required: true
+ *         description: The 24 hexadecimal characters Id of friendRequest
+ *         schema:
+ *           $ref: "#/components/schemas/objectId"
+ *       - in: query
+ *         name: page
+ *         description: The index of request we are start at
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *       - in: query
+ *         name: limit
+ *         description: The limit of request objects we shall fetch
+ *         schema:
+ *           type: integer
+ *           example: 2
+ *     responses:
+ *       200:
+ *         description: Success in getting all the likes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/successResponse"
+ *       204:
+ *         description: Success but not Content to get
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/noContentResponse"
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/unauthorizedResponse"
+ *       404:
+ *         description: Not Found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/notFoundResponse"
+ *       500:
+ *         description: Internal server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/errorResponse"
+ */
 
 // Get all likes of a post and likesCount
 router.get('/', async (req, res, next) => {
