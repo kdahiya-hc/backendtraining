@@ -10,12 +10,21 @@ const router = express.Router({ mergeParams: true });
 router.post('/add',auth, async (req, res, next) => {
 	try {
 		console.log("In like post");
-
 		const postId = req.params.postId;
+
+		const post = await Post.findById(postId);
+		if (!post) {
+		  return res.status(404).json({
+			success: false,
+			message: 'Post not found',
+			value: {}
+		  });
+		}
+
 		const existingLike = await Like.findOne({ postId: postId, likedBy: req.user._id});
 
 		if (existingLike) {
-			return res.status(400).json({
+			return res.status(409).json({
 				success: false,
 				message: 'Like already exists',
 				value: { like: _.pick(existingLike, ['postId', 'likedBy']) }
@@ -51,15 +60,25 @@ router.delete('/remove',auth, async (req, res, next) => {
 		console.log("In dislike post");
 
 		const postId = req.params.postId;
-		const existingLike = await Like.deleteOne({ postId: postId, likedBy: req.user._id});
 
-		if (!existingLike) {
-			return res.status(400).json({
-				success: false,
-				message: 'You hadn\'t liked the post',
-				value: { like: _.pick(existingLike, ['postId', 'likedBy']) }
-			});
+		const post = await Post.findById(postId);
+		if (!post) {
+		  return res.status(404).json({
+			success: false,
+			message: 'Post not found',
+			value: {}
+		  });
 		}
+
+		const deleteResult = await Like.deleteOne({ postId: postId, likedBy: req.user._id});
+
+		if (deleteResult.deletedCount === 0) {
+			return res.status(404).json({
+			  success: false,
+			  message: 'Like not found - you never liked this post',
+			  value: {}
+			});
+		  }
 
 		const updatedPost = await Post.findOneAndUpdate(
 			{ _id: postId },
@@ -83,9 +102,11 @@ router.get('/', async (req, res, next) => {
 		console.log('In get all like and likesCount');
 
 		const postId = req.params.postId;
+
 		const page = parseInt(req.query.page) || 1;
 		const limit = parseInt(req.query.limit) || 5;
 		const skip = (page - 1) * limit;
+
 		const post = await Post.findById(postId);
 		if (!post) {
 			return res.status(404).json({
