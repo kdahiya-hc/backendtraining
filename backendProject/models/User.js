@@ -101,6 +101,64 @@ const redis = require('../utils/redisClient');
  *         dob: 2000-12-31
  *         friendsId: [ "aAbB1234cCdD5678eEfF9090", "aAbB1234cCdD5678eEfF9090"]
  *         pendingRequestsId: [ "aAbB1234cCdD5678eEfF9090", "aAbB1234cCdD5678eEfF9090"]
+ *     updateUser:
+ *       description: update existing user
+ *       type: object
+ *       properties:
+ *         name:
+ *           type: object
+ *           description: Name of the user
+ *           properties:
+ *             firstName:
+ *               type: string
+ *               summary: first name of user
+ *             middleName:
+ *               type: string
+ *               summary: middle name of user
+ *             lastName:
+ *               type: string
+ *               summary: last name of the user
+ *           required:
+ *             - firstName
+ *             - lastName
+ *         address:
+ *           type: object
+ *           description: Address of the user
+ *           properties:
+ *             apartment:
+ *               type: string
+ *               summary: name of the apartment
+ *             street:
+ *               type: string
+ *               summary: name/number of street
+ *             ward:
+ *               type: string
+ *               summary: name of the ward
+ *             city:
+ *               type: string
+ *               summary: name of the city
+ *             postalCode:
+ *               type: integer
+ *               summary: postal code without hiphens
+ *           required:
+ *             - apartment
+ *             - city
+ *             - postalCode
+ *         dob:
+ *           type: string
+ *           description: date of birth in YYYY-MM-DD format
+ *           format: date
+ *       required:
+ *         - dob
+ *       example:
+ *         name:
+ *           firstName: Test
+ *           lastName: User
+ *         address:
+ *           apartment: space water god
+ *           city: Tokyo
+ *           postalCode: 1234567
+ *         dob: 2000-12-31
 */
 
 const userSchema = new mongoose.Schema({
