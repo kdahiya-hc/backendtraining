@@ -7,6 +7,51 @@ const express = require('express');
 const mongoose = require('mongoose');
 const router = express.Router({ mergeParams: true });
 
+/**
+ * @swagger
+ * /api/posts/create:
+ *   post:
+ *     tags:
+ *       - posts
+ *     summary: Create a post
+ *     description: |
+ *       It checks if entered data is valid and creates a post into the database.
+ *     security:
+ *       - authToken: []
+ *     requestBody:
+ *       description: Needs valid post data
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: "#/components/schemas/post"
+ *     responses:
+ *       201:
+ *         description: Success in creating a post
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/successResponse"
+ *       400:
+ *         description: Wrong details passed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/badRequestResponse"
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/unauthorizedResponse"
+ *       500:
+ *         description: Internal server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/errorResponse"
+*/
+
 // Create a post
 router.post('/create', auth, async (req, res, next) => {
 	try{
@@ -37,6 +82,57 @@ router.post('/create', auth, async (req, res, next) => {
 		next(err);
 	}
 })
+
+/**
+ * @swagger
+ * /api/posts/{postId}:
+ *   get:
+ *     tags:
+ *       - posts
+ *     summary: get the post
+ *     description: |
+ *       This end point is to get post if the user is friend or owner
+ *     security:
+ *       - authToken: []
+ *     parameters:
+ *       - in: path
+ *         name: postId
+ *         required: true
+ *         description: The 24 hexadecimal characters Id of post
+ *         schema:
+ *           $ref: "#/components/schemas/objectId"
+ *     responses:
+ *       200:
+ *         description: Success in getting the post
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/successResponse"
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/unauthorizedResponse"
+ *       403:
+ *         description: Forbidden
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/forbiddenResponse"
+ *       404:
+ *         description: Not Found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/notFoundResponse"
+ *       500:
+ *         description: Internal server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/errorResponse"
+ */
 
 // Get a post, only if friend or owned
 router.get('/:postId', auth, async (req, res, next) => {
@@ -69,7 +165,7 @@ router.get('/:postId', auth, async (req, res, next) => {
 			}
 		}
 
-		return res.status(400).json({
+		return res.status(404).json({
 					success: false,
 					message: 'No post found',
 					value: { }
@@ -78,6 +174,51 @@ router.get('/:postId', auth, async (req, res, next) => {
 		next(err);
 	}
 })
+
+/**
+ * @swagger
+ * /api/posts/{postId}:
+ *   put:
+ *     tags:
+ *       - posts
+ *     summary: update the post
+ *     description: |
+ *       This end point is to update post if the user is owner
+ *     security:
+ *       - authToken: []
+ *     parameters:
+ *       - in: path
+ *         name: postId
+ *         required: true
+ *         description: The 24 hexadecimal characters Id of post
+ *         schema:
+ *           $ref: "#/components/schemas/objectId"
+ *     responses:
+ *       200:
+ *         description: Success in updating the post
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/successResponse"
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/unauthorizedResponse"
+ *       404:
+ *         description: Not Found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/notFoundResponse"
+ *       500:
+ *         description: Internal server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/errorResponse"
+ */
 
 // Update post only if owned
 router.put('/:postId', auth, async (req, res, next) => {
@@ -102,7 +243,7 @@ router.put('/:postId', auth, async (req, res, next) => {
 		);
 
 		if (!updatedPost) {
-			return res.status(403).json({
+			return res.status(404).json({
 				success: false,
 				message: 'Post not found or You are not authorized to edit this post',
 				value: { updatedPost }
@@ -119,7 +260,52 @@ router.put('/:postId', auth, async (req, res, next) => {
 	}
 })
 
-// Get a post and update it only if owned
+/**
+ * @swagger
+ * /api/posts/{postId}:
+ *   delete:
+ *     tags:
+ *       - posts
+ *     summary: delete the post
+ *     description: |
+ *       This end point is to delete post if the user is owner
+ *     security:
+ *       - authToken: []
+ *     parameters:
+ *       - in: path
+ *         name: postId
+ *         required: true
+ *         description: The 24 hexadecimal characters Id of post
+ *         schema:
+ *           $ref: "#/components/schemas/objectId"
+ *     responses:
+ *       200:
+ *         description: Success in deleting the post
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/successResponse"
+ *       401:
+ *         description: Unauthorized
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/unauthorizedResponse"
+ *       404:
+ *         description: Not Found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/notFoundResponse"
+ *       500:
+ *         description: Internal server Error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/errorResponse"
+ */
+
+// Get a post and delete it only if owned
 router.delete('/:postId', auth, async (req, res, next) => {
 	try{
 		console.log('In delete post with postId');
@@ -129,7 +315,7 @@ router.delete('/:postId', auth, async (req, res, next) => {
 		);
 
 		if (!deletedPost) {
-			return res.status(403).json({
+			return res.status(404).json({
 				success: false,
 				message: 'Post not found or You are not authorized to delete this post',
 				value: { deletedPost }
