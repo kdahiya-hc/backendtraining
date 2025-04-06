@@ -1,0 +1,129 @@
+openapi: 3.0.0
+info:
+  title: "Checking Swagger"
+  version: "0.0"
+  description: "Just setting up SwaggerUI to try it out"
+
+servers:
+  - url: "http://localhost:5005"
+    description: "Home"
+
+components:
+  schemas:
+    Student:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: "Roll Number"
+        name:
+          type: string
+          description: "Student name"
+      example:
+        id: 1
+        name: "Kishan"
+
+paths:
+  /students:
+    get:
+      summary: "Show all students"
+      description: "A get request to retrieve"
+      responses:
+        '200':
+          description: "OK getting students"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: "Roll Number"
+                    name:
+                      type: string
+                      description: "Student name"
+                  example:
+                    id: 1
+                    name: "Kishan"
+        '400':
+          description: "Bad Request"
+        '404':
+          description: "Student Not Found"
+        '500':
+          description: "Server-side Error"
+
+# get request with id via parameters
+  /students/{id}:
+    get:
+      summary: "Get a student by ID"
+      description: "Provide an ID in path to get a student"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "ID of the student to be fetched"
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: "OK getting student"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+        '400':
+          description: "Bad Request"
+        '404':
+          description: "Student Not Found"
+        '500':
+          description: "Server-side Error"
+
+# Post request to create student via parameters
+  /students/create/{id}/{name}:
+    post:
+      summary: "Create student"
+      description: "Create a student with id and name from path"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "Roll No"
+          required: true
+          schema:
+            type: integer
+        - name: "name"
+          in: "path"
+          description: "Student name"
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: "OK created student"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+
+# Post request to create students via requestBody
+  /students/create:
+    post:
+      summary: "Create Student"
+      description: "Create a student with id and name from path"
+      requestBody:
+        description: "Student name and roll no"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Student"
+      responses:
+        '200':
+          description: "OK created student"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Student"
+
+
