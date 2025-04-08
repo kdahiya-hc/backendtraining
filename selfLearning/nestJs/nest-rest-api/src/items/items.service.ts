@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Item } from './interfaces/items.interfaces';
-import { Model } from 'mongoose';
+import { Item } from './interfaces/items.interfaces'; // used in promise
+import { Model } from 'mongoose'; // Used to fetch the model
 import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
@@ -18,5 +18,10 @@ export class ItemsService {
 		  }
 
 		return item;
+	}
+
+	async create(item: Item): Promise<Item> {
+		const newItem = new this.itemModel(item);
+		return await newItem.save();
 	}
 }
