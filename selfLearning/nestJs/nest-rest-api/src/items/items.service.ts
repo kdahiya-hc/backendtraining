@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Item } from './interfaces/items.interfaces';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
@@ -12,6 +12,11 @@ export class ItemsService {
 	}
 
 	async findOne(id: string): Promise<Item | null> {
-		return await this.itemModel.findOne({ _id: id });
+		const item = await this.itemModel.findOne({ _id: id });
+		if (!item) {
+			throw new NotFoundException(`Item with ID ${id} not found`);
+		  }
+
+		return item;
 	}
 }
