@@ -27,4 +27,10 @@ export class ItemsService {
 	findAll(): Item[] {
 		return this.items;
 	}
+
+	findOne(id: string): Item | string {
+		const item = this.items.find((item) => item.id === id);
+		if (typeof item === 'undefined') return 'No item with provided ID'
+		return item;
+	}
 }
