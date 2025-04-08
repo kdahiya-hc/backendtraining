@@ -1,7 +1,6 @@
 import { Controller, Param, Body, Get, Put, Delete, Post, Req, Res } from '@nestjs/common';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
-import { Request, Response } from 'express';
 import { ItemsService } from './items.service';
 import { Item } from './interfaces/items.interfaces';
 
@@ -11,14 +10,13 @@ export class ItemsController {
 	constructor( private readonly itemsService: ItemsService) {}
 
 	@Get()
-	findAll(): Item[] {
-		return this.itemsService.findAll();
+	async findAll(): Promise<Item[]> {
+		return await this.itemsService.findAll();
 	}
 
 	@Get('/:id')
-	findOne(@Param('id') id: string): Item | string {
-		const item = this.itemsService.findOne(id);
-		return item
+	async findOne(@Param('id') id: string): Promise<Item | null> {
+		return await this.itemsService.findOne(id);
 	}
 
 	@Post()
