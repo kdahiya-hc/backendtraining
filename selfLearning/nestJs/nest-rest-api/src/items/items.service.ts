@@ -24,4 +24,18 @@ export class ItemsService {
 		const newItem = new this.itemModel(item);
 		return await newItem.save();
 	}
+
+	async update(id: string, item: Partial<Item>): Promise<Item> {
+		const updatedItem = await this.itemModel.findByIdAndUpdate(
+			id,
+			item,
+			{ new: true }
+		);
+
+		if (!updatedItem) {
+			throw new NotFoundException(`Item with ID ${id} not found`);
+		}
+
+		return updatedItem;
+	}
 }
