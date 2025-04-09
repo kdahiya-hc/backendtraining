@@ -20,17 +20,17 @@ export class ItemsController {
 	}
 
 	@Post()
-	create(@Body() createItemDto: CreateItemDto): Promise<Item> {
-	return this.itemsService.create(createItemDto);
+	async create(@Body() createItemDto: CreateItemDto): Promise<Item> {
+	return await this.itemsService.create(createItemDto);
 	}
 
 	@Delete('/:id')
-	deleteOne(@Param('id') id: string): string {
-		return `Delete ${id}`;
+	async deleteOne(@Param('id') id: string): Promise<Item | null> {
+		return await this.itemsService.delete(id);
 	}
 
 	@Put('/:id')
-	updateOne(@Param('id') id: string, @Body() updateItemDto: UpdateItemDto): Promise<Item> {
-		return this.itemsService.update(id, updateItemDto);
+	async updateOne(@Param('id') id: string, @Body() updateItemDto: UpdateItemDto): Promise<Item> {
+		return await this.itemsService.update(id, updateItemDto);
 	}
 }

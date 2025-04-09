@@ -7,6 +7,11 @@ import { InjectModel } from '@nestjs/mongoose';
 export class ItemsService {
 	constructor(@InjectModel('Item') private readonly itemModel: Model<Item>) {}
 
+	async create(item: Item): Promise<Item> {
+		const newItem = new this.itemModel(item);
+		return await newItem.save();
+	}
+
 	async findAll(): Promise<Item[]> {
 		return await this.itemModel.find();
 	}
@@ -20,18 +25,17 @@ export class ItemsService {
 		return item;
 	}
 
-	async create(item: Item): Promise<Item> {
-		const newItem = new this.itemModel(item);
-		return await newItem.save();
+	async delete(id: string): Promise<Item | null> {
+		const deletedItem = await this.itemModel.findByIdAndDelete(id);
+		if (!deletedItem) {
+			throw new NotFoundException(`Item with ID ${id} not found`);
+		}
+
+		return deletedItem;
 	}
 
 	async update(id: string, item: Partial<Item>): Promise<Item> {
-		const updatedItem = await this.itemModel.findByIdAndUpdate(
-			id,
-			item,
-			{ new: true }
-		);
-
+		const updatedItem = await this.itemModel.findByIdAndUpdate(id, item, { new: true });
 		if (!updatedItem) {
 			throw new NotFoundException(`Item with ID ${id} not found`);
 		}
