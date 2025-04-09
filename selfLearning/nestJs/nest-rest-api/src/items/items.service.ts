@@ -5,41 +5,43 @@ import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class ItemsService {
-	constructor(@InjectModel('Item') private readonly itemModel: Model<Item>) {}
+  constructor(@InjectModel('Item') private readonly itemModel: Model<Item>) {}
 
-	async create(item: Item): Promise<Item> {
-		const newItem = new this.itemModel(item);
-		return await newItem.save();
-	}
+  async create(item: Item): Promise<Item> {
+    const newItem = new this.itemModel(item);
+    return await newItem.save();
+  }
 
-	async findAll(): Promise<Item[]> {
-		return await this.itemModel.find();
-	}
+  async findAll(): Promise<Item[]> {
+    return await this.itemModel.find();
+  }
 
-	async findOne(id: string): Promise<Item | null> {
-		const item = await this.itemModel.findOne({ _id: id });
-		if (!item) {
-			throw new NotFoundException(`Item with ID ${id} not found`);
-		  }
+  async findOne(id: string): Promise<Item | null> {
+    const item = await this.itemModel.findOne({ _id: id });
+    if (!item) {
+      throw new NotFoundException(`Item with ID ${id} not found`);
+    }
 
-		return item;
-	}
+    return item;
+  }
 
-	async delete(id: string): Promise<Item | null> {
-		const deletedItem = await this.itemModel.findByIdAndDelete(id);
-		if (!deletedItem) {
-			throw new NotFoundException(`Item with ID ${id} not found`);
-		}
+  async delete(id: string): Promise<Item | null> {
+    const deletedItem = await this.itemModel.findByIdAndDelete(id);
+    if (!deletedItem) {
+      throw new NotFoundException(`Item with ID ${id} not found`);
+    }
 
-		return deletedItem;
-	}
+    return deletedItem;
+  }
 
-	async update(id: string, item: Partial<Item>): Promise<Item> {
-		const updatedItem = await this.itemModel.findByIdAndUpdate(id, item, { new: true });
-		if (!updatedItem) {
-			throw new NotFoundException(`Item with ID ${id} not found`);
-		}
+  async update(id: string, item: Partial<Item>): Promise<Item> {
+    const updatedItem = await this.itemModel.findByIdAndUpdate(id, item, {
+      new: true,
+    });
+    if (!updatedItem) {
+      throw new NotFoundException(`Item with ID ${id} not found`);
+    }
 
-		return updatedItem;
-	}
+    return updatedItem;
+  }
 }
