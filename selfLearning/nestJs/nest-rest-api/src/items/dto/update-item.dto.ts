@@ -1,5 +1,8 @@
+import { IsNumber } from 'class-validator';
+import { Type } from 'class-transformer';
+
 export class UpdateItemDto {
-	readonly name: string;
-	readonly description: string;
-	readonly qty: number;
+	@Type(() => Number)
+	@IsNumber()
+	qty: number;
 }
