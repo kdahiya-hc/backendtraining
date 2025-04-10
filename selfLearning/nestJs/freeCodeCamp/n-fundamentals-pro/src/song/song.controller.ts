@@ -1,4 +1,5 @@
-import { CreateSongDto } from "./dto/create-song.dto";
+import { CreateSongDTO } from "./dto/create-song.dto";
+import { UpdateSongDTO } from "./dto/update-song.dto";
 import { SongService } from "./song.service";
 import { Controller, Body, Get, Post, Patch, ParseIntPipe, Delete, HttpStatus, Param } from "@nestjs/common";
 
@@ -12,22 +13,22 @@ export class SongController {
 	}
 
 	@Get('/:id')
-	findOne(@Param('id', new ParseIntPipe()) id: number): string {
-		return this.songService.findOne();
+	findOne(@Param('id', ParseIntPipe) id: number) {
+		return this.songService.findOne(id);
 	}
 
 	@Post()
-	create(@Body() createSong : CreateSongDto): any {
-		return this.songService.create();
+	create(@Body() createSongDto: CreateSongDTO) {
+		return this.songService.create(createSongDto);
 	}
 
 	@Patch('/:id')
-	update(): string {
-		return this.songService.update();
+	update(@Param('id', ParseIntPipe) id: number, @Body() updateSongDto: UpdateSongDTO) {
+		return this.songService.update(id, updateSongDto);
 	}
 
 	@Delete('/:id')
-	delete(): string {
-		return this.songService.delete();
+	delete(@Param('id', ParseIntPipe) id: number) {
+		return this.songService.delete(id);
 	}
 }
