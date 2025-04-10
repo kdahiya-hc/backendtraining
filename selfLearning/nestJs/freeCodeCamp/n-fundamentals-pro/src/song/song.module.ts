@@ -5,6 +5,8 @@ import { SongService } from './song.service';
 @Module({
 	imports: [],
 	controllers: [SongController],
-	providers: [SongService],
+	providers: [
+		{ provide: SongService, useClass: SongService }
+	],
 })
 export class SongModule {}
