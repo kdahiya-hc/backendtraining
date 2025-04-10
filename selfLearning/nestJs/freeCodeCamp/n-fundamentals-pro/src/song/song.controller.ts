@@ -1,6 +1,6 @@
 import { CreateSongDto } from "./dto/create-song.dto";
 import { SongService } from "./song.service";
-import { Controller, Body, Get, Post, Patch, Delete } from "@nestjs/common";
+import { Controller, Body, Get, Post, Patch, Delete, Param } from "@nestjs/common";
 
 @Controller('songs')
 export class SongController {
@@ -11,8 +11,8 @@ export class SongController {
 		return this.songService.findAll();
 	}
 
-	@Get()
-	findOne(): string {
+	@Get('/:id')
+	findOne(@Param('id') id: number): string {
 		return this.songService.findOne();
 	}
 
@@ -21,12 +21,12 @@ export class SongController {
 		return this.songService.create();
 	}
 
-	@Patch()
+	@Patch('/:id')
 	update(): string {
 		return this.songService.update();
 	}
 
-	@Delete()
+	@Delete('/:id')
 	delete(): string {
 		return this.songService.delete();
 	}

@@ -1,9 +1,20 @@
 import { Injectable } from "@nestjs/common";
-
+import { HttpException, HttpStatus } from "@nestjs/common";
 @Injectable()
 export class SongService{
 	findAll(): string {
-		return 'find all song endpoint'
+		try {
+			throw new Error('Something happened');
+			// return 'find all song endpoint';
+		} catch (error) {
+			throw new HttpException(
+				'custom message',
+				HttpStatus.INTERNAL_SERVER_ERROR,
+				{
+					cause: error,
+				}
+			);
+		}
 	}
 
 	findOne(): string {
