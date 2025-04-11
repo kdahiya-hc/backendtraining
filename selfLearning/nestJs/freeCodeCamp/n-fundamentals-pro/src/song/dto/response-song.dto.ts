@@ -1,6 +1,18 @@
-import { BaseSongDTO } from './base-song.dto';
+import { Expose } from 'class-transformer';
 
-export class ResponseSongDTO extends BaseSongDTO {
+export class ResponseSongDTO {
+  @Expose()
   id: number;
-  serviceInstanceId?: string;
+
+  @Expose()
+  title: string;
+
+  @Expose()
+  artists: string[];
+
+  @Expose()
+  releasedDate: Date;
+
+  @Expose()
+  duration: string;
 }
