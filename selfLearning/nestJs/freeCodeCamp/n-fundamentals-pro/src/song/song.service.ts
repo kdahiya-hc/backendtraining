@@ -2,79 +2,62 @@ import { Injectable, NotFoundException, Scope } from "@nestjs/common";
 import { CreateSongDTO } from "./dto/create-song.dto";
 import { ResponseSongDTO } from "./dto/response-song.dto";
 import { UpdateSongDTO } from "./dto/update-song.dto";
+import { plainToInstance } from 'class-transformer';
 import { Song } from "./entity/song.entity";
+import { Repository } from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
+
 // Toggle between these 3 decorators to test each scope:
 @Injectable()                           // Singleton (DEFAULT)
 // @Injectable({ scope: Scope.REQUEST })   // Request
 // @Injectable({ scope: Scope.TRANSIENT })    // Transient
 export class SongService{
-	private instanceId = Math.random().toString(36).substring(2, 8);
+	constructor(
+		@InjectRepository(Song)
+		private songRepository: Repository<Song>
+	) {}
 
-	private toResponseDTO(song: Song): ResponseSongDTO {
-		return {
-		  ...song,
-		  serviceInstanceId: this.instanceId,
-		};
-	  }
-
-	private readonly songs: Song[] = [
-		{
-			id: 1,
-			title: 'Run Away',
-			artists: ['Tzuyu', 'Nayeon'],
-			releasedDate: new Date('2024-12-12'),
-			duration: '02:34'
-		},
-		{
-			id: 2,
-			title: 'Dont Run Away',
-			artists: ['Momo', 'Tzuyu'],
-			releasedDate: new Date('2024-12-24'),
-			duration: '04:21'
-		},
-	  ];
-
-	getServiceInfo(): { instanceId: string } {
-		return {
-			instanceId: this.instanceId,
-		};
+	async create(createSongDto: CreateSongDTO): Promise<ResponseSongDTO> {
+		const newSong = this.songRepository.create({
+			...createSongDto
+		})
+		return await this.songRepository.save(newSong);
 	}
 
-	findAll(): ResponseSongDTO[] {
-		return this.songs.map(song => this.toResponseDTO(song));
-  	}
+	async update(id: number, updateSongDto: UpdateSongDTO): Promise<ResponseSongDTO> {
+		const updateData = { ...updateSongDto, id };
+        const updateResult = await this.songRepository.update(id, updateData);
 
-	findOne(id: number): ResponseSongDTO {
-		const song = this.songs.find((song) => song.id === id);
-		if (!song) throw new NotFoundException();
-		return this.toResponseDTO(song);
+        if (updateResult.affected === 0) {
+            throw new NotFoundException(`Song with ID ${id} not found`);
+        }
+
+        const updatedSong = await this.songRepository.findOneBy({ id });
+        return plainToInstance(ResponseSongDTO, updatedSong, {
+            excludeExtraneousValues: true,
+        });
+    }
+
+	async delete(id: number): Promise<void> {
+        const deleteResult = await this.songRepository.delete(id);
+        if (deleteResult.affected === 0) {
+            throw new NotFoundException(`Song with ID ${id} not found`);
+        }
+    }
+
+	async findAll(): Promise<ResponseSongDTO[]> {
+		const songs = await this.songRepository.find();
+		return plainToInstance(ResponseSongDTO, songs, {
+			excludeExtraneousValues: true,
+		  });
 	}
 
-	create(createSongDto: CreateSongDTO): ResponseSongDTO {
-		const newSong = {
-			id: this.songs.length + 1,
-			...createSongDto,
-		};
-		this.songs.push(newSong);
-		return this.toResponseDTO(newSong);
-	}
+	async findOne(id: number): Promise<ResponseSongDTO> {
+		const song = await this.songRepository.findOne({ where: { id } });
+		if (!song) {
+			throw new NotFoundException(`Song with ID ${id} not found`);
+		}
 
-	update(id: number, updateSongDto: UpdateSongDTO): ResponseSongDTO {
-		const existingSong = this.songs.find((song) => song.id === id);
-		if (!existingSong) throw new NotFoundException();
-		const updatedSong = {
-			...existingSong, ...updateSongDto,  id: id,
-		};
-		const index = this.songs.findIndex((song) => song.id === id);
-  		this.songs[index] = updatedSong;
-
-		return this.toResponseDTO(updatedSong);
-	}
-
-	delete(id: number): ResponseSongDTO {
-		const index = this.songs.findIndex(song => song.id === id);
-		if (index === -1) throw new NotFoundException();
-		const [deleteSong] = this.songs.splice(index, 1); // as splice returns the array of removed
-		return this.toResponseDTO(deleteSong);
+		return song;
 	}
 }
