@@ -4,9 +4,24 @@ import { AppService } from './app.service';
 import { SongModule } from './song/song.module';
 import { AppModule1 } from './scope/app.module';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Song } from './song/entity/song.entity';
 
 @Module({
-  imports: [SongModule, AppModule1],
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      username: 'kishandahiya', // Replace with your actual username
+      password: 'june1506', // Replace with your actual password
+      database: 'n-test',
+      entities: [Song], // Add all your entities here
+      synchronize: true, // Only for development!
+      logging: true, // Enable SQL query logging
+    }),
+    SongModule, AppModule1
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
