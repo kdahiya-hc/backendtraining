@@ -15,5 +15,5 @@ export class BaseSongDTO {
   releasedDate: Date;
 
   @IsString()
-  duration?: string;
+  duration: string;
 }
