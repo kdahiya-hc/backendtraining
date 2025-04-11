@@ -1,16 +1,23 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, NotFoundException, Scope } from "@nestjs/common";
 import { CreateSongDTO } from "./dto/create-song.dto";
+import { ResponseSongDTO } from "./dto/response-song.dto";
 import { UpdateSongDTO } from "./dto/update-song.dto";
-
-@Injectable()
+import { Song } from "./entity/song.entity";
+// Toggle between these 3 decorators to test each scope:
+@Injectable()                           // Singleton (DEFAULT)
+// @Injectable({ scope: Scope.REQUEST })   // Request
+// @Injectable({ scope: Scope.TRANSIENT })    // Transient
 export class SongService{
-	private readonly songs: {
-		id: number;
-		title: string;
-		artists: string[];
-		releasedDate: Date;
-		duration?: string;
-	  }[] = [
+	private instanceId = Math.random().toString(36).substring(2, 8);
+
+	private toResponseDTO(song: Song): ResponseSongDTO {
+		return {
+		  ...song,
+		  serviceInstanceId: this.instanceId,
+		};
+	  }
+
+	private readonly songs: Song[] = [
 		{
 			id: 1,
 			title: 'Run Away',
@@ -25,27 +32,34 @@ export class SongService{
 			releasedDate: new Date('2024-12-24'),
 			duration: '04:21'
 		},
-	  ]
-	findAll() {
-		if (this.songs.length === 0) throw new NotFoundException();
-		return this.songs;
+	  ];
+
+	getServiceInfo(): { instanceId: string } {
+		return {
+			instanceId: this.instanceId,
+		};
 	}
 
-	findOne(id: number) {
+	findAll(): ResponseSongDTO[] {
+		return this.songs.map(song => this.toResponseDTO(song));
+  	}
+
+	findOne(id: number): ResponseSongDTO {
 		const song = this.songs.find((song) => song.id === id);
 		if (!song) throw new NotFoundException();
-		return song;
+		return this.toResponseDTO(song);
 	}
 
-	create(createSongDto: CreateSongDTO) {
+	create(createSongDto: CreateSongDTO): ResponseSongDTO {
 		const newSong = {
-			...createSongDto, id: this.songs.length + 1
+			id: this.songs.length + 1,
+			...createSongDto,
 		};
 		this.songs.push(newSong);
-		return newSong;
+		return this.toResponseDTO(newSong);
 	}
 
-	update(id: number, updateSongDto: UpdateSongDTO) {
+	update(id: number, updateSongDto: UpdateSongDTO): ResponseSongDTO {
 		const existingSong = this.songs.find((song) => song.id === id);
 		if (!existingSong) throw new NotFoundException();
 		const updatedSong = {
@@ -54,14 +68,13 @@ export class SongService{
 		const index = this.songs.findIndex((song) => song.id === id);
   		this.songs[index] = updatedSong;
 
-		return updatedSong;
+		return this.toResponseDTO(updatedSong);
 	}
 
-	delete(id: number) {
+	delete(id: number): ResponseSongDTO {
 		const index = this.songs.findIndex(song => song.id === id);
 		if (index === -1) throw new NotFoundException();
-		const deleteSong = this.songs.find((song) => song.id === id);
-		this.songs.splice(index, 1);
-		return deleteSong;
+		const [deleteSong] = this.songs.splice(index, 1); // as splice returns the array of removed
+		return this.toResponseDTO(deleteSong);
 	}
 }

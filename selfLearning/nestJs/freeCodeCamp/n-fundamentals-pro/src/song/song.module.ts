@@ -26,11 +26,10 @@ const mockingSongService = {
 @Module({
 	imports: [],
 	controllers: [SongController],
+	providers: [SongService],
+	// providers: [{ provide: SongService, useClass: SongService }],
 	// providers: [
-	// 	{ provide: SongService, useClass: SongService }
-	// ],
-	providers: [
-		{ provide: SongService, useValue: mockingSongService }
-	]
+	// 	{ provide: SongService, useValue: mockingSongService }
+	// ]
 })
 export class SongModule {}
