@@ -1,20 +1,8 @@
-import { IsString, IsNotEmpty, IsDateString, IsArray, IsPositive, IsInt } from 'class-validator';
+import { PartialType } from '@nestjs/mapped-types';
+import { BaseSongDTO } from './base-song.dto';
+import { IsNotEmpty } from 'class-validator';
 
-export class UpdateSongDTO {
-	@IsString()
-	@IsNotEmpty()
-	readonly title: string;
-
-	@IsArray()
-	@IsString({ each: true })
-	@IsNotEmpty()
-	readonly artists: string[];
-
-	@IsDateString()
-	@IsNotEmpty()
-	readonly releasedDate: Date;
-
-	@IsNotEmpty()
-	@IsString()
-	readonly duration?: string;
-  }
+export class UpdateSongDTO extends PartialType(BaseSongDTO) {
+  @IsNotEmpty()
+  id: number;
+}
