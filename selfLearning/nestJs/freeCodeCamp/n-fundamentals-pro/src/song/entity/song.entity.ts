@@ -9,12 +9,12 @@ export class Song {
   @Column()
   title: string;
 
-  @Column("varchar", { array: true })
+  @Column("varchar", { array: true})
   artists: string[];
 
   @Column({ type: "date" })
   releasedDate: Date;
 
-  @Column()
+  @Column({nullable: true} )
   duration: string;
 }
