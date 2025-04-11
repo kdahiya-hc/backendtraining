@@ -5,9 +5,10 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe({
-      // whitelist: true,
-      // transform: true,
-      // forbidNonWhitelisted: true,
+      whitelist: true,
+      transform: true,
+      forbidNonWhitelisted: true,
+      disableErrorMessages: false, // important to switch in production
     }
   ));
   await app.listen(process.env.PORT ?? 3000);
