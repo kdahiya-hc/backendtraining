@@ -2,6 +2,16 @@ syntax = "proto3";
 
 package auth;
 
+service UsersService {
+	rpc CreateUser (CreateUserDto) returns (User) {}
+}
+
+message CreateUserDto {
+	string username = 1;
+	string password = 2;
+	int32 age = 3;
+}
+
 message User {
 	string id = 1;
 	string username = 2;
