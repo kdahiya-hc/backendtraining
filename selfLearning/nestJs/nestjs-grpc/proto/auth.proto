@@ -2,26 +2,71 @@ syntax = "proto3";
 
 package auth;
 
+// Service definition for managing users
 service UsersService {
+	// Creates a new user with the given data
 	rpc CreateUser (CreateUserDto) returns (User) {}
+
+	// Retrieves all users in the system
+	rpc FindAllUsers (Empty) returns (Users) {}
+
+	// Retrieves a single user by their ID
+	rpc FindOneUser (FindOneUserDto) returns (User) {}
+
+	// Updates a user's information
+	rpc UpdateUser (UpdateUserDto) returns (User) {}
+
+	// Removes a user by their ID
+	rpc RemoveUser (FindOneUserDto) returns (User) {}
+
+	// Establishes a bidirectional stream to query users with pagination
+	rpc QueryUser (stream PaginationDto) returns (stream Users) {}
 }
 
+// An empty message used when no input is required
+message Empty {}
+
+// A wrapper message containing a list of users
+message Users {
+	repeated User users = 1; // List of user objects
+}
+
+// DTO for creating a new user
 message CreateUserDto {
-	string username = 1;
-	string password = 2;
-	int32 age = 3;
+	string username = 1; // Username for the new user
+	string password = 2; // Password for the new user
+	int32 age = 3;       // Age of the new user
 }
 
+// DTO for pagination input
+message PaginationDto {
+	int32 page = 1; // Page number to fetch
+	int32 skip = 2; // Number of records to skip
+}
+
+// DTO for identifying a user by ID
+message FindOneUserDto {
+	string id = 1; // Unique user ID
+}
+
+// DTO for updating an existing user's data
+message UpdateUserDto {
+	string id = 1;              // User ID to update
+	SocialMedia socialMedia = 2; // Updated social media details
+}
+
+// The main user entity
 message User {
-	string id = 1;
-	string username = 2;
-	string password = 3;
-	int32 age = 4;
-	bool subscribed = 5;
-	SocialMedia socialMedia = 6;
+	string id = 1;               // Unique identifier
+	string username = 2;         // Username
+	string password = 3;         // Password (hashed/stored securely)
+	int32 age = 4;               // Age
+	bool subscribed = 5;         // Subscription status
+	SocialMedia socialMedia = 6; // Social media profile links
 }
 
+// Nested message to store optional social media URIs
 message SocialMedia {
-	optional string twitterUri = 1;
-	optional string fbUri = 2;
+	optional string twitterUri = 1; // Twitter profile URI
+	optional string fbUri = 2;      // Facebook profile URI
 }
