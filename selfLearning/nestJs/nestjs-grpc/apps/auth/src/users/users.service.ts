@@ -60,13 +60,7 @@ export class UsersService implements OnModuleInit {
 
     throw new NotFoundException(`User with ${id} not found`);
   }
-  
-/* `paginationDtoStream` in the `queryUsers` method is an Observable stream that emits
-  `PaginationDto` objects. The method subscribes to this stream and processes the emitted
-  `PaginationDto` objects to return a paginated list of users. It calculates the start
-  index based on the page number and skip value provided in the `PaginationDto`, then
-  returns a subset of users from the internal `users` array based on the calculated start
-  index and skip value. */
+
   queryUsers(paginationDtoStream: Observable<PaginationDto>): Observable<Users> {
     const subject = new Subject<Users>();
 
