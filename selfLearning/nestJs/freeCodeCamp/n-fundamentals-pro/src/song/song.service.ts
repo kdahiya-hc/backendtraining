@@ -6,6 +6,7 @@ import { plainToInstance } from 'class-transformer';
 import { Song } from "./entity/song.entity";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
+import { paginate, Pagination, IPaginationOptions } from "nestjs-typeorm-paginate";
 
 // Toggle between these 3 decorators to test each scope:
 @Injectable()                           // Singleton (DEFAULT)
@@ -21,7 +22,10 @@ export class SongService{
 		const newSong = this.songRepository.create({
 			...createSongDto
 		})
-		return await this.songRepository.save(newSong);
+		const saved = await this.songRepository.save(newSong);
+		return plainToInstance(ResponseSongDTO, saved, {
+			excludeExtraneousValues: true,
+		});
 	}
 
 	async update(id: number, updateSongDto: UpdateSongDTO): Promise<ResponseSongDTO> {
@@ -45,6 +49,17 @@ export class SongService{
         }
     }
 
+	async paginate(options: IPaginationOptions): Promise<Pagination<ResponseSongDTO>> {
+		const paginated = await paginate<Song>(this.songRepository, options);
+
+		const items = paginated.items.map(song =>
+			plainToInstance(ResponseSongDTO, song, {
+				excludeExtraneousValues: true,
+			})
+		);
+		return new Pagination(items, paginated.meta, paginated.links);
+	}
+
 	async findAll(): Promise<ResponseSongDTO[]> {
 		const songs = await this.songRepository.find();
 		return plainToInstance(ResponseSongDTO, songs, {
@@ -53,11 +68,10 @@ export class SongService{
 	}
 
 	async findOne(id: number): Promise<ResponseSongDTO> {
-		const song = await this.songRepository.findOne({ where: { id } });
-		if (!song) {
-			throw new NotFoundException(`Song with ID ${id} not found`);
-		}
-
-		return song;
+		const song = await this.songRepository.findOneBy({ id });
+		if (!song) throw new NotFoundException(`Song with ID ${id} not found`);
+		return plainToInstance(ResponseSongDTO, song, {
+			excludeExtraneousValues: true,
+		});
 	}
 }
