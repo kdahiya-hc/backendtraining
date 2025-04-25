@@ -35,7 +35,7 @@ export class ItemsService {
 
   async findAll() {
     const items = this.itemsRepository.find({
-      relations: { listing: true },
+      relations: { listing: true, comment: true },
     });
     return items;
   }
@@ -43,7 +43,7 @@ export class ItemsService {
   async findOne(id: number) {
     const item = await this.itemsRepository.findOne({
       where: { id },
-      relations: { listing: true },
+      relations: { listing: true, comment: true },
     });
     return item;
   }
