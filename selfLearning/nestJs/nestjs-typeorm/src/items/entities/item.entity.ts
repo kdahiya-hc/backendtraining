@@ -2,27 +2,28 @@ import {
   Column,
   Entity,
   JoinColumn,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Listing } from './listing.entity';
+import { Comment } from './comment.entity';
 
 @Entity()
 export class Item {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ nullable: false })
   name: string;
 
-  @Column({ default: true })
+  @Column({ nullable: false, default: true })
   public: boolean;
 
   @OneToOne(() => Listing, { cascade: true })
-  @JoinColumn()
+  @JoinColumn() // Owner who stored foreign keys
   listing: Listing;
 
-  constructor(item: Partial<Item>) {
-    Object.assign(this, item);
-  }
+  @OneToMany(() => Comment, (comment) => comment.item, { cascade: true })
+  comment: Comment[];
 }

@@ -1,11 +1,14 @@
 import {
+  IsArray,
   IsBoolean,
   IsDefined,
+  IsOptional,
   IsString,
   ValidateNested,
 } from 'class-validator';
 import { CreateListingDto } from './create-listing.dto';
 import { Type } from 'class-transformer';
+import { CreateCommentDto } from './create-comment.dto';
 
 export class CreateItemDto {
   @IsString()
@@ -18,4 +21,10 @@ export class CreateItemDto {
   @Type(() => CreateListingDto)
   @IsDefined()
   listing: CreateListingDto;
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested()
+  @Type(() => CreateCommentDto)
+  comment?: CreateCommentDto[];
 }

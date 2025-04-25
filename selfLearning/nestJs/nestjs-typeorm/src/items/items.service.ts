@@ -11,21 +11,32 @@ export class ItemsService {
   constructor(
     @InjectRepository(Item)
     private readonly itemsRepository: Repository<Item>,
+    @InjectRepository(Listing)
+    private readonly listingRepository: Repository<Listing>,
     private readonly entityManager: EntityManager,
   ) {}
 
   async create(createItemDto: CreateItemDto) {
-    const listing = new Listing({
+    const listing = this.listingRepository.create({
       ...createItemDto.listing,
       rating: 0,
     });
-    const item = new Item({ ...createItemDto, listing });
+
+    const item = this.itemsRepository.create({
+      ...createItemDto,
+      listing,
+      comment: [],
+    });
+    await this.itemsRepository.save(item);
+
     await this.entityManager.save(item);
     return item;
   }
 
   async findAll() {
-    const items = this.itemsRepository.find();
+    const items = this.itemsRepository.find({
+      relations: { listing: true },
+    });
     return items;
   }
 
