@@ -1,11 +1,12 @@
-import { IsNumber, IsOptional, IsString, Max } from 'class-validator';
+import { IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
 
 export class CreateListingDto {
   @IsString()
   description: string;
 
-  @IsNumber()
   @IsOptional()
+  @IsNumber()
+  @Min(0)
   @Max(5)
-  rating?: number;
+  rating?: number = 0;
 }

@@ -9,6 +9,7 @@ import {
 import { CreateListingDto } from './create-listing.dto';
 import { Type } from 'class-transformer';
 import { CreateCommentDto } from './create-comment.dto';
+import { CreateTagDto } from './create-tag.dto';
 
 export class CreateItemDto {
   @IsString()
@@ -26,5 +27,11 @@ export class CreateItemDto {
   @IsArray()
   @ValidateNested()
   @Type(() => CreateCommentDto)
-  comment?: CreateCommentDto[];
+  comment?: CreateCommentDto[] = [];
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested()
+  @Type(() => CreateTagDto)
+  tag?: CreateTagDto[] = [];
 }
