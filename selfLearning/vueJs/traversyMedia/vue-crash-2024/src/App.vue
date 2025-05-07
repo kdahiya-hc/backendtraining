@@ -31,6 +31,9 @@ export default {
   <ul>
     <li v-for="task in tasks" :key="task">{{ task }}</li>
   </ul>
+  <a v-bind:href="'https://www.google.com'">Click for Google</a>
+  <a :href="'https://www.google.com'">Click for Google</a>
+
 </template>
 
 <style scoped>
