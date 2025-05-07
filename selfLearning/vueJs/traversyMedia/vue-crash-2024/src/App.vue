@@ -3,19 +3,27 @@ export default {
   data() {
     return {
       name: 'John Doe',
-      status: true
+      status: 'pending'
     };
   },
   methods: {
     toggleStatus() {
-      this.status = !this.status;
+      if (this.status === 'active') {
+        this.status = 'pending';
+      } else if (this.status === 'pending') {
+        this.status = 'inactive';
+      } else {
+        this.status = 'active';
+      }
     }
   }
 }
 </script>
 
 <template>
-  <p v-if="status">User {{ name }} is Active</p>
+  <p v-if="status === 'active'">User {{ name }} is active</p>
+  <p v-else-if="status === 'pending'">User {{ name }} is pending</p>
+  <p v-else>User {{ name }} is inactive</p>
   <button @click="toggleStatus">Toggle Status</button>
 </template>
 
