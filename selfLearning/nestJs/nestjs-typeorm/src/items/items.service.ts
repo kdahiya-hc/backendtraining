@@ -27,13 +27,13 @@ export class ItemsService {
       listing,
     });
     await this.itemsRepository.save(item);
-
-    await this.entityManager.save(item);
     return item;
   }
 
   async findAll() {
-    const items = this.itemsRepository.find({});
+    const items = this.itemsRepository.find({
+      relations: { listing: true, comment: true, tag: true },
+    });
     return items;
   }
 

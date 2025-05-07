@@ -23,7 +23,7 @@ export class Item {
   @Column({ nullable: false, default: true })
   public: boolean;
 
-  @OneToOne(() => Listing, { cascade: true, onDelete: 'CASCADE' })
+  @OneToOne(() => Listing, { cascade: true })
   @JoinColumn()
   listing: Listing;
 
