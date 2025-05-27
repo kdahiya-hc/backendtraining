@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   JoinTable,
@@ -7,6 +8,7 @@ import {
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Listing } from './listing.entity';
 import { Comment } from './comment.entity';
@@ -33,4 +35,10 @@ export class Item {
   @ManyToMany(() => Tag, { cascade: true })
   @JoinTable()
   tag: Tag[];
+
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date;
 }
